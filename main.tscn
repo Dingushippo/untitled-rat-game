@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dbw8km56wffhp"]
+
+[ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://player.tscn" id="1_ig7tw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
+albedo_color = Color(0.27058825, 1, 1, 1)
+
+[node name="Main" type="Node3D" unique_id=1325263966]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=816274683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.388916, -5.150942, -12.243774)
+use_collision = true
+size = Vector3(41.287598, 0.001, 38.82202)
+material = SubResource("StandardMaterial3D_0xm2m")
+
+[node name="Player" parent="." unique_id=716301107 instance=ExtResource("1_ig7tw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.425886, 3.3097248, -11.044464)
