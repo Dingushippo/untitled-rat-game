@@ -1,11 +1,32 @@
 [gd_scene format=3 uid="uid://dbw8km56wffhp"]
 
+[ext_resource type="Texture2D" uid="uid://d1c70tsq6n0uu" path="res://assets/rough-checked-texture-collage.jpg" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://player.tscn" id="1_ig7tw"]
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_1bvp3"]
+sky_material = SubResource("ProceduralSkyMaterial_h2yge")
+
+[sub_resource type="Environment" id="Environment_lquwl"]
+background_mode = 2
+sky = SubResource("Sky_1bvp3")
+glow_enabled = true
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
-albedo_color = Color(0.27058825, 1, 1, 1)
+albedo_texture = ExtResource("1_0xm2m")
+uv1_scale = Vector3(6, 6, 6)
 
 [node name="Main" type="Node3D" unique_id=1325263966]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1878188055]
+environment = SubResource("Environment_lquwl")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=9587188]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=816274683]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.388916, -5.150942, -12.243774)

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://Player.cs" id="1_i3pqv"]
 [ext_resource type="Script" uid="uid://b1fdwearsvvt6" path="res://InputComponent.cs" id="2_hqtel"]
 [ext_resource type="Script" uid="uid://jis5t442dyuu" path="res://MovementComponent.cs" id="3_sweqy"]
+[ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://Camera3d.cs" id="4_hqtel"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
@@ -20,6 +21,8 @@ script = ExtResource("2_hqtel")
 [node name="MovementComponent" type="Node" parent="." unique_id=1514399294 node_paths=PackedStringArray("MovementTarget")]
 script = ExtResource("3_sweqy")
 MovementTarget = NodePath("..")
-Speed = 21.26
+Speed = 10.0
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=2056591493]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2056591493 node_paths=PackedStringArray("RotationTarget")]
+script = ExtResource("4_hqtel")
+RotationTarget = NodePath("..")

@@ -37,7 +37,7 @@ public partial class MovementComponent : Node
 		velocity += GetJumpVelocity((float)delta);
 		velocity += GetGravityVelocity((float)delta);
 		
-		GD.Print("Velocity: " + velocity);
+		// GD.Print("Velocity: " + velocity);
 
 		MovementTarget.Velocity = velocity;
 		MovementTarget.MoveAndSlide();
@@ -48,10 +48,26 @@ public partial class MovementComponent : Node
 		// Smoothly accelerate toward the target velocity when input is present
 		// and smoothly decelerate to zero when input is released. Preserve Y velocity.
 
+		// Interpret input relative to the movement target's yaw (so forward is where the player faces)
 		Vector3 inputRaw = new Vector3(Direction.X, 0, Direction.Y);
 		Vector3 inputDirection = inputRaw.Length() > 0 ? inputRaw.Normalized() : Vector3.Zero;
 
-		Vector3 target = inputDirection * Speed;
+		Vector3 target = Vector3.Zero;
+		if (MovementTarget != null && inputDirection != Vector3.Zero)
+		{
+			// Get the yaw rotation (rotation around Y axis) from the target
+			float yaw = MovementTarget.Rotation.Y;
+			// Build a basis from yaw only
+			Vector3 forward = new Vector3(Mathf.Sin(yaw), 0, Mathf.Cos(yaw));
+			Vector3 right = new Vector3(forward.Z, 0, -forward.X); // perpendicular on XZ plane
+
+			// Map input X to right, input Z to forward
+			target = (right * inputDirection.X + forward * inputDirection.Z) * Speed;
+		}
+		else
+		{
+			target = inputDirection * Speed;
+		}
 
 		Vector3 currentXZ = new Vector3(currentVelocity.X, 0, currentVelocity.Z);
 
