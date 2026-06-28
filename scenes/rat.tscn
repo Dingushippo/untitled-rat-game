@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://fr1ly1jvytyp"]
+
+[ext_resource type="Script" uid="uid://jis5t442dyuu" path="res://components/MovementComponent.cs" id="1_1l88y"]
+[ext_resource type="Script" uid="uid://wgjoesivcax6" path="res://Rat.cs" id="1_77a1s"]
+[ext_resource type="ArrayMesh" uid="uid://b8wctcjcjr23w" path="res://assets/rat.obj" id="3_acf8p"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3csnj"]
+radius = 14.313511
+height = 144.2705
+
+[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("MovementComponent")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
+script = ExtResource("1_77a1s")
+MovementComponent = NodePath("MovementComponent")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1729196592]
+
+[node name="MovementComponent" type="Node" parent="." unique_id=555866110 node_paths=PackedStringArray("MovementTarget", "NavigationAgent")]
+script = ExtResource("1_1l88y")
+MovementTarget = NodePath("..")
+NavigationAgent = NodePath("../NavigationAgent3D")
+UseNavigationAgent = true
+Speed = 3.0
+GravityScale = 5.0
+metadata/_custom_type_script = "uid://jis5t442dyuu"
+
+[node name="Rat" type="MeshInstance3D" parent="." unique_id=590816943]
+transform = Transform3D(4.5896957e-09, 0, 0.035, 0, 0.035, 0, -0.035, 0, 4.5896957e-09, 0.007802339, 0, -1.4148973)
+mesh = ExtResource("3_acf8p")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=249878393]
+transform = Transform3D(-2.0062198e-16, -4.5896957e-09, 0.035, 0.035, -1.5298985e-09, -4.6322114e-24, 1.5298985e-09, 0.035, 4.5896957e-09, -6.199116e-08, 0.69774085, 0)
+shape = SubResource("CapsuleShape3D_3csnj")

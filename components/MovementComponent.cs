@@ -1,15 +1,20 @@
 using Godot;
 using System;
 
+[GlobalClass]
 public partial class MovementComponent : Node
 {
 	// Called when the node enters the scene tree for the first time.
 	[Export] public CharacterBody3D MovementTarget;
+	[Export] public NavigationAgent3D NavigationAgent;
+	[Export] public bool UseNavigationAgent = false;
+	[Export] public Node3D NavigationTarget;
 	[Export] public float Speed = 5.0f;
 	[Export] public float JumpStrength = 5.0f;
 	[Export] public float GravityScale = 1.0f;
 	[Export] public float Acceleration = 20.0f;
 	[Export] public float Deceleration = 16.0f;
+
 
 	public Vector2 Direction { get; set; }
 	public bool IsJumping { get; set; }
@@ -33,14 +38,49 @@ public partial class MovementComponent : Node
 
 		Vector3 velocity = MovementTarget.Velocity;
 
-		velocity = SetMovementVelocity(velocity, (float)delta);
-		velocity += GetJumpVelocity((float)delta);
-		velocity += GetGravityVelocity((float)delta);
-		
-		// GD.Print("Velocity: " + velocity);
+		if (UseNavigationAgent && NavigationAgent != null && NavigationTarget != null)
+		{
+			velocity = HandleNavigationMovement(velocity, (float)delta);
+		} 
+		else
+		{	
+			velocity = HandleInputMovement(velocity, (float)delta);
+		}
 
+		velocity += GetGravityVelocity((float)delta);
 		MovementTarget.Velocity = velocity;
 		MovementTarget.MoveAndSlide();
+		
+	}
+
+	private Vector3 HandleNavigationMovement(Vector3 velocity, float delta)
+	{
+		// Update the navigation agent's target position
+		NavigationAgent.TargetPosition = NavigationTarget.GlobalPosition;
+
+		// Get the next path point from the navigation agent
+		Vector3 nextPathPoint = NavigationAgent.GetNextPathPosition();
+		velocity = MovementTarget.GlobalPosition.DirectionTo(nextPathPoint) * Speed;
+		if (NavigationAgent.IsNavigationFinished())
+		{
+			velocity = Vector3.Zero;
+		}
+		else
+		{
+			// Make movementTarget look at the next path point, smoothly rotating only around the Y axis (yaw)
+			Vector3 currentRotation = MovementTarget.Rotation;
+			float newYRotation = Mathf.LerpAngle(currentRotation.Y, Mathf.Atan2(-velocity.X, -velocity.Z), 0.1f);
+			MovementTarget.Rotation = new Vector3(currentRotation.X, newYRotation, currentRotation.Z);
+		}
+		return velocity;
+	}
+
+	private Vector3 HandleInputMovement(Vector3 velocity, float delta)
+	{
+		// If not using navigation, apply movement based on input		
+		velocity = SetMovementVelocity(velocity, (float)delta);
+		velocity += GetJumpVelocity((float)delta);
+		return velocity;
 	}
 
 	private Vector3 SetMovementVelocity(Vector3 currentVelocity, float delta)

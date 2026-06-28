@@ -33,6 +33,8 @@ public partial class Camera3d : Camera3D
 		{
 			CreateDebugAimMarker();
 		}
+
+		EventBus.Subscribe<MouseClickEvent>(OnMouseClick);
 	}
 
 	private void CreateDebugAimMarker()
@@ -40,7 +42,7 @@ public partial class Camera3d : Camera3D
 		// Create a simple MeshInstance3D with a SphereMesh as the visual marker
 		var meshInstance = new MeshInstance3D();
 		var sphere = new SphereMesh();
-		sphere.Radius = 0.15f;
+		sphere.Radius = 0.15f / 2;
 		sphere.Height = 0.15f;
 		meshInstance.Mesh = sphere;
 		// Make it slightly emissive or colored so it's visible
@@ -82,14 +84,16 @@ public partial class Camera3d : Camera3D
 		var result = spaceState.IntersectRay(query);
 		if (result != null && result.Count > 0 && result.ContainsKey("position"))
 		{
+			if (!AimMarker.Visible) AimMarker.Visible = true;
+			
 			Vector3 hitPos = (Vector3)result["position"];
 			Vector3 hitNormal = result.ContainsKey("normal") ? (Vector3)result["normal"] : Vector3.Up;
-
 			// Move the marker slightly above the surface to avoid z-fighting
 			AimMarker.GlobalPosition = hitPos + hitNormal * 0.01f;
 			// Orient the marker to match the surface normal
-			AimMarker.LookAt(hitPos + hitNormal, Vector3.Up);
+			// AimMarker.LookAt(hitPos + hitNormal, Vector3.Up);
 		}
+		else if (AimMarker.Visible)	AimMarker.Visible = false;
     }
 
 	public override void _Input(InputEvent @event)
@@ -127,4 +131,21 @@ public partial class Camera3d : Camera3D
 			}
 		}
 	}
+
+	private void OnMouseClick(MouseClickEvent evt)
+	{
+		GD.Print($"Mouse clicked: Button {evt.ButtonIndex} at {AimMarker.GlobalPosition}");
+		EventBus.Publish(new DebugAimMarkerEvent(AimMarker.GlobalPosition));
+	}
+}
+
+public class DebugAimMarkerEvent
+{
+	public Vector3 MarkerPosition { get; }
+
+	public DebugAimMarkerEvent(Vector3 markerPosition)
+	{
+		MarkerPosition = markerPosition;
+	}
+
 }

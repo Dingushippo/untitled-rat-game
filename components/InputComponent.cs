@@ -17,4 +17,28 @@ public partial class InputComponent : Node
 		Direction = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
 		IsJumping = Input.IsActionPressed("jump");
 	}
+
+	public override void _Input(InputEvent @event)
+	{
+		// Publish mouse click inputs to the EventBus
+		if (@event is InputEventMouseButton mouseEvent)
+		{
+			if (mouseEvent.Pressed)
+			{	
+				EventBus.Publish(new MouseClickEvent((int)mouseEvent.ButtonIndex, mouseEvent.Position));
+			}
+		}
+	}
+}
+
+public class MouseClickEvent
+{
+	public int ButtonIndex { get; }
+	public Vector2 Position { get; }
+
+	public MouseClickEvent(int buttonIndex, Vector2 position)
+	{
+		ButtonIndex = buttonIndex;
+		Position = position;
+	}
 }
