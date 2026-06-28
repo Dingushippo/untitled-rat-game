@@ -14,6 +14,7 @@ script = ExtResource("1_77a1s")
 MovementComponent = NodePath("MovementComponent")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1729196592]
+debug_enabled = true
 
 [node name="MovementComponent" type="Node" parent="." unique_id=555866110 node_paths=PackedStringArray("MovementTarget", "NavigationAgent")]
 script = ExtResource("1_1l88y")

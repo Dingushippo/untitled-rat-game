@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Runtime.InteropServices.Marshalling;
 
 [GlobalClass]
 public partial class MovementComponent : Node
@@ -28,6 +29,10 @@ public partial class MovementComponent : Node
 			GD.PrintErr("MovementComponent requires a MovementTarget to function.");
 		}
 		gravity = -(float)ProjectSettings.GetSetting("physics/3d/default_gravity");
+		if (NavigationAgent != null)
+		{
+			NavigationAgent.VelocityComputed += SetVelocity;
+		}
 		GD.Print("Default gravity: " + gravity);
 	}
 
@@ -53,6 +58,14 @@ public partial class MovementComponent : Node
 		
 	}
 
+	private void SetVelocity(Vector3 velocity)
+	{
+		if (MovementTarget != null)
+		{
+			MovementTarget.Velocity = velocity;
+		}
+	}
+
 	private Vector3 HandleNavigationMovement(Vector3 velocity, float delta)
 	{
 		// Update the navigation agent's target position
@@ -60,19 +73,30 @@ public partial class MovementComponent : Node
 
 		// Get the next path point from the navigation agent
 		Vector3 nextPathPoint = NavigationAgent.GetNextPathPosition();
-		velocity = MovementTarget.GlobalPosition.DirectionTo(nextPathPoint) * Speed;
+		Vector3 newVelocity = MovementTarget.GlobalPosition.DirectionTo(nextPathPoint) * Speed;
+		
+		if (NavigationAgent.AvoidanceEnabled) NavigationAgent.SetVelocity(newVelocity);
+		else SetVelocity(newVelocity);
+		
 		if (NavigationAgent.IsNavigationFinished())
 		{
 			velocity = Vector3.Zero;
+			SetMovementTargetRotation(NavigationTarget.GlobalPosition);
 		}
 		else
 		{
-			// Make movementTarget look at the next path point, smoothly rotating only around the Y axis (yaw)
-			Vector3 currentRotation = MovementTarget.Rotation;
-			float newYRotation = Mathf.LerpAngle(currentRotation.Y, Mathf.Atan2(-velocity.X, -velocity.Z), 0.1f);
-			MovementTarget.Rotation = new Vector3(currentRotation.X, newYRotation, currentRotation.Z);
+			SetMovementTargetRotation(velocity);
 		}
+	
 		return velocity;
+	}
+
+	private void SetMovementTargetRotation(Vector3 targetPosition)
+	{
+		// Make movementTarget look at the next path point, smoothly rotating only around the Y axis (yaw)
+		Vector3 currentRotation = MovementTarget.Rotation;
+		float newYRotation = Mathf.LerpAngle(currentRotation.Y, Mathf.Atan2(-targetPosition.X, -targetPosition.Z), 0.1f);
+		MovementTarget.Rotation = new Vector3(currentRotation.X, newYRotation, currentRotation.Z);
 	}
 
 	private Vector3 HandleInputMovement(Vector3 velocity, float delta)
