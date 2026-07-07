@@ -70,11 +70,11 @@ transform = Transform3D(-0.99918246, 0, 0.040427685, 0, 1, 0, -0.040427685, 0, -
 use_collision = true
 size = Vector3(14.083862, 3.3793945, 14)
 
-[node name="Rat" parent="." unique_id=656995802 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -9.215609, 0, -20.744747)
-
 [node name="Player" parent="." unique_id=716301107 instance=ExtResource("3_tbgi4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5763087, 1.9610462, -4.260147)
+
+[node name="Rat" parent="." unique_id=656995802 instance=ExtResource("2_jyhfs")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -9.215609, 0, -20.744747)
 
 [node name="Rat2" parent="." unique_id=1864404930 instance=ExtResource("2_jyhfs")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.7079124, 0, -4.957423)
