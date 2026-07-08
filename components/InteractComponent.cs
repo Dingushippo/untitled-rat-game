@@ -33,7 +33,6 @@ public partial class InteractComponent : Area3D
     public void IsLookedAt()
     {
         if (!IsEnabled) return;
-        GD.Print("Looking at " + GetParent().Name);
         // Show interaction text above the object
         if (ShowInteractionText)
         {
@@ -43,14 +42,12 @@ public partial class InteractComponent : Area3D
 
     public void IsLookedAwayFrom()
     {
-        GD.Print("Looking away from " + GetParent().Name);
         interactionLabel.Visible = false;
     }
 
     public void Interact()
     {
         if (!IsEnabled) return;
-
         GD.Print("Interacted with " + GetParent().Name);
         OnInteract?.Invoke();
     }

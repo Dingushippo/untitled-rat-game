@@ -3,36 +3,39 @@ using System;
 
 public partial class Rat : CharacterBody3D
 {
-	[Export] public MovementComponent MovementComponent;
+	[Export] public PathfindingComponent PathfindingComponent;
+	[Export] public InteractComponent InteractComponent;
 	[Export] bool debug = true;
 
 	private Node3D _navigationTarget;
+	private Player _player;
 
 	public override void _Ready()
 	{
-		if (MovementComponent == null)
+		if (PathfindingComponent == null)
 		{
-			GD.PrintErr("Rat requires a MovementComponent to function.");
+			GD.PrintErr("Rat requires a PathfindingComponent to function.");
 		}
 
 		if (debug)
 		{
 			EventBus.Subscribe<DebugAimMarkerEvent>(OnDebugMouseClick);
 		}
-
+		_player = GetTree().GetFirstNodeInGroup("player") as Player;
+		InteractComponent.OnInteract += DebugSetNavigationTargetToPlayer;
 		CallDeferred(nameof(InitializeNavigationTarget));
 	}
 
 	private void InitializeNavigationTarget()
 	{
-		if (MovementComponent == null)
+		if (PathfindingComponent == null)
 		{
 			return;
 		}
 
-		if (MovementComponent.NavigationTarget != null)
+		if (PathfindingComponent.NavigationTarget != null)
 		{
-			_navigationTarget = MovementComponent.NavigationTarget;
+			_navigationTarget = PathfindingComponent.NavigationTarget;
 			return;
 		}
 
@@ -51,17 +54,27 @@ public partial class Rat : CharacterBody3D
 
 		parent.AddChild(_navigationTarget);
 		_navigationTarget.Owner = parent;
-		MovementComponent.NavigationTarget = _navigationTarget;
+		PathfindingComponent.NavigationTarget = _navigationTarget;
 
 		GD.Print("NavigationTarget created and added to the scene tree.");
 	}
 
+	private void DebugSetNavigationTargetToPlayer()
+	{
+		GD.Print("DebugSetNavigationTargetToPlayer called.");
+		if (_player != null && PathfindingComponent != null)
+		{
+			GD.Print("Setting NavigationTarget position to Player position.");
+			PathfindingComponent.NavigationTarget = _player;
+		}
+	}
+
 	private void OnDebugMouseClick(DebugAimMarkerEvent evt)
 	{
-		GD.Print($"Debug Aim Marker Position: {evt.MarkerPosition}");
-		if (MovementComponent != null && MovementComponent.NavigationTarget != null)
+		if (PathfindingComponent != null && PathfindingComponent.NavigationTarget != null )
 		{
-			MovementComponent.NavigationTarget.GlobalPosition = evt.MarkerPosition;
+			GD.Print($"Setting NavigationTarget position to {evt.MarkerPosition}");
+			PathfindingComponent.NavigationTarget.GlobalPosition = evt.MarkerPosition;
 		}
 	}
 }
