@@ -134,6 +134,8 @@ public partial class Camera3d : Camera3D
 
 	private void OnMouseClick(MouseClickEvent evt)
 	{
+		if (evt.ButtonIndex != (int)MouseButton.Left) return;
+		
 		GD.Print($"Mouse clicked: Button {evt.ButtonIndex} at {AimMarker.GlobalPosition}");
 		EventBus.Publish(new DebugAimMarkerEvent(AimMarker.GlobalPosition));
 	}
