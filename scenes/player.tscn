@@ -19,7 +19,7 @@ MovementComponent = NodePath("MovementComponent")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_2hs0m")
 
-[node name="InputComponent" type="Node" parent="." unique_id=781542355]
+[node name="InputComponent" type="Node" parent="." unique_id=781542355 groups=["player"]]
 script = ExtResource("2_qlg0r")
 
 [node name="MovementComponent" type="Node" parent="." unique_id=1514399294 node_paths=PackedStringArray("MovementTarget")]

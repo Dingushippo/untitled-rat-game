@@ -1,50 +1,47 @@
 [gd_scene format=3 uid="uid://fr1ly1jvytyp"]
 
-[ext_resource type="Script" uid="uid://jis5t442dyuu" path="res://components/MovementComponent.cs" id="1_1l88y"]
 [ext_resource type="Script" uid="uid://wgjoesivcax6" path="res://Rat.cs" id="1_77a1s"]
 [ext_resource type="ArrayMesh" uid="uid://b8wctcjcjr23w" path="res://assets/rat.obj" id="3_acf8p"]
 [ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://components/InteractComponent.cs" id="4_3csnj"]
+[ext_resource type="Script" uid="uid://wcffg48v1qvh" path="res://components/PathfindingComponent.cs" id="4_6s34g"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3csnj"]
 radius = 14.313511
-height = 144.2705
+height = 73.61132
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6s34g"]
 radius = 14.313511
-height = 71.41504
+height = 42.46631
 
-[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("MovementComponent")]
+[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("PathfindingComponent", "InteractComponent")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 script = ExtResource("1_77a1s")
-MovementComponent = NodePath("MovementComponent")
-
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1729196592]
-avoidance_enabled = true
-debug_enabled = true
-
-[node name="MovementComponent" type="Node" parent="." unique_id=555866110 node_paths=PackedStringArray("MovementTarget", "NavigationAgent")]
-script = ExtResource("1_1l88y")
-MovementTarget = NodePath("..")
-NavigationAgent = NodePath("../NavigationAgent3D")
-UseNavigationAgent = true
-Speed = 3.0
-GravityScale = 5.0
-metadata/_custom_type_script = "uid://jis5t442dyuu"
+PathfindingComponent = NodePath("PathfindingComponent")
+InteractComponent = NodePath("InteractComponent")
 
 [node name="Rat" type="MeshInstance3D" parent="." unique_id=590816943]
-transform = Transform3D(4.5896957e-09, 0, 0.035, 0, 0.035, 0, -0.035, 0, 4.5896957e-09, 0.007802339, 0, -1.4148973)
+transform = Transform3D(4.5896957e-09, 0, 0.035, 0, 0.035, 0, -0.035, 0, 4.5896957e-09, 0.007802339, -0.22623122, -0.064349025)
 mesh = ExtResource("3_acf8p")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=249878393]
-transform = Transform3D(-2.0062198e-16, -4.5896957e-09, 0.035, 0.035, -1.5298985e-09, -4.6322114e-24, 1.5298985e-09, 0.035, 4.5896957e-09, -6.199116e-08, 0.69774085, 0)
+transform = Transform3D(-2.0062199e-16, -4.5896957e-09, 0.035, 0.035, -1.5298985e-09, -4.6322114e-24, 1.5298985e-09, 0.035, 4.5896957e-09, 1.0016089e-07, 0.4715097, 0.11401273)
 shape = SubResource("CapsuleShape3D_3csnj")
 
 [node name="InteractComponent" type="Area3D" parent="." unique_id=402514231]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.22623122, 1.3505483)
 collision_layer = 4
 script = ExtResource("4_3csnj")
 InteractionTextOffset = Vector3(0, 2, -1.5)
 metadata/_custom_type_script = "uid://82n4sf5bywly"
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="InteractComponent" unique_id=1689416693]
-transform = Transform3D(-2.8001493e-16, -6.405993e-09, 0.08484996, 0.08484996, -3.708909e-09, 6.417027e-23, 3.708909e-09, 0.08484996, 6.405993e-09, -6.1734866e-08, 0.6977409, 0.009711981)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractComponent" unique_id=1689416693]
+transform = Transform3D(-2.8001493e-16, -6.405993e-09, 0.08484996, 0.08484996, -3.708909e-09, 6.417027e-23, 3.708909e-09, 0.08484996, 6.405993e-09, 3.0987817e-08, 0.697741, -1.2184373)
 shape = SubResource("CapsuleShape3D_6s34g")
+
+[node name="PathfindingComponent" type="NavigationAgent3D" parent="." unique_id=1112728901 node_paths=PackedStringArray("MovementTarget")]
+avoidance_enabled = true
+script = ExtResource("4_6s34g")
+MovementTarget = NodePath("..")
+Acceleration = 1.0
+StoppingDistance = 2.0
+metadata/_custom_type_script = "uid://wcffg48v1qvh"
