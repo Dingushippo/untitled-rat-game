@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://doppcexk44ncy"]
 
-[ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/Player.cs" id="1_dqkch"]
+[ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/Player/Player.cs" id="1_dqkch"]
 [ext_resource type="Script" uid="uid://b1fdwearsvvt6" path="res://components/InputComponent.cs" id="2_qlg0r"]
 [ext_resource type="Script" uid="uid://jis5t442dyuu" path="res://components/MovementComponent.cs" id="3_tuyoq"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/Camera3d.cs" id="4_fjrip"]
-[ext_resource type="Script" uid="uid://betj1lohyacvf" path="res://scenes/InteractRaycast.cs" id="5_qlg0r"]
+[ext_resource type="Script" uid="uid://betj1lohyacvf" path="res://scripts/Player/InteractRaycast.cs" id="5_qlg0r"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 

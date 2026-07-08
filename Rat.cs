@@ -8,6 +8,7 @@ public partial class Rat : CharacterBody3D
 	[Export] bool debug = true;
 
 	private Node3D _navigationTarget;
+	private Node3D _navigationTargetOriginal;
 	private Player _player;
 
 	public override void _Ready()
@@ -50,6 +51,7 @@ public partial class Rat : CharacterBody3D
 		{
 			Name = "NavigationTarget",
 		};
+		_navigationTargetOriginal = _navigationTarget;
 
 		parent.AddChild(_navigationTarget);
 		_navigationTarget.GlobalPosition = GlobalPosition;
@@ -61,11 +63,20 @@ public partial class Rat : CharacterBody3D
 
 	private void DebugSetNavigationTargetToPlayer()
 	{
-		GD.Print("DebugSetNavigationTargetToPlayer called.");
-		if (_player != null && PathfindingComponent != null)
+		GD.Print($"Current NavigationTarget: {PathfindingComponent.NavigationTarget?.Name}");
+		if (_player != null && PathfindingComponent != null && PathfindingComponent.NavigationTarget != _player)
 		{
 			GD.Print("Setting NavigationTarget position to Player position.");
 			PathfindingComponent.NavigationTarget = _player;
+		}
+		else if (PathfindingComponent.NavigationTarget == _player)
+		{
+			GD.Print("Resetting NavigationTarget position to original position.");
+			PathfindingComponent.NavigationTarget = _navigationTargetOriginal;
+		}
+		else
+		{
+			GD.Print("Player or PathfindingComponent is null.");
 		}
 	}
 
