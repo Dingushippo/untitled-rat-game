@@ -40,6 +40,8 @@ shape = SubResource("CapsuleShape3D_6s34g")
 
 [node name="PathfindingComponent" type="NavigationAgent3D" parent="." unique_id=1112728901 node_paths=PackedStringArray("MovementTarget")]
 avoidance_enabled = true
+height = 0.25
+radius = 1.0
 script = ExtResource("4_6s34g")
 MovementTarget = NodePath("..")
 Acceleration = 1.0

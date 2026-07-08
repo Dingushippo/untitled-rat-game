@@ -49,10 +49,10 @@ public partial class Rat : CharacterBody3D
 		_navigationTarget = new Node3D
 		{
 			Name = "NavigationTarget",
-			GlobalPosition = GlobalPosition
 		};
 
 		parent.AddChild(_navigationTarget);
+		_navigationTarget.GlobalPosition = GlobalPosition;
 		_navigationTarget.Owner = parent;
 		PathfindingComponent.NavigationTarget = _navigationTarget;
 
