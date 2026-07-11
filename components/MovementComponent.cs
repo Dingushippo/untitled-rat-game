@@ -7,9 +7,6 @@ public partial class MovementComponent : Node
 {
 	// Called when the node enters the scene tree for the first time.
 	[Export] public CharacterBody3D MovementTarget;
-	[Export] public NavigationAgent3D NavigationAgent;
-	[Export] public bool UseNavigationAgent = false;
-	[Export] public Node3D NavigationTarget;
 	[Export] public float Speed = 5.0f;
 	[Export] public float JumpStrength = 5.0f;
 	[Export] public float GravityScale = 1.0f;
@@ -20,7 +17,6 @@ public partial class MovementComponent : Node
 	public Vector2 Direction { get; set; }
 	public bool IsJumping { get; set; }
 
-	private float gravity;
 
 	public override void _Ready()
 	{
@@ -28,12 +24,6 @@ public partial class MovementComponent : Node
 		{
 			GD.PrintErr("MovementComponent requires a MovementTarget to function.");
 		}
-		gravity = -(float)ProjectSettings.GetSetting("physics/3d/default_gravity");
-		if (NavigationAgent != null)
-		{
-			NavigationAgent.VelocityComputed += SetVelocity;
-		}
-		GD.Print("Default gravity: " + gravity);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -43,15 +33,7 @@ public partial class MovementComponent : Node
 
 		Vector3 velocity = MovementTarget.Velocity;
 
-		if (UseNavigationAgent && NavigationAgent != null && NavigationTarget != null)
-		{
-			velocity = HandleNavigationMovement(velocity, (float)delta);
-		} 
-		else
-		{	
-			velocity = HandleInputMovement(velocity, (float)delta);
-		}
-
+		velocity = HandleInputMovement(velocity, (float)delta);
 		velocity += GetGravityVelocity((float)delta);
 		MovementTarget.Velocity = velocity;
 		MovementTarget.MoveAndSlide();
@@ -64,39 +46,6 @@ public partial class MovementComponent : Node
 		{
 			MovementTarget.Velocity = velocity;
 		}
-	}
-
-	private Vector3 HandleNavigationMovement(Vector3 velocity, float delta)
-	{
-		// Update the navigation agent's target position
-		NavigationAgent.TargetPosition = NavigationTarget.GlobalPosition;
-
-		// Get the next path point from the navigation agent
-		Vector3 nextPathPoint = NavigationAgent.GetNextPathPosition();
-		Vector3 newVelocity = MovementTarget.GlobalPosition.DirectionTo(nextPathPoint) * Speed;
-		
-		if (NavigationAgent.AvoidanceEnabled) NavigationAgent.SetVelocity(newVelocity);
-		else SetVelocity(newVelocity);
-		
-		if (NavigationAgent.IsNavigationFinished())
-		{
-			velocity = Vector3.Zero;
-			SetMovementTargetRotation(NavigationTarget.GlobalPosition);
-		}
-		else
-		{
-			SetMovementTargetRotation(velocity);
-		}
-	
-		return velocity;
-	}
-
-	private void SetMovementTargetRotation(Vector3 targetPosition)
-	{
-		// Make movementTarget look at the next path point, smoothly rotating only around the Y axis (yaw)
-		Vector3 currentRotation = MovementTarget.Rotation;
-		float newYRotation = Mathf.LerpAngle(currentRotation.Y, Mathf.Atan2(-targetPosition.X, -targetPosition.Z), 0.1f);
-		MovementTarget.Rotation = new Vector3(currentRotation.X, newYRotation, currentRotation.Z);
 	}
 
 	private Vector3 HandleInputMovement(Vector3 velocity, float delta)
