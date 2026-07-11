@@ -13,11 +13,12 @@ height = 73.61132
 radius = 14.313511
 height = 42.46631
 
-[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("PathfindingComponent", "InteractComponent")]
+[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("PathfindingComponent", "InteractComponent", "Collider")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 script = ExtResource("1_77a1s")
 PathfindingComponent = NodePath("PathfindingComponent")
 InteractComponent = NodePath("InteractComponent")
+Collider = NodePath("CollisionShape3D")
 
 [node name="Rat" type="MeshInstance3D" parent="." unique_id=590816943]
 transform = Transform3D(4.5896957e-09, 0, 0.035, 0, 0.035, 0, -0.035, 0, 4.5896957e-09, 0.007802339, -0.22623122, -0.064349025)

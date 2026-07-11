@@ -74,19 +74,4 @@ size = Vector3(14.083862, 3.3793945, 14)
 transform = Transform3D(0.032515116, 0, 0.99947125, 0, 1, 0, -0.99947125, 0, 0.032515116, -2.5763087, -0.07292414, -4.260147)
 
 [node name="Rat2" parent="." unique_id=1864404930 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.0344434, 0, -4.0976715)
-
-[node name="Rat3" parent="." unique_id=656995802 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -5.751496, 0, -4.5641227)
-
-[node name="Rat4" parent="." unique_id=1596867675 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.7092133, 0.26843882, -5.2206492)
-
-[node name="Rat5" parent="." unique_id=70846390 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -5.3779383, 0, -6.16912)
-
-[node name="Rat6" parent="." unique_id=1942443006 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.8830957, 0, -3.7961047)
-
-[node name="Rat7" parent="." unique_id=1069390733 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -3.9645982, 0, -5.911813)
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.0344434, 0.35136867, -4.0976715)
