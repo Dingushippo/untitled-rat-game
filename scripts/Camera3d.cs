@@ -108,18 +108,6 @@ public partial class Camera3d : Camera3D
 			Vector3 cameraRot = Rotation;
 			cameraRot.X = Mathf.Clamp(cameraRot.X, Mathf.DegToRad(-80), Mathf.DegToRad(80));
 			Rotation = cameraRot;
-
-			// pitchDeg = Mathf.Clamp(pitchDeg, MinPitch, MaxPitch);
-
-			// // Apply yaw to the rotation target (typically the player body)
-			// if (RotationTarget != null)
-			// {
-			// 	// Convert degrees back to radians for the rotation property
-			// 	RotationTarget.Rotation = new Vector3(0f, yawDeg * (MathF.PI / 180f), 0f);
-			// }
-
-			// // Apply pitch to the camera (local rotation on X axis)
-			// Rotation = new Vector3(pitchDeg * (MathF.PI / 180f), 0f, 0f);
 		}
 
 		if (@event is InputEventKey keyEvent && keyEvent.IsPressed())
