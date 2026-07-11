@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Rat : CharacterBody3D, IGrabbable
+public partial class Rat : CharacterBody3D, IGrabbable, IThrowable
 {
 	[Export] public PathfindingComponent PathfindingComponent;
 	[Export] public InteractComponent InteractComponent;
@@ -43,6 +43,12 @@ public partial class Rat : CharacterBody3D, IGrabbable
 	public void Release()
 	{
 		PathfindingComponent.EnablePathfinding();
+		Collider.Disabled = false;
+	}
+
+	public void Throw(Vector3 direction, float force)
+	{
+		PathfindingComponent.ApplyForce(direction * force);
 		Collider.Disabled = false;
 	}
 

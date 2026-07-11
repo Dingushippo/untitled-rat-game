@@ -12,6 +12,7 @@ public partial class HandController : Node3D
 	private Vector3 _originalTargetPosition;
 	private Vector3 _handOffsetPosition;
 	private Vector3 _handOffsetRotation;
+	
 
 
 	public override void _Ready()
@@ -25,6 +26,11 @@ public partial class HandController : Node3D
 		{
 			ReleaseTarget();
 		}
+		if (@event.IsActionPressed("throw") && _handTarget != null)
+		{
+			ThrowTarget(_handTarget, 10f);
+		}
+
     }
 
 
@@ -87,12 +93,24 @@ public partial class HandController : Node3D
 		{
 			grabbable.Release();
 			_handTarget.Reparent(_oldTargetParent);
+			_handTarget = null;			
+		}
+	}
+
+	public void ThrowTarget(Node3D target, float force)
+	{
+		if (target is IThrowable throwable)
+		{
+			// throwable.Release();
+			_handTarget.Reparent(_oldTargetParent);
+			throwable.Throw(-GetParent<Camera3D>().GlobalBasis.Z, force);
 			_handTarget = null;
 		}
 	}
 
-	public void Throw() 
-	{
-		// TODO implement
-	}
+    // public override void _Process(double delta)
+    // {
+    //     GD.Print($"Global rotation: {GlobalBasis.Z}");
+    // }
+
 }
