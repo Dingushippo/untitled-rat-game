@@ -101,21 +101,25 @@ public partial class Camera3d : Camera3D
 		if (@event is InputEventMouseMotion mm)
 		{
 			if (!cameraEnabled) return;
-			// Mouse motion: update yaw and pitch
-			yawDeg -= mm.Relative.X * Sensitivity;
-			pitchDeg -= mm.Relative.Y * Sensitivity;
+			
+			RotationTarget.RotateY(-mm.Relative.X * Sensitivity * 0.01f);
+			RotateX(-mm.Relative.Y * Sensitivity * 0.01f);
 
-			pitchDeg = Mathf.Clamp(pitchDeg, MinPitch, MaxPitch);
+			Vector3 cameraRot = Rotation;
+			cameraRot.X = Mathf.Clamp(cameraRot.X, Mathf.DegToRad(-80), Mathf.DegToRad(80));
+			Rotation = cameraRot;
 
-			// Apply yaw to the rotation target (typically the player body)
-			if (RotationTarget != null)
-			{
-				// Convert degrees back to radians for the rotation property
-				RotationTarget.Rotation = new Vector3(0f, yawDeg * (MathF.PI / 180f), 0f);
-			}
+			// pitchDeg = Mathf.Clamp(pitchDeg, MinPitch, MaxPitch);
 
-			// Apply pitch to the camera (local rotation on X axis)
-			Rotation = new Vector3(pitchDeg * (MathF.PI / 180f), 0f, 0f);
+			// // Apply yaw to the rotation target (typically the player body)
+			// if (RotationTarget != null)
+			// {
+			// 	// Convert degrees back to radians for the rotation property
+			// 	RotationTarget.Rotation = new Vector3(0f, yawDeg * (MathF.PI / 180f), 0f);
+			// }
+
+			// // Apply pitch to the camera (local rotation on X axis)
+			// Rotation = new Vector3(pitchDeg * (MathF.PI / 180f), 0f, 0f);
 		}
 
 		if (@event is InputEventKey keyEvent && keyEvent.IsPressed())
