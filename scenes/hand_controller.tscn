@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://pa2nq11ewd5s"]
+
+[ext_resource type="Script" uid="uid://blk10ht8cw4ml" path="res://scripts/Player/HandController.cs" id="1_kfuip"]
+[ext_resource type="PackedScene" uid="uid://dle5hwutaa6jp" path="res://assets/hand.glb" id="2_pqquk"]
+
+[node name="HandController" type="Node3D" unique_id=309927190 node_paths=PackedStringArray("HandNode")]
+script = ExtResource("1_kfuip")
+HandNode = NodePath("hand")
+
+[node name="hand" parent="." unique_id=260221726 instance=ExtResource("2_pqquk")]
+transform = Transform3D(-0.061088283, -0.06216389, 0.9961947, -0.71325046, 0.70090926, 0, -0.6982421, -0.71053636, -0.08715577, 0.905, -0.425, -0.805)
