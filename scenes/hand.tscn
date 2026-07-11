@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://drknmbokgkfpx"]
+
+[ext_resource type="PackedScene" uid="uid://dle5hwutaa6jp" path="res://assets/hand.glb" id="1_cmdsa"]
+[ext_resource type="Script" uid="uid://cks81exmkgex6" path="res://scripts/Player/Hand.cs" id="2_k7pjy"]
+
+[node name="hand" unique_id=260221726 instance=ExtResource("1_cmdsa")]
+script = ExtResource("2_k7pjy")
