@@ -1,10 +1,11 @@
 using Godot;
 using System;
 
-public partial class Rat : CharacterBody3D
+public partial class Rat : CharacterBody3D, IGrabbable
 {
 	[Export] public PathfindingComponent PathfindingComponent;
 	[Export] public InteractComponent InteractComponent;
+	[Export] public CollisionShape3D Collider;
 	[Export] bool debug = true;
 
 	private Node3D _navigationTarget;
@@ -23,8 +24,26 @@ public partial class Rat : CharacterBody3D
 			EventBus.Subscribe<DebugAimMarkerEvent>(OnDebugMouseClick);
 		}
 		_player = GetTree().GetFirstNodeInGroup("player") as Player;
-		InteractComponent.OnInteract += DebugSetNavigationTargetToPlayer;
+		InteractComponent.OnInteract += OnInteract;
 		CallDeferred(nameof(InitializeNavigationTarget));
+	}
+
+	private void OnInteract()
+	{
+		Grab();
+	}
+
+	public void Grab()
+	{
+		PathfindingComponent.DisablePathfinding();
+		Collider.Disabled = true;
+		_player.InitiateGrabCycle(this);
+	}
+
+	public void Release()
+	{
+		PathfindingComponent.EnablePathfinding();
+		Collider.Disabled = false;
 	}
 
 	private void InitializeNavigationTarget()

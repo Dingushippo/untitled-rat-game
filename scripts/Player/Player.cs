@@ -5,6 +5,7 @@ public partial class Player : CharacterBody3D
 {
 	[Export] public InputComponent InputComponent;
 	[Export] public MovementComponent MovementComponent;
+	[Export] public HandController Hand;
 
 	public override void _Ready()
 	{
@@ -16,6 +17,10 @@ public partial class Player : CharacterBody3D
 		{
 			GD.PrintErr("Player requires a MovementComponent to function.");
 		}
+		if (Hand == null)
+		{
+			GD.PrintErr("Player requires a Hand to perform grab actions.");
+		}
 	}
 	public override void _Process(double delta)
 	{
@@ -23,6 +28,10 @@ public partial class Player : CharacterBody3D
 
 		MovementComponent.Direction = InputComponent.Direction;
 		MovementComponent.IsJumping = InputComponent.IsJumping;
-		
+	}
+
+	public void InitiateGrabCycle(Node3D target)
+	{
+		Hand.GrabCycle(target);
 	}
 }
