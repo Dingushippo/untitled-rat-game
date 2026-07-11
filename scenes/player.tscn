@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://jis5t442dyuu" path="res://components/MovementComponent.cs" id="3_tuyoq"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/Camera3d.cs" id="4_fjrip"]
 [ext_resource type="Script" uid="uid://betj1lohyacvf" path="res://scripts/Player/InteractRaycast.cs" id="5_qlg0r"]
+[ext_resource type="PackedScene" uid="uid://dle5hwutaa6jp" path="res://assets/hand.glb" id="6_tuyoq"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
@@ -38,3 +39,6 @@ target_position = Vector3(0, 0, -1.5)
 collision_mask = 4
 collide_with_areas = true
 script = ExtResource("5_qlg0r")
+
+[node name="hand" parent="Camera3D" unique_id=260221726 instance=ExtResource("6_tuyoq")]
+transform = Transform3D(-4.371139e-08, 0, 1, -0.70710677, 0.70710677, -3.090862e-08, -0.70710677, -0.70710677, -3.090862e-08, 0.64636296, -0.488178, -0.8348651)
