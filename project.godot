@@ -76,6 +76,7 @@ throw={
 3d_physics/layer_2="player"
 3d_physics/layer_3="interact"
 3d_physics/layer_4="entity"
+3d_physics/layer_5="facility"
 
 [physics]
 

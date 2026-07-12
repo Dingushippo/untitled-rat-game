@@ -6,6 +6,8 @@ public partial class Rat : CharacterBody3D, IGrabbable, IThrowable
 	[Export] public PathfindingComponent PathfindingComponent;
 	[Export] public InteractComponent InteractComponent;
 	[Export] public CollisionShape3D Collider;
+	[Export] public Vector3 GrabOrientation {get; set;}
+	[Export] public Vector3 GrabOffset {get; set;}
 	[Export] bool debug = true;
 
 	private Node3D _navigationTarget;
@@ -49,6 +51,11 @@ public partial class Rat : CharacterBody3D, IGrabbable, IThrowable
 	public void Throw(Vector3 direction, float force)
 	{
 		PathfindingComponent.ApplyForce(direction * force);
+		Collider.Disabled = false;
+	}
+	public void Throw(Vector3 direction, Vector3 position)
+	{
+		PathfindingComponent.ApplyForceTowardsPosition(position);
 		Collider.Disabled = false;
 	}
 

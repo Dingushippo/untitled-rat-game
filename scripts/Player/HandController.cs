@@ -6,21 +6,21 @@ using System;
 public partial class HandController : Node3D
 {
 	[Export] public Node3D HandNode;
-
+	[Export] public PlayerCamera camera;
 	private Node3D _handTarget;
 	private Node3D _oldTargetParent;
 	private Vector3 _originalTargetPosition;
 	private Vector3 _handOffsetPosition;
 	private Vector3 _handOffsetRotation;
+	private Node3D _lookingAtObject;
 	
-
-
 	public override void _Ready()
 	{
 		_handOffsetPosition = HandNode.Position;
 		_handOffsetRotation = HandNode.Rotation;
 	}
-    public override void _Input(InputEvent @event)
+    
+	public override void _Input(InputEvent @event)
     {
         if (@event.IsActionPressed("grab") && _handTarget != null)
 		{
@@ -28,12 +28,13 @@ public partial class HandController : Node3D
 		}
 		if (@event.IsActionPressed("throw") && _handTarget != null)
 		{
-			ThrowTarget(_handTarget, 10f);
+			// ThrowTarget(10f);
+			if (camera.lookingAtCollisionPosition != null) ThrowTarget((Vector3)camera.lookingAtCollisionPosition);
+			else ThrowTarget(20f);
 		}
 
     }
-
-
+	
 	public void GrabTarget(Node3D target)
 	{
 		if (target is not IGrabbable grabbable)
@@ -54,21 +55,28 @@ public partial class HandController : Node3D
 			return;
 		}
 
-		if (_handTarget == null)
+		if (_handTarget == null && target is IGrabbable g)
 		{
 			_handTarget = target;
 			_oldTargetParent = target.GetParent<Node3D>();
 			_originalTargetPosition = target.GlobalPosition;
-
-			// _newTargetTransform.Scale = Vector3.One;
 			
 			Tween grabTween = CreateTween();
 			grabTween.TweenProperty(HandNode, "global_position", _originalTargetPosition, 0.25f)
 				.SetTrans(Tween.TransitionType.Sine)
 				.SetEase(Tween.EaseType.In);
+			
 			grabTween.TweenCallback(Callable.From(() => GrabTarget(target)))
 				.SetDelay(.05f);
+			
 			grabTween.TweenCallback(Callable.From(() => target.Reparent(HandNode)));
+			grabTween.SetParallel(true);
+			grabTween.TweenCallback(Callable.From(() =>
+			{
+				_handTarget.Position = g.GrabOffset;
+			}));
+			grabTween.TweenProperty(_handTarget, "rotation", g.GrabOrientation, 0.1f);
+			grabTween.SetParallel(false);
 			grabTween.TweenMethod(Callable.From<float>(UpdateTargetPosition), 0f, 1f, 0.25f)
 				.SetTrans(Tween.TransitionType.Sine)
 				.SetEase(Tween.EaseType.In);
@@ -97,20 +105,25 @@ public partial class HandController : Node3D
 		}
 	}
 
-	public void ThrowTarget(Node3D target, float force)
+	public void ThrowTarget(float force)
 	{
-		if (target is IThrowable throwable)
+		if (_handTarget is IThrowable throwable)
 		{
 			// throwable.Release();
 			_handTarget.Reparent(_oldTargetParent);
-			throwable.Throw(-GetParent<Camera3D>().GlobalBasis.Z, force);
+			throwable.Throw(-camera.GlobalBasis.Z, force);
 			_handTarget = null;
 		}
 	}
 
-    // public override void _Process(double delta)
-    // {
-    //     GD.Print($"Global rotation: {GlobalBasis.Z}");
-    // }
-
+	public void ThrowTarget(Vector3 position)
+	{
+		if (_handTarget is IThrowable throwable)
+		{			
+			Vector3 direction = _handTarget.GlobalPosition.DirectionTo(position);
+			_handTarget.Reparent(_oldTargetParent);
+			throwable.Throw(direction, position);
+			_handTarget = null;
+		}
+	}
 }

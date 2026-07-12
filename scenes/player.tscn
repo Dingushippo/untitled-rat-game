@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/Player/Player.cs" id="1_dqkch"]
 [ext_resource type="Script" uid="uid://b1fdwearsvvt6" path="res://components/InputComponent.cs" id="2_qlg0r"]
 [ext_resource type="Script" uid="uid://jis5t442dyuu" path="res://components/MovementComponent.cs" id="3_tuyoq"]
-[ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/Camera3d.cs" id="4_fjrip"]
+[ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/Player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="Script" uid="uid://betj1lohyacvf" path="res://scripts/Player/InteractRaycast.cs" id="5_qlg0r"]
 [ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/hand_controller.tscn" id="6_tuyoq"]
 
@@ -41,5 +41,6 @@ collision_mask = 4
 collide_with_areas = true
 script = ExtResource("5_qlg0r")
 
-[node name="HandController" parent="Camera3D" unique_id=309927190 instance=ExtResource("6_tuyoq")]
+[node name="HandController" parent="Camera3D" unique_id=309927190 node_paths=PackedStringArray("camera") instance=ExtResource("6_tuyoq")]
 transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0, 0, 0)
+camera = NodePath("..")

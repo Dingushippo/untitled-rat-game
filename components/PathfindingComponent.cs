@@ -188,25 +188,122 @@ public partial class PathfindingComponent : NavigationAgent3D
 		{
 			SetState(State.Landed); return;
 		}
-
 		MovementTarget.Rotate(rotateDir, rotateSpeed * delta);
-		GD.Print($"Rotate direction: {rotateDir}, current rotation: {MovementTarget.Rotation}");
 	}
 
-	public void ApplyForce(Vector3 force)
+	private void SetRandomRotation()
 	{
 		Godot.RandomNumberGenerator _rng = new Godot.RandomNumberGenerator();
-		
 		rotateDir = new Vector3(
 			_rng.RandfRange(-1f, 1f),
 			_rng.RandfRange(-1f, 1f),
 			_rng.RandfRange(-1f, 1f)
 		).Normalized();
-
 		rotateSpeed = _rng.RandfRange(2f, 10f);
-
+	}
+	public void ApplyForce(Vector3 force)
+	{	
+        SetRandomRotation();
 		MovementTarget.Velocity += force;
 		SetState(State.ForceApplied);
+	}
+
+	private float _minAngle = 20f;
+	private float _preferredAngle = 45f;
+	private float _maxAngle = 75f;
+	private float _minSpeed = 10f;
+	private float _maxSpeed = 30f;
+	
+	private bool TryCalculateLaunchVelocity(
+		Vector3 target,
+		float launchAngleDeg,
+		out Vector3 velocity)
+	{
+		velocity = Vector3.Zero;
+
+		Vector3 start = MovementTarget.GlobalPosition;
+		Vector3 delta = target - start;
+
+		// Horizontal displacement
+		Vector3 horizontal = new Vector3(delta.X, 0, delta.Z);
+		float x = horizontal.Length();
+
+		// Vertical displacement
+		float y = delta.Y;
+
+		// Can't determine a direction
+		if (x < 0.01f)
+			return false;
+
+		float angle = Mathf.DegToRad(launchAngleDeg);
+
+		float cos = Mathf.Cos(angle);
+		float sin = Mathf.Sin(angle);
+
+		// Avoid division by zero
+		if (Mathf.Abs(cos) < 0.001f)
+			return false;
+
+		float g = MovementTarget.GetGravity().Length() * GravityScale;
+
+		// Denominator from the projectile equation
+		float denominator = 2f * cos * cos * (x * Mathf.Tan(angle) - y);
+
+		if (denominator <= 0f)
+			return false;
+
+		float speedSquared = g * x * x / denominator;
+
+		if (speedSquared <= 0f)
+			return false;
+
+		float speed = Mathf.Sqrt(speedSquared);
+
+		Vector3 horizontalDir = horizontal.Normalized();
+
+		velocity =
+			horizontalDir * (speed * cos) +
+			Vector3.Up * (speed * sin);
+
+		return true;
+	}
+	public void ApplyForceTowardsPosition(
+		Vector3 target,
+		float preferredAngle = 45f)
+	{
+		const float MaxAdjustment = 30f;
+		const float Step = 1f;
+
+		Vector3 velocity;
+
+		// Try the preferred angle first
+		if (TryCalculateLaunchVelocity(target, preferredAngle, out velocity))
+		{
+			ApplyForce(velocity);
+			return;
+		}
+
+		// Search outward
+		for (float offset = Step; offset <= MaxAdjustment; offset += Step)
+		{
+			if (TryCalculateLaunchVelocity(target,
+				preferredAngle + offset,
+				out velocity))
+			{
+				ApplyForce(velocity);
+				return;
+			}
+
+			if (TryCalculateLaunchVelocity(target,
+				preferredAngle - offset,
+				out velocity))
+			{
+				ApplyForce(velocity);
+				return;
+			}
+		}
+
+		GD.Print("Couldn't find a valid launch angle.");
 	}
 	#endregion
 
