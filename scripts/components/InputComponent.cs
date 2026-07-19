@@ -25,7 +25,8 @@ public partial class InputComponent : Node
 		{
 			if (mouseEvent.Pressed)
 			{	
-				EventBus.Publish(new MouseClickEvent((int)mouseEvent.ButtonIndex, mouseEvent.Position));
+				// EventBus.Publish(new MouseClickEvent((int)mouseEvent.ButtonIndex, mouseEvent.Position));
+				EventBus.Publish(Event.MouseClick, mouseEvent.ButtonIndex, mouseEvent.Position);
 			}
 		}
 	}

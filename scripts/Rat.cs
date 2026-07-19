@@ -23,7 +23,7 @@ public partial class Rat : CharacterBody3D, IGrabbable, IThrowable
 
 		if (debug)
 		{
-			EventBus.Subscribe<DebugAimMarkerEvent>(OnDebugMouseClick);
+			EventBus.Subscribe(Event.DebugAimMarker, OnDebugMouseClick);
 		}
 		_player = GetTree().GetFirstNodeInGroup("player") as Player;
 		InteractComponent.OnInteract += OnInteract;
@@ -112,12 +112,13 @@ public partial class Rat : CharacterBody3D, IGrabbable, IThrowable
 		}
 	}
 
-	private void OnDebugMouseClick(DebugAimMarkerEvent evt)
+	private void OnDebugMouseClick(object[] args)
 	{
+		Vector3 pos = (Vector3)args[0];
 		if (PathfindingComponent != null && PathfindingComponent.NavigationTarget != null )
 		{
-			GD.Print($"Setting NavigationTarget position to {evt.MarkerPosition}");
-			PathfindingComponent.NavigationTarget.GlobalPosition = evt.MarkerPosition;
+			GD.Print($"Setting NavigationTarget position to {pos}");
+			PathfindingComponent.NavigationTarget.GlobalPosition = pos;
 		}
 	}
 }

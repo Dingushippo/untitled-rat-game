@@ -40,7 +40,7 @@ public partial class PlayerCamera : Camera3D
 			CreateDebugAimMarker();
 		}
 
-		EventBus.Subscribe<MouseClickEvent>(OnMouseClick);
+		EventBus.Subscribe(Event.MouseClick, OnMouseClick);
 	}
 
 	private void CreateDebugAimMarker()
@@ -135,22 +135,15 @@ public partial class PlayerCamera : Camera3D
 		}
 	}
 
-	private void OnMouseClick(MouseClickEvent evt)
+	private void OnMouseClick(object[] args)
 	{
-		if (evt.ButtonIndex != (int)MouseButton.Left) return;
-		
-		GD.Print($"Mouse clicked: Button {evt.ButtonIndex} at {_aimMarker.GlobalPosition}");
-		EventBus.Publish(new DebugAimMarkerEvent(_aimMarker.GlobalPosition));
+		MouseButton mouseIndex = (MouseButton)args[0];
+
+		if (mouseIndex != MouseButton.Left) return;
+
+		Vector2 pos = (Vector2)args[1];
+
+		GD.Print($"Mouse clicked at position: {pos}");
+		EventBus.Publish(Event.DebugAimMarker, _aimMarker.GlobalPosition);
 	}
-}
-
-public class DebugAimMarkerEvent
-{
-	public Vector3 MarkerPosition { get; }
-
-	public DebugAimMarkerEvent(Vector3 markerPosition)
-	{
-		MarkerPosition = markerPosition;
-	}
-
 }
