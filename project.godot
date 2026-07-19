@@ -19,6 +19,10 @@ run/main_scene="uid://dbw8km56wffhp"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="uid://bvu18xnn2piki"
 
+[autoload]
+
+ObjectManager="*uid://doalyfmfweibf"
+
 [dotnet]
 
 project/assembly_name="Untitled rat game"

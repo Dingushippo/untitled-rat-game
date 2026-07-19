@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://pa2nq11ewd5s"]
 
-[ext_resource type="Script" uid="uid://blk10ht8cw4ml" path="res://scripts/Player/HandController.cs" id="1_kfuip"]
+[ext_resource type="Script" uid="uid://blk10ht8cw4ml" path="res://scripts/player/HandController.cs" id="1_kfuip"]
 [ext_resource type="PackedScene" uid="uid://dle5hwutaa6jp" path="res://assets/hand.glb" id="2_pqquk"]
 
 [node name="HandController" type="Node3D" unique_id=309927190 node_paths=PackedStringArray("HandNode")]

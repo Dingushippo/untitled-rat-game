@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ObjectResource" format=3 uid="uid://cm3vqabjmt3ra"]
+
+[ext_resource type="Script" uid="uid://dctljiq1jpchh" path="res://scripts/resources/ObjectResource.cs" id="1_5jlya"]
+[ext_resource type="ArrayMesh" uid="uid://b8wctcjcjr23w" path="res://assets/rat.obj" id="1_7703k"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_74i4s"]
+
+[resource]
+script = ExtResource("1_5jlya")
+name = "Test object"
+description = "Test object description"
+isTilable = true
+meshes = Dictionary[int, Mesh]({
+0: ExtResource("1_7703k"),
+1: SubResource("BoxMesh_74i4s")
+})
+metadata/_custom_type_script = "uid://dctljiq1jpchh"

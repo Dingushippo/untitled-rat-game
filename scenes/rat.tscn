@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://wgjoesivcax6" path="res://scripts/Rat.cs" id="1_77a1s"]
 [ext_resource type="ArrayMesh" uid="uid://b8wctcjcjr23w" path="res://assets/rat.obj" id="3_acf8p"]
-[ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://components/InteractComponent.cs" id="4_3csnj"]
-[ext_resource type="Script" uid="uid://wcffg48v1qvh" path="res://components/PathfindingComponent.cs" id="4_6s34g"]
+[ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/components/InteractComponent.cs" id="4_3csnj"]
+[ext_resource type="Script" uid="uid://wcffg48v1qvh" path="res://scripts/components/PathfindingComponent.cs" id="4_6s34g"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3csnj"]
 radius = 14.313511
