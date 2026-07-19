@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dkxpnj1do0fbe"
-path="res://.godot/imported/rat.blend-ec46b6a745aee19e5743d4a4058929ff.scn"
+uid="uid://5167mpoebc8d"
+path="res://.godot/imported/rat2.blend-094de43f18df58f518bdcf7a77bb2e33.scn"
 
 [deps]
 
-source_file="res://assets/rat.blend"
-dest_files=["res://.godot/imported/rat.blend-ec46b6a745aee19e5743d4a4058929ff.scn"]
+source_file="res://assets/rat2.blend"
+dest_files=["res://.godot/imported/rat2.blend-094de43f18df58f518bdcf7a77bb2e33.scn"]
 
 [params]
 
@@ -20,7 +20,7 @@ mesh_library/use_node_names_as_mesh_names=false
 array_mesh/deduplicate_surfaces=true
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
-nodes/import_as_skeleton_bones=true
+nodes/import_as_skeleton_bones=false
 nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true
 meshes/ensure_tangents=true
