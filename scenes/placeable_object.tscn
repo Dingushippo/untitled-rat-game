@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://deqdjtheiwxyl"]
+
+[ext_resource type="Script" uid="uid://c1ke0i7oxipbc" path="res://scripts/interfaces/PlaceableObject.cs" id="1_duo0g"]
+[ext_resource type="ArrayMesh" uid="uid://b8wctcjcjr23w" path="res://assets/rat.obj" id="2_yq2fp"]
+
+[node name="PlaceableObject" type="Node3D" unique_id=87293552 node_paths=PackedStringArray("meshInstance")]
+script = ExtResource("1_duo0g")
+meshInstance = NodePath("MeshInstance3D")
+metadata/_custom_type_script = "uid://c1ke0i7oxipbc"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=130637247]
+mesh = ExtResource("2_yq2fp")

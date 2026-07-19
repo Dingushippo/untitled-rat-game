@@ -21,7 +21,7 @@ config/icon="uid://bvu18xnn2piki"
 
 [autoload]
 
-ObjectManager="*uid://doalyfmfweibf"
+ObjectManagerAutoload="*uid://xsdub88c27pl"
 
 [dotnet]
 

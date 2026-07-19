@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://xsdub88c27pl"]
+
+[ext_resource type="Script" uid="uid://doalyfmfweibf" path="res://scripts/singletons/ObjectManager.cs" id="1_snpsj"]
+[ext_resource type="PackedScene" uid="uid://deqdjtheiwxyl" path="res://scenes/placeable_object.tscn" id="2_wrcd4"]
+
+[node name="ObjectManagerAutoload" type="Node" unique_id=1104911466]
+script = ExtResource("1_snpsj")
+objectScene = ExtResource("2_wrcd4")

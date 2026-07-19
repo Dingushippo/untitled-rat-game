@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ObjectResource" format=3 uid="uid://b0wwp2xrhqwmn"]
+
+[ext_resource type="Script" uid="uid://dctljiq1jpchh" path="res://scripts/resources/ObjectResource.cs" id="1_xo705"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_2ved5"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[resource]
+script = ExtResource("1_xo705")
+name = "Test object"
+description = "Test object description"
+isTilable = true
+meshes = Dictionary[int, Mesh]({
+0: SubResource("PrismMesh_2ved5")
+})
+metadata/_custom_type_script = "uid://dctljiq1jpchh"
