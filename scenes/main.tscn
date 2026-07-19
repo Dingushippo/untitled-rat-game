@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dbw8km56wffhp"]
 
+[ext_resource type="Script" uid="uid://bfww8bukelfaw" path="res://scripts/NavigationRegion3d.cs" id="1_jyhfs"]
 [ext_resource type="Texture2D" uid="uid://d1c70tsq6n0uu" path="res://assets/rough-checked-texture-collage.jpg" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/rat.tscn" id="2_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/player.tscn" id="3_tbgi4"]
@@ -36,6 +37,7 @@ shadow_enabled = true
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1799443184]
 navigation_mesh = SubResource("NavigationMesh_fck3i")
+script = ExtResource("1_jyhfs")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D" unique_id=816274683]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.389, -0.5, -12.244)

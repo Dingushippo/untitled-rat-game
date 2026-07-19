@@ -22,6 +22,7 @@ public partial class ObjectManager : Node
     {
         PlaceableObject obj = (PlaceableObject)_pool.SpawnObject(position, rotation);
         obj.objectResource = resource;
+        EventBus.Publish(Event.ObjectPlaced);
     }
 
 }
