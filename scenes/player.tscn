@@ -12,6 +12,8 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
+
 [node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("InputComponent", "MovementComponent", "Hand", "raycast") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
@@ -54,3 +56,7 @@ Debug = true
 [node name="HandController" parent="Camera3D" unique_id=309927190 node_paths=PackedStringArray("camera") instance=ExtResource("6_tuyoq")]
 transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0, 0, 0)
 camera = NodePath("..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_pso3n")
