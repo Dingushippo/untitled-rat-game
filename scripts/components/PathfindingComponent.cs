@@ -6,325 +6,325 @@ using System.Runtime.InteropServices.Marshalling;
 [GlobalClass]
 public partial class PathfindingComponent : NavigationAgent3D
 {
-	// Export variables
-	[Export] public CharacterBody3D MovementTarget;
-	[Export] public Node3D NavigationTarget;
-	[Export] public float Speed = 5.0f;
-	[Export] public float JumpStrength = 5.0f;
-	[Export] public float GravityScale = 1.0f;
-	[Export] public float Acceleration = 20.0f;
-	[Export] public float Deceleration = 16.0f;
-	[Export] public float StoppingDistance = 0.5f;
+    // Export variables
+    [Export] public CharacterBody3D MovementTarget;
+    [Export] public Node3D NavigationTarget;
+    [Export] public float Speed = 5.0f;
+    [Export] public float JumpStrength = 5.0f;
+    [Export] public float GravityScale = 1.0f;
+    [Export] public float Acceleration = 20.0f;
+    [Export] public float Deceleration = 16.0f;
+    [Export] public float StoppingDistance = 0.5f;
 
 
-	// Private variables
-	private Vector2 _direction { get; set; }
-	private float gravity;
-	private float currentSpeed = 0f;
-	private bool _isEnabled = true;
-	private Vector3 _navigationVelocity = Vector3.Zero;
+    // Private variables
+    private Vector2 _direction { get; set; }
+    private float gravity;
+    private float currentSpeed = 0f;
+    private bool _isEnabled = true;
+    private Vector3 _navigationVelocity = Vector3.Zero;
 
-	#region Built in godot methods
-	public override void _Ready()
-	{
-		if (MovementTarget == null)
-		{
-			GD.PrintErr("PathfindingComponent requires a MovementTarget to function.");
-		}
+    #region Built in godot methods
+    public override void _Ready()
+    {
+        if (MovementTarget == null)
+        {
+            GD.PrintErr("PathfindingComponent requires a MovementTarget to function.");
+        }
 
-		gravity = (float)ProjectSettings.GetSetting("physics/3d/default_gravity");
-		VelocityComputed += UpdateNavigationVelocity;
-	}
+        gravity = (float)ProjectSettings.GetSetting("physics/3d/default_gravity");
+        // VelocityComputed += UpdateNavigationVelocity;
+    }
 
-	public override void _PhysicsProcess(double delta)
-	{
-		// Always track the target so the agent knows if it needs to wake up
-		if (NavigationTarget != null)
-		{
-			Vector3 newTargetPos = NavigationTarget.GlobalPosition;
-			if (TargetPosition.DistanceSquaredTo(newTargetPos) > 0.1f)
-			{
-				TargetPosition = newTargetPos;
-			}
-		}
+    public override void _PhysicsProcess(double delta)
+    {
+        // // Always track the target so the agent knows if it needs to wake up
+        // if (NavigationTarget != null)
+        // {
+        //     Vector3 newTargetPos = NavigationTarget.GlobalPosition;
+        //     if (TargetPosition.DistanceSquaredTo(newTargetPos) > 0.1f)
+        //     {
+        //         TargetPosition = newTargetPos;
+        //     }
+        // }
 
-		ProcessState((float)delta);
+        // ProcessState((float)delta);
 
-		if (_currentState == State.Disabled) return;
+        // if (_currentState == State.Disabled) return;
 
-		ApplyMovement((float)delta);
-		MovementTarget.MoveAndSlide();
-		UpdateStateTransitions();
-	}
-	#endregion
+        // ApplyMovement((float)delta);
+        // MovementTarget.MoveAndSlide();
+        // UpdateStateTransitions();
+    }
+    #endregion
 
-	#region State machine
+    #region State machine
 
-	public enum State
-	{
-		Idle,
-		Following,
-		Falling,
-		Landed,
-		ForceApplied,
-		Disabled,
-	}
-	private State _currentState = State.Falling;
-	private State _previousState;
-	private float desiredSpeed = 0f;
-	private bool isLanding = false;
-	private void ProcessState(float delta)
-	{
-		switch (_currentState)
-		{
-			case State.Idle:
-				IdleState(delta); break;
-			case State.Following:
-				FollowingState(delta); break;
-			case State.Falling:
-				FallingState(delta); break;
-			case State.Landed:
-				LandedState(delta); break;
-			case State.ForceApplied:
-				ForceAppliedState((float)delta); break;
-		}
-	}
+    public enum State
+    {
+        Idle,
+        Following,
+        Falling,
+        Landed,
+        ForceApplied,
+        Disabled,
+    }
+    private State _currentState = State.Falling;
+    private State _previousState;
+    private float desiredSpeed = 0f;
+    private bool isLanding = false;
+    private void ProcessState(float delta)
+    {
+        switch (_currentState)
+        {
+            case State.Idle:
+                IdleState(delta); break;
+            case State.Following:
+                FollowingState(delta); break;
+            case State.Falling:
+                FallingState(delta); break;
+            case State.Landed:
+                LandedState(delta); break;
+            case State.ForceApplied:
+                ForceAppliedState((float)delta); break;
+        }
+    }
 
-	private void UpdateStateTransitions()
-	{
-		switch (_currentState)
-		{
-			case State.Idle:
-			case State.Following:
-				if (!MovementTarget.IsOnFloor())
-					SetState(State.Falling);
-				break;
-			case State.Falling:
-				if (MovementTarget.IsOnFloor())
-					SetState(State.Landed);
-				break;
-			case State.ForceApplied:
-				break;
-			case State.Disabled:
-				break;
-		}
-	}
+    private void UpdateStateTransitions()
+    {
+        switch (_currentState)
+        {
+            case State.Idle:
+            case State.Following:
+                if (!MovementTarget.IsOnFloor())
+                    SetState(State.Falling);
+                break;
+            case State.Falling:
+                if (MovementTarget.IsOnFloor())
+                    SetState(State.Landed);
+                break;
+            case State.ForceApplied:
+                break;
+            case State.Disabled:
+                break;
+        }
+    }
 
-	public void SetState(State newState)
-	{
-		_previousState = _currentState;
-		_currentState = newState;
-		GD.Print($"{GetParent().Name} switched from {_previousState} to {_currentState}");
-	}
-	private void DisabledState()
-	{
-		// Nothing here for now
-	}
-	private void IdleState(float delta)
-	{
-		desiredSpeed = 0f;
+    public void SetState(State newState)
+    {
+        _previousState = _currentState;
+        _currentState = newState;
+        GD.Print($"{GetParent().Name} switched from {_previousState} to {_currentState}");
+    }
+    private void DisabledState()
+    {
+        // Nothing here for now
+    }
+    private void IdleState(float delta)
+    {
+        desiredSpeed = 0f;
 
-		if (isLanding)
-			return;
+        if (isLanding)
+            return;
 
-		if (NavigationTarget != null)
-		{
-			SetState(State.Following);
-		}
-	}
+        if (NavigationTarget != null)
+        {
+            SetState(State.Following);
+        }
+    }
 
-	private void FollowingState(float delta)
-	{
-		TargetPosition = NavigationTarget.GlobalPosition;
+    private void FollowingState(float delta)
+    {
+        TargetPosition = NavigationTarget.GlobalPosition;
 
-		float distance = MovementTarget.GlobalPosition.DistanceTo(TargetPosition);
+        float distance = MovementTarget.GlobalPosition.DistanceTo(TargetPosition);
 
-		if (distance <= StoppingDistance)
-		{
-			float t = Mathf.Clamp(distance / StoppingDistance, 0f, 1f);
-			desiredSpeed = Mathf.Lerp(1f, Speed, t);
-		}
-		else
-		{
-			desiredSpeed = Speed;
-		}
-		if (IsNavigationFinished())
-		{
-			desiredSpeed = 0;
-			_navigationVelocity = Vector3.Zero;
-		}
-	}
+        if (distance <= StoppingDistance)
+        {
+            float t = Mathf.Clamp(distance / StoppingDistance, 0f, 1f);
+            desiredSpeed = Mathf.Lerp(1f, Speed, t);
+        }
+        else
+        {
+            desiredSpeed = Speed;
+        }
+        if (IsNavigationFinished())
+        {
+            desiredSpeed = 0;
+            _navigationVelocity = Vector3.Zero;
+        }
+    }
 
-	private void FallingState(float delta)
-	{
-		// Nothing to do here yet
-	}
+    private void FallingState(float delta)
+    {
+        // Nothing to do here yet
+    }
 
-	private void LandedState(float delta)
-	{
-		if (isLanding) return;
+    private void LandedState(float delta)
+    {
+        if (isLanding) return;
 
-		isLanding = true;
-		Vector3 landingDirection = new Vector3(
-			0,
-			MovementTarget.GlobalRotation.Y,
-			0
-		);	
+        isLanding = true;
+        Vector3 landingDirection = new Vector3(
+            0,
+            MovementTarget.GlobalRotation.Y,
+            0
+        );
 
-		Tween tween = CreateTween();
-		tween.TweenProperty(MovementTarget,	"rotation",	landingDirection, 0.35f);
-		tween.TweenCallback(Callable.From(() =>
-		{
-			isLanding = false;
-			SetState(NavigationTarget != null ? State.Following	: State.Idle);
-		}));
-	}
+        Tween tween = CreateTween();
+        tween.TweenProperty(MovementTarget, "rotation", landingDirection, 0.35f);
+        tween.TweenCallback(Callable.From(() =>
+        {
+            isLanding = false;
+            SetState(NavigationTarget != null ? State.Following : State.Idle);
+        }));
+    }
 
-	private Vector3 rotateDir = Vector3.Zero;
-	private float rotateSpeed = 0;
-	private void ForceAppliedState(float delta)
-	{
-		if (MovementTarget.IsOnFloor())
-		{
-			SetState(State.Landed); return;
-		}
-		MovementTarget.Rotate(rotateDir, rotateSpeed * delta);
-	}
+    private Vector3 rotateDir = Vector3.Zero;
+    private float rotateSpeed = 0;
+    private void ForceAppliedState(float delta)
+    {
+        if (MovementTarget.IsOnFloor())
+        {
+            SetState(State.Landed); return;
+        }
+        MovementTarget.Rotate(rotateDir, rotateSpeed * delta);
+    }
 
-	private void SetRandomRotation()
-	{
-		Godot.RandomNumberGenerator _rng = new Godot.RandomNumberGenerator();
-		rotateDir = new Vector3(
-			_rng.RandfRange(-1f, 1f),
-			_rng.RandfRange(-1f, 1f),
-			_rng.RandfRange(-1f, 1f)
-		).Normalized();
-		rotateSpeed = _rng.RandfRange(2f, 10f);
-	}
-	public void ApplyForce(Vector3 force)
-	{	
+    private void SetRandomRotation()
+    {
+        Godot.RandomNumberGenerator _rng = new Godot.RandomNumberGenerator();
+        rotateDir = new Vector3(
+            _rng.RandfRange(-1f, 1f),
+            _rng.RandfRange(-1f, 1f),
+            _rng.RandfRange(-1f, 1f)
+        ).Normalized();
+        rotateSpeed = _rng.RandfRange(2f, 10f);
+    }
+    public void ApplyForce(Vector3 force)
+    {
         SetRandomRotation();
-		MovementTarget.Velocity += force;
-		SetState(State.ForceApplied);
-	}
+        MovementTarget.Velocity += force;
+        SetState(State.ForceApplied);
+    }
 
-	private float _minAngle = 20f;
-	private float _preferredAngle = 45f;
-	private float _maxAngle = 75f;
-	private float _minSpeed = 10f;
-	private float _maxSpeed = 30f;
-	
-	private bool TryCalculateLaunchVelocity(
-		Vector3 target,
-		float launchAngleDeg,
-		out Vector3 velocity)
-	{
-		velocity = Vector3.Zero;
+    private float _minAngle = 20f;
+    private float _preferredAngle = 45f;
+    private float _maxAngle = 75f;
+    private float _minSpeed = 10f;
+    private float _maxSpeed = 30f;
 
-		Vector3 start = MovementTarget.GlobalPosition;
-		Vector3 delta = target - start;
+    private bool TryCalculateLaunchVelocity(
+        Vector3 target,
+        float launchAngleDeg,
+        out Vector3 velocity)
+    {
+        velocity = Vector3.Zero;
 
-		// Horizontal displacement
-		Vector3 horizontal = new Vector3(delta.X, 0, delta.Z);
-		float x = horizontal.Length();
+        Vector3 start = MovementTarget.GlobalPosition;
+        Vector3 delta = target - start;
 
-		// Vertical displacement
-		float y = delta.Y;
+        // Horizontal displacement
+        Vector3 horizontal = new Vector3(delta.X, 0, delta.Z);
+        float x = horizontal.Length();
 
-		// Can't determine a direction
-		if (x < 0.01f)
-			return false;
+        // Vertical displacement
+        float y = delta.Y;
 
-		float angle = Mathf.DegToRad(launchAngleDeg);
+        // Can't determine a direction
+        if (x < 0.01f)
+            return false;
 
-		float cos = Mathf.Cos(angle);
-		float sin = Mathf.Sin(angle);
+        float angle = Mathf.DegToRad(launchAngleDeg);
 
-		// Avoid division by zero
-		if (Mathf.Abs(cos) < 0.001f)
-			return false;
+        float cos = Mathf.Cos(angle);
+        float sin = Mathf.Sin(angle);
 
-		float g = MovementTarget.GetGravity().Length() * GravityScale;
+        // Avoid division by zero
+        if (Mathf.Abs(cos) < 0.001f)
+            return false;
 
-		// Denominator from the projectile equation
-		float denominator = 2f * cos * cos * (x * Mathf.Tan(angle) - y);
+        float g = MovementTarget.GetGravity().Length() * GravityScale;
 
-		if (denominator <= 0f)
-			return false;
+        // Denominator from the projectile equation
+        float denominator = 2f * cos * cos * (x * Mathf.Tan(angle) - y);
 
-		float speedSquared = g * x * x / denominator;
+        if (denominator <= 0f)
+            return false;
 
-		if (speedSquared <= 0f)
-			return false;
+        float speedSquared = g * x * x / denominator;
 
-		float speed = Mathf.Sqrt(speedSquared);
+        if (speedSquared <= 0f)
+            return false;
 
-		Vector3 horizontalDir = horizontal.Normalized();
+        float speed = Mathf.Sqrt(speedSquared);
 
-		velocity =
-			horizontalDir * (speed * cos) +
-			Vector3.Up * (speed * sin);
+        Vector3 horizontalDir = horizontal.Normalized();
 
-		return true;
-	}
-	public void ApplyForceTowardsPosition(
-		Vector3 target,
-		float preferredAngle = 45f)
-	{
-		const float MaxAdjustment = 30f;
-		const float Step = 1f;
+        velocity =
+            horizontalDir * (speed * cos) +
+            Vector3.Up * (speed * sin);
 
-		Vector3 velocity;
+        return true;
+    }
+    public void ApplyForceTowardsPosition(
+        Vector3 target,
+        float preferredAngle = 45f)
+    {
+        const float MaxAdjustment = 30f;
+        const float Step = 1f;
 
-		// Try the preferred angle first
-		if (TryCalculateLaunchVelocity(target, preferredAngle, out velocity))
-		{
-			ApplyForce(velocity);
-			return;
-		}
+        Vector3 velocity;
 
-		// Search outward
-		for (float offset = Step; offset <= MaxAdjustment; offset += Step)
-		{
-			if (TryCalculateLaunchVelocity(target,
-				preferredAngle + offset,
-				out velocity))
-			{
-				ApplyForce(velocity);
-				return;
-			}
+        // Try the preferred angle first
+        if (TryCalculateLaunchVelocity(target, preferredAngle, out velocity))
+        {
+            ApplyForce(velocity);
+            return;
+        }
 
-			if (TryCalculateLaunchVelocity(target,
-				preferredAngle - offset,
-				out velocity))
-			{
-				ApplyForce(velocity);
-				return;
-			}
-		}
+        // Search outward
+        for (float offset = Step; offset <= MaxAdjustment; offset += Step)
+        {
+            if (TryCalculateLaunchVelocity(target,
+                preferredAngle + offset,
+                out velocity))
+            {
+                ApplyForce(velocity);
+                return;
+            }
 
-		GD.Print("Couldn't find a valid launch angle.");
-	}
-	#endregion
+            if (TryCalculateLaunchVelocity(target,
+                preferredAngle - offset,
+                out velocity))
+            {
+                ApplyForce(velocity);
+                return;
+            }
+        }
 
-	#region Public methods
-	public void EnablePathfinding()
-	{
-		// _isEnabled = true;
-		SetState(State.Following);
-	}
+        GD.Print("Couldn't find a valid launch angle.");
+    }
+    #endregion
 
-	public void DisablePathfinding()
-	{
-		SetState(State.Disabled);
-		// _isEnabled = false;
-		// SetMovementTargetVelocity(Vector3.Zero);
-	}
-	#endregion
+    #region Public methods
+    public void EnablePathfinding()
+    {
+        // _isEnabled = true;
+        SetState(State.Following);
+    }
 
-	#region Private methods
+    public void DisablePathfinding()
+    {
+        SetState(State.Disabled);
+        // _isEnabled = false;
+        // SetMovementTargetVelocity(Vector3.Zero);
+    }
+    #endregion
 
-	private Vector3 _intendedDirection = Vector3.Zero;
+    #region Private methods
+
+    private Vector3 _intendedDirection = Vector3.Zero;
     private void ApplyMovement(float delta)
     {
         Vector3 velocity = MovementTarget.Velocity;
@@ -334,18 +334,16 @@ public partial class PathfindingComponent : NavigationAgent3D
 
         if (_currentState == State.Following)
         {
-            CalculateDesiredVelocity(); 
+            CalculateDesiredVelocity();
         }
 
         ApplyHorizontalMovement(ref velocity, delta);
         ApplyGravity(ref velocity, delta);
-		// GD.Print($"Velocity: {velocity}");
         MovementTarget.Velocity = velocity;
-        // MovementTarget.Velocity = Velocity;
     }
 
     // Renamed to avoid confusion with the VelocityComputed event handler
-    private void CalculateDesiredVelocity() 
+    private void CalculateDesiredVelocity()
     {
         Vector3 nextPoint = GetNextPathPosition();
         Vector3 direction = MovementTarget.GlobalPosition.DirectionTo(nextPoint);
@@ -355,7 +353,7 @@ public partial class PathfindingComponent : NavigationAgent3D
         {
             // Feed zero velocity to the agent
             Velocity = Vector3.Zero;
-			_intendedDirection = Vector3.Zero;
+            _intendedDirection = Vector3.Zero;
             return;
         }
 
@@ -364,16 +362,16 @@ public partial class PathfindingComponent : NavigationAgent3D
 
         // CRITICAL FIX: Set the Agent's velocity, NOT the MovementTarget's velocity.
         // This triggers the VelocityComputed event safely behind the scenes.
-        Velocity = desiredVelocity; 
+        Velocity = desiredVelocity;
     }
-    
+
     private void ApplyHorizontalMovement(ref Vector3 velocity, float delta)
     {
         switch (_currentState)
         {
-			case State.Landed:
-				velocity = Vector3.Zero;
-				break;
+            case State.Landed:
+                velocity = Vector3.Zero;
+                break;
             case State.Following:
                 // _navigationVelocity is now being properly updated by the event
                 velocity.X = _navigationVelocity.X;
@@ -390,16 +388,16 @@ public partial class PathfindingComponent : NavigationAgent3D
     }
 
     private void ApplyGravity(ref Vector3 velocity, float delta)
-	{
-		if (MovementTarget.IsOnFloor() && velocity.Y < 0)
-		{
-			velocity.Y = 0;
-		}
-		else
-		{
-			velocity += MovementTarget.GetGravity() * GravityScale * delta;
-		}
-	}
+    {
+        if (MovementTarget.IsOnFloor() && velocity.Y < 0)
+        {
+            velocity.Y = 0;
+        }
+        else
+        {
+            velocity += MovementTarget.GetGravity() * GravityScale * delta;
+        }
+    }
 
     // This is triggered by VelocityComputed
     private void UpdateNavigationVelocity(Vector3 safeVelocity)
@@ -408,22 +406,22 @@ public partial class PathfindingComponent : NavigationAgent3D
     }
 
     private void RotateTowardsDirection(Vector3 direction, float delta)
-	{
-		// 1. Flatten the direction so falling/jumping doesn't make the character look at the floor
-		Vector3 flatDirection = new Vector3(direction.X, 0, direction.Z);
+    {
+        // 1. Flatten the direction so falling/jumping doesn't make the character look at the floor
+        Vector3 flatDirection = new Vector3(direction.X, 0, direction.Z);
 
-		// 2. INCREASE THE DEADZONE. Ignore microscopic physics corrections.
-		if (flatDirection.LengthSquared() < 0.2f)
-			return;
+        // 2. INCREASE THE DEADZONE. Ignore microscopic physics corrections.
+        if (flatDirection.LengthSquared() < 0.2f)
+            return;
 
-		// 3. Calculate target yaw
-		float targetYaw = Mathf.Atan2(-flatDirection.X, -flatDirection.Z);
+        // 3. Calculate target yaw
+        float targetYaw = Mathf.Atan2(-flatDirection.X, -flatDirection.Z);
 
-		// 4. Smoothly interpolate
-		Vector3 rot = MovementTarget.Rotation;
-		rot.Y = Mathf.LerpAngle(rot.Y, targetYaw, 8f * delta); 
-		MovementTarget.Rotation = rot;
-	}
+        // 4. Smoothly interpolate
+        Vector3 rot = MovementTarget.Rotation;
+        rot.Y = Mathf.LerpAngle(rot.Y, targetYaw, 8f * delta);
+        MovementTarget.Rotation = rot;
+    }
 
     private Vector3 GetGravityVelocity(float delta)
     {

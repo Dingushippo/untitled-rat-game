@@ -27,6 +27,7 @@ public class FiniteStateMachine
 
     public void ChangeState(string newState, State previous = null)
     {
+        GD.Print($"Changing state from {CurrentStateName} to {newState}");
         CurrentState.Exit();
         CurrentState = states[newState];
         CurrentStateName = newState;
