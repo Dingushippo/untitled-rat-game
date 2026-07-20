@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ObjectResource" format=3 uid="uid://b0wwp2xrhqwmn"]
+[gd_resource type="Resource" format=3 uid="uid://b0wwp2xrhqwmn"]
 
 [ext_resource type="Script" uid="uid://dctljiq1jpchh" path="res://scripts/resources/ObjectResource.cs" id="1_xo705"]
 
