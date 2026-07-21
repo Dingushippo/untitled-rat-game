@@ -6,11 +6,11 @@
 [ext_resource type="Script" uid="uid://jis5t442dyuu" path="res://scripts/components/MovementComponent.cs" id="3_tuyoq"]
 [ext_resource type="Resource" uid="uid://b0wwp2xrhqwmn" path="res://resources/object/TestObjectResource2.tres" id="3_y4r1p"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/player/PlayerCamera.cs" id="4_fjrip"]
-[ext_resource type="Script" uid="uid://betj1lohyacvf" path="res://scripts/player/InteractRaycast.cs" id="5_qlg0r"]
-[ext_resource type="Script" uid="uid://do0sae30rna4v" path="res://scripts/player/ObjectPlacementRaycast.cs" id="6_fjrip"]
 [ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/hand_controller.tscn" id="6_tuyoq"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
 [node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("InputComponent", "MovementComponent", "Hand", "raycast") groups=["player"]]
 collision_layer = 2
@@ -19,7 +19,7 @@ script = ExtResource("1_dqkch")
 InputComponent = NodePath("InputComponent")
 MovementComponent = NodePath("MovementComponent")
 Hand = NodePath("Camera3D/HandController")
-raycast = NodePath("Camera3D/ObjectPlacementRaycast")
+raycast = NodePath("")
 DebugObjectResources = Array[Object]([ExtResource("2_ur7pv"), ExtResource("3_y4r1p")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
@@ -39,18 +39,10 @@ script = ExtResource("4_fjrip")
 RotationTarget = NodePath("..")
 DebugAimMarker = true
 
-[node name="InteractRaycast" type="RayCast3D" parent="Camera3D" unique_id=1925719970]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.9389775, 0, 0.041963816, 0)
-target_position = Vector3(0, 0, -2)
-collision_mask = 4
-collide_with_areas = true
-script = ExtResource("5_qlg0r")
-
-[node name="ObjectPlacementRaycast" type="RayCast3D" parent="Camera3D" unique_id=1439348445]
-target_position = Vector3(0, -2.5, -6)
-script = ExtResource("6_fjrip")
-Debug = true
-
 [node name="HandController" parent="Camera3D" unique_id=309927190 node_paths=PackedStringArray("camera") instance=ExtResource("6_tuyoq")]
 transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0, 0, 0)
 camera = NodePath("..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_pso3n")
