@@ -16,8 +16,8 @@ public class FiniteStateMachine
 
     public void StatePhysicsProcess(float delta) => CurrentState.PhysicsProcess(delta);
     public void StateProcess(float delta) => CurrentState.Process(delta);
-    public void StateInput(InputEvent @event) => CurrentState.Input(@event);
-    public void StateUnhandledInput(InputEvent @event) => CurrentState.Input(@event);
+    public void StateInput(InputEvent @event) => CurrentState.HandleInput(@event);
+    public void StateUnhandledInput(InputEvent @event) => CurrentState.HandleUnhandledInput(@event);
 
     public void InitState(string newState)
     {

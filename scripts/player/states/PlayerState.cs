@@ -6,7 +6,7 @@ public class PlayerState : State
 }
 
 /*
-Template
+using Godot;
 
 public class NewPlayerState : PlayerState
 {
@@ -14,7 +14,8 @@ public class NewPlayerState : PlayerState
     public override void PhysicsProcess(float delta) { }
     public override void Process(float delta) { }
     public override void Enter(State previous = null) { }
+    public override void HandleInput(InputEvent @event) { }
+    public override void HandleUnhandledInput(InputEvent @event) { }
     public override void Exit() { }
 }
-
 */
