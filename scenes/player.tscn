@@ -1,10 +1,6 @@
 [gd_scene format=3 uid="uid://doppcexk44ncy"]
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/player/Player.cs" id="1_dqkch"]
-[ext_resource type="Script" uid="uid://b1fdwearsvvt6" path="res://scripts/components/InputComponent.cs" id="2_qlg0r"]
-[ext_resource type="Resource" uid="uid://cm3vqabjmt3ra" path="res://resources/object/TestObjectResource.tres" id="2_ur7pv"]
-[ext_resource type="Script" uid="uid://jis5t442dyuu" path="res://scripts/components/MovementComponent.cs" id="3_tuyoq"]
-[ext_resource type="Resource" uid="uid://b0wwp2xrhqwmn" path="res://resources/object/TestObjectResource2.tres" id="3_y4r1p"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/hand_controller.tscn" id="6_tuyoq"]
 
@@ -12,26 +8,17 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("InputComponent", "MovementComponent", "Hand", "raycast") groups=["player"]]
+[node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("Camera") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_dqkch")
-InputComponent = NodePath("InputComponent")
-MovementComponent = NodePath("MovementComponent")
-Hand = NodePath("Camera3D/HandController")
-raycast = NodePath("")
-DebugObjectResources = Array[Object]([ExtResource("2_ur7pv"), ExtResource("3_y4r1p")])
+Camera = NodePath("Camera3D")
+SprintSpeed = 20.0
+AirAcceleration = 50.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_2hs0m")
-
-[node name="InputComponent" type="Node" parent="." unique_id=781542355 groups=["player"]]
-script = ExtResource("2_qlg0r")
-
-[node name="MovementComponent" type="Node" parent="." unique_id=1514399294 node_paths=PackedStringArray("MovementTarget")]
-script = ExtResource("3_tuyoq")
-MovementTarget = NodePath("..")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=2056591493 node_paths=PackedStringArray("RotationTarget")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)

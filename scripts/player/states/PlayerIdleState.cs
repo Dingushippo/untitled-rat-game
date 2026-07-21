@@ -11,6 +11,13 @@ public class PlayerIdleState : PlayerState
         fsm.ChangeState("move", this);
     }
     public override void Enter(State previous = null) { }
-    public override void HandleInput(InputEvent @event) { }
+    public override void HandleInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("jump") && _player.IsOnFloor())
+        {
+            GD.Print("jump");
+            fsm.ChangeState("jump", this);
+        }
+    }
     public override void Exit() { }
 }
