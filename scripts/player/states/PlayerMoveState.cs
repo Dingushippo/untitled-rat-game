@@ -65,15 +65,9 @@ public class PlayerMoveState : PlayerState
             ? _player.Friction
             : _player.Acceleration;
 
-        GD.Print($"Before: {horizontal}");
-
         horizontal = horizontal.MoveToward(target, accel * delta);
-
-        GD.Print($"After: {horizontal}");
-
         velocity.X = horizontal.X;
         velocity.Z = horizontal.Z;
-        GD.Print($"Target: {target}, velocity: {velocity}");
 
         _player.Velocity = velocity;
     }

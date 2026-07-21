@@ -8,6 +8,8 @@ public class FiniteStateMachine
     public string CurrentStateName { get; private set; }
     public string PreviousStateName { get; set; }
 
+    public bool Debug { get; set; } = false;
+
     public void Add(string key, State state)
     {
         states[key] = state;
@@ -28,7 +30,8 @@ public class FiniteStateMachine
 
     public void ChangeState(string newState, State previous = null)
     {
-        GD.Print($"Changing state from {CurrentStateName} to {newState}");
+        if (Debug) GD.Print($"Changing state from {CurrentStateName} to {newState}");
+
         CurrentState.Exit();
         CurrentState = states[newState];
         CurrentStateName = newState;
