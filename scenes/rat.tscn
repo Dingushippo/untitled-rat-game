@@ -1,14 +1,13 @@
 [gd_scene format=4 uid="uid://fr1ly1jvytyp"]
 
 [ext_resource type="Script" uid="uid://wgjoesivcax6" path="res://scripts/entity/rat/Rat.cs" id="1_0g0h3"]
-[ext_resource type="Animation" uid="uid://ci4v6o63m1mr5" path="res://assets/animations/RESET.res" id="4_0g0h3"]
+[ext_resource type="Animation" uid="uid://lkqr1g7vepv5" path="res://assets/animations/RESET.res" id="4_0g0h3"]
 [ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/components/InteractComponent.cs" id="4_3csnj"]
-[ext_resource type="Script" uid="uid://wcffg48v1qvh" path="res://scripts/components/PathfindingComponent.cs" id="4_6s34g"]
 [ext_resource type="Animation" uid="uid://dj3juhr2gp0sd" path="res://assets/animations/dance.res" id="5_1ux2h"]
 [ext_resource type="Animation" uid="uid://ceab7y7x038uw" path="res://assets/animations/idle.res" id="6_fdlk1"]
-[ext_resource type="Animation" uid="uid://buwetc12lrug0" path="res://assets/animations/run.res" id="7_7bnys"]
-[ext_resource type="Animation" uid="uid://d15ivoqjfaroq" path="res://assets/animations/struggle.res" id="8_kc3ue"]
-[ext_resource type="Animation" uid="uid://cekmpd1vbxgxy" path="res://assets/animations/walk.res" id="9_ucpu4"]
+[ext_resource type="Animation" uid="uid://csaal7y1hb886" path="res://assets/animations/run.res" id="7_7bnys"]
+[ext_resource type="Animation" uid="uid://cgy2hujuwtkbu" path="res://assets/animations/struggle.res" id="8_kc3ue"]
+[ext_resource type="Animation" uid="uid://cyem0o0fvldsf" path="res://assets/animations/walk.res" id="9_ucpu4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3csnj"]
 radius = 14.313511
@@ -282,11 +281,10 @@ _data = {
 &"walk": ExtResource("9_ucpu4")
 }
 
-[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("PathfindingComponent", "InteractComponent", "Collider")]
+[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("NavAgent", "Collider")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 script = ExtResource("1_0g0h3")
-PathfindingComponent = NodePath("PathfindingComponent")
-InteractComponent = NodePath("InteractComponent")
+NavAgent = NodePath("NavigationAgent3D")
 Collider = NodePath("CollisionShape3D")
 Speed = 5.01
 Acceleration = 2.995
@@ -306,18 +304,6 @@ metadata/_custom_type_script = "uid://82n4sf5bywly"
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractComponent" unique_id=1689416693]
 transform = Transform3D(-2.8001493e-16, -6.405993e-09, 0.08484996, 0.08484996, -3.708909e-09, 6.417027e-23, 3.708909e-09, 0.08484996, 6.405993e-09, 3.0987817e-08, 0.697741, -1.2184373)
 shape = SubResource("CapsuleShape3D_6s34g")
-
-[node name="PathfindingComponent" type="NavigationAgent3D" parent="." unique_id=1112728901 node_paths=PackedStringArray("MovementTarget")]
-path_height_offset = 0.5
-avoidance_enabled = true
-height = 0.25
-radius = 1.0
-script = ExtResource("4_6s34g")
-MovementTarget = NodePath("..")
-Acceleration = 60.0
-Deceleration = 60.0
-StoppingDistance = 2.0
-metadata/_custom_type_script = "uid://wcffg48v1qvh"
 
 [node name="control" type="Node3D" parent="." unique_id=224714301]
 transform = Transform3D(-2.5, 0, -3.774895e-07, 0, 2.5, 0, 3.774895e-07, 0, -2.5, 0, 0, 0)
@@ -653,3 +639,8 @@ skin = SubResource("Skin_3aldu")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1910641866]
 root_motion_local = true
 libraries/RatAnimations = SubResource("AnimationLibrary_myae6")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=551437586]
+target_desired_distance = 0.5
+path_height_offset = 0.5
+avoidance_enabled = true

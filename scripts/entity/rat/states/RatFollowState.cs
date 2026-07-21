@@ -56,6 +56,7 @@ public class RatFollowState : RatState
     public override void Exit()
     {
         _navAgent.VelocityComputed -= UpdateNavigationVelocity;
+        _currentSpeed = 0;
     }
 
     #endregion
