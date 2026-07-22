@@ -8,7 +8,12 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_qlg0r"]
-albedo_color = Color(0, 0.6560023, 0.6564026, 1)
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0, 0.654902, 0.654902, 0.60784316)
+emission_enabled = true
+emission = Color(0, 1, 0, 1)
+emission_energy_multiplier = 4.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_dqkch"]
 material = SubResource("ORMMaterial3D_qlg0r")
@@ -48,7 +53,6 @@ script = ExtResource("4_dqkch")
 Player = NodePath("../..")
 ReticleMesh = SubResource("PlaneMesh_dqkch")
 BounceDecay = 0.9
-MaxBounces = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
