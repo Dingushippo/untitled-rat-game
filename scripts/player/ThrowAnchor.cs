@@ -73,7 +73,7 @@ public partial class ThrowAnchor : Node3D
 
             Vector3 next = position + velocity * Step;
 
-            if (PathCollision(position, next, out Dictionary hit))
+            if (Utils.Raycast(this, position, next, out Dictionary hit, 1))
             {
                 Vector3 newPos = hit["position"].AsVector3();
                 points.Add(newPos);
@@ -114,7 +114,7 @@ public partial class ThrowAnchor : Node3D
     {
         Vector3 reticlePos = _pathArray[_pathArray.Length - 1] + Vector3.Up * 0.01f;
         Vector3 targetRaycastPos = reticlePos + Vector3.Down;
-        if (PathCollision(reticlePos, targetRaycastPos, out Dictionary result))
+        if (Utils.Raycast(this, reticlePos, targetRaycastPos, out Dictionary result, 1))
         {
             Vector3 hitNormal = result["normal"].AsVector3();
             Vector3 hitPosition = result["position"].AsVector3();
@@ -137,15 +137,5 @@ public partial class ThrowAnchor : Node3D
         Preview = false;
         _pathArray = null;
         _immediateMesh.ClearSurfaces();
-    }
-
-    private bool PathCollision(Vector3 a, Vector3 b, out Dictionary result)
-    {
-        PhysicsDirectSpaceState3D state = Player.GetWorld3D().DirectSpaceState;
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(
-            a, b, 1
-        );
-        result = state.IntersectRay(query);
-        return result.Count != 0;
     }
 }

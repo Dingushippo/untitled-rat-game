@@ -81,20 +81,12 @@ public partial class PlayerCamera : Camera3D
         Vector3 from = GlobalTransform.Origin;
         Vector3 to = from + -GlobalTransform.Basis.Z * 1000f;
 
-        PhysicsDirectSpaceState3D spaceState = GetWorld3D().DirectSpaceState;
-        PhysicsRayQueryParameters3D query = new PhysicsRayQueryParameters3D
+        if (Utils.Raycast(this, from, to, out Dictionary result))
         {
-            From = from,
-            To = to
-        };
-        Dictionary result = spaceState.IntersectRay(query);
-        if (result != null && result.Count > 0)
-        {
-            // if ((Vector3)result["position"] == _lookingAtCollisionPosition) return;
             if (DebugAimMarker) _aimMarker.Visible = true;
 
             lookingAtObject = (Node3D)result["collider"];
-            lookingAtCollisionPosition = (Vector3)result["position"];
+            lookingAtCollisionPosition = result["position"].AsVector3();
             _aimMarker.GlobalPosition = (Vector3)lookingAtCollisionPosition;
         }
         else if (_aimMarker.Visible) _aimMarker.Visible = false;

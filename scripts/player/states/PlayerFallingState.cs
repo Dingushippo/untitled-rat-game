@@ -1,4 +1,6 @@
 using Godot;
+using Godot.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 public class PlayerFallingState : PlayerState
@@ -76,12 +78,10 @@ public class PlayerFallingState : PlayerState
     private bool CanVault()
     {
         Vector3 collisionPoint = _player.VaultRaycast.GetCollisionPoint();
-        PhysicsDirectSpaceState3D state = _player.GetWorld3D().DirectSpaceState;
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(
-            collisionPoint,
-            collisionPoint + new Vector3(0, 2f, 0),
-            _player.CollisionMask
-        );
-        return !state.IntersectRay(query).TryGetValue("collider", out _);
+        if (Utils.Raycast(_player, collisionPoint, collisionPoint + Vector3.Up * 2f, out _, _player.CollisionMask))
+        {
+            return true;
+        }
+        return false;
     }
 }
