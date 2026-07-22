@@ -16,7 +16,7 @@ Camera = NodePath("Camera3D")
 VaultRaycast = NodePath("VaultRaycast")
 SprintSpeed = 14.0
 Acceleration = 50.0
-AirAcceleration = 15.0
+AirAcceleration = 30.0
 Friction = 100.0
 JumpForce = 5.0
 
