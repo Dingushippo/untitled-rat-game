@@ -4,6 +4,7 @@ using System;
 public partial class Player : CharacterBody3D
 {
     [Export] public PlayerCamera Camera;
+    [Export] public RayCast3D VaultRaycast;
     [Export] public float Speed = 10f;
     [Export] public float SprintSpeed = 15f;
     [Export] public float CrouchSpeed = 5f;
@@ -43,6 +44,8 @@ public partial class Player : CharacterBody3D
         _fsm.Add("move", new PlayerMoveState(this));
         _fsm.Add("jump", new PlayerJumpState(this));
         _fsm.Add("falling", new PlayerFallingState(this));
+        _fsm.Add("vault", new PlayerVaultState(this));
         _fsm.InitState("idle");
+        _fsm.Debug = true;
     }
 }
