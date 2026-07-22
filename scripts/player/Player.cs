@@ -5,7 +5,7 @@ public partial class Player : CharacterBody3D
 {
     [Export] public PlayerCamera Camera;
     [Export] public RayCast3D VaultRaycast;
-    [Export] public ThrowAnchor ThrowAnchor;
+    [Export] public ThrowComponent ThrowAnchor;
     [Export] public float Speed = 10f;
     [Export] public float SprintSpeed = 15f;
     [Export] public float CrouchSpeed = 5f;

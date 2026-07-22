@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
-public partial class ThrowAnchor : Node3D
+public partial class ThrowComponent : Node3D
 {
     [Export] public Player Player;
     [Export] public Mesh ReticleMesh;

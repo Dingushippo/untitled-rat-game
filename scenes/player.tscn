@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://doppcexk44ncy"]
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/player/Player.cs" id="1_dqkch"]
-[ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/player/ThrowAnchor.cs" id="4_dqkch"]
+[ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/player/ThrowComponent.cs" id="4_dqkch"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/hand_controller.tscn" id="6_tuyoq"]
 
@@ -47,7 +47,7 @@ DebugAimMarker = true
 transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0, 0, 0)
 camera = NodePath("..")
 
-[node name="ThrowAnchor" type="Node3D" parent="Camera3D" unique_id=1814457487 node_paths=PackedStringArray("Player")]
+[node name="ThrowComponent" type="Node3D" parent="Camera3D" unique_id=1814457487 node_paths=PackedStringArray("Player")]
 transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0.86460876, -0.41891766, -0.86996555)
 script = ExtResource("4_dqkch")
 Player = NodePath("../..")
