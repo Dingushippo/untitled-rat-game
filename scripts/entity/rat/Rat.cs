@@ -15,7 +15,6 @@ public partial class Rat : CharacterBody3D
     public Vector3 NavigationTargetPosition;
     private Node3D _navigationTarget;
     private Node3D _navigationTargetOriginal;
-    private Player _player;
 
     private FiniteStateMachine _fsm;
 
@@ -26,16 +25,20 @@ public partial class Rat : CharacterBody3D
             GD.PrintErr("Rat requires a NavigationAgent3D to function.");
         }
 
-
         EventBus.Subscribe(Event.DebugAimMarker, OnDebugMouseClick);
 
-        _player = GetTree().GetFirstNodeInGroup("player") as Player;
         InitStateMachine();
     }
 
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
 
     public override void _Process(double delta) => _fsm.StateProcess((float)delta);
+
+    public void InjectState(string key, RatState state)
+    {
+        _fsm.Add(key, state);
+        _fsm.ChangeState(key);
+    }
 
     private void InitStateMachine()
     {
