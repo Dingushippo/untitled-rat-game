@@ -4,11 +4,16 @@ using Godot;
 public class FiniteStateMachine
 {
     protected Dictionary<string, State> states = [];
+    protected string _owner = null;
     public State CurrentState { get; private set; }
     public string CurrentStateName { get; private set; }
     public string PreviousStateName { get; set; }
-
     public bool Debug { get; set; } = false;
+
+    public FiniteStateMachine(Node owner)
+    {
+        _owner = owner.Name;
+    }
 
     public void Add(string key, State state)
     {
@@ -30,8 +35,8 @@ public class FiniteStateMachine
 
     public void ChangeState(string newState, State previous = null)
     {
-        if (Debug) GD.Print($"Changing state from {CurrentStateName} to {newState}");
-
+        if (Debug) GD.Print($"{_owner} - Changing state from {CurrentStateName} to {newState}");
+        PreviousStateName = CurrentStateName;
         CurrentState.Exit();
         CurrentState = states[newState];
         CurrentStateName = newState;

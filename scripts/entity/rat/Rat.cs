@@ -25,7 +25,7 @@ public partial class Rat : CharacterBody3D
             GD.PrintErr("Rat requires a NavigationAgent3D to function.");
         }
 
-        EventBus.Subscribe(Event.DebugAimMarker, OnDebugMouseClick);
+        // EventBus.Subscribe(Event.DebugAimMarker, OnDebugMouseClick);
 
         InitStateMachine();
     }
@@ -33,6 +33,9 @@ public partial class Rat : CharacterBody3D
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
 
     public override void _Process(double delta) => _fsm.StateProcess((float)delta);
+
+    public void RevertToPrevState() => _fsm.ChangeState(_fsm.PreviousStateName);
+    public void SetIdle() => _fsm.ChangeState("idle");
 
     public void InjectState(string key, RatState state)
     {
@@ -42,11 +45,12 @@ public partial class Rat : CharacterBody3D
 
     private void InitStateMachine()
     {
-        _fsm = new FiniteStateMachine();
+        _fsm = new FiniteStateMachine(this);
         _fsm.Add("follow", new RatFollowState(this, NavAgent));
         _fsm.Add("target_reached", new RatTargetReachedState(this));
         _fsm.Add("idle", new RatIdleState(this));
         _fsm.InitState("idle");
+        _fsm.Debug = true;
     }
 
 
