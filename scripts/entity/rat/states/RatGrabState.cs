@@ -10,8 +10,8 @@ public class RatGrabState : RatState
     public override void Enter(State previous = null)
     {
         _prevParent = _rat.GetParent();
-        _rat.GlobalPosition = _player.ThrowAnchor.GlobalPosition;
-        _rat.Reparent(_player.ThrowAnchor);
+        _rat.GlobalPosition = _player.ThrowComponent.GlobalPosition;
+        _rat.Reparent(_player.ThrowComponent);
     }
     public override void Exit()
     {

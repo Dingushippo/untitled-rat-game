@@ -3,18 +3,22 @@ using Godot.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 public partial class ThrowComponent : Node3D
 {
     [Export] public Player Player;
     [Export] public Mesh ReticleMesh;
     [Export] public float ThrowForce = 10f;
+    [Export] public float MaxThrowForce = 30f;
+    [Export] public float ChargeSpeed = 2f;
+    [Export] public float ChargeStartDelay = 0.2f;
     [Export] public float AngleAdjust = 0f;
-    [Export] public bool Preview = true;
     [Export] public float Step = 0.02f;
     [Export] public float BounceDecay = 0.5f;
     [Export] public int MaxBounces = 1;
     [Export] public int MaxPoints = 1000;
+
 
     private MeshInstance3D _pathMeshInstance;
     private MeshInstance3D _reticleMeshInstance;
@@ -23,10 +27,13 @@ public partial class ThrowComponent : Node3D
     private float _currentForce = 0;
     private Vector3 _gravity;
     private Vector3[] _pathArray;
+    private bool _preview = false;
+    private bool _isCharging = false;
 
     public override void _Ready()
     {
         _gravity = Player.GetGravity();
+        _currentForce = ThrowForce;
 
         _pathMeshInstance = new();
         AddChild(_pathMeshInstance);
@@ -34,6 +41,7 @@ public partial class ThrowComponent : Node3D
         _reticleMeshInstance = new();
         AddChild(_reticleMeshInstance);
         _reticleMeshInstance.Mesh = ReticleMesh;
+        _reticleMeshInstance.Hide();
 
         // Init mesh
         _immediateMesh = new ImmediateMesh();
@@ -50,7 +58,7 @@ public partial class ThrowComponent : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (Preview)
+        if (_preview)
         {
             GeneratePath();
             GenerateMesh();
@@ -58,12 +66,47 @@ public partial class ThrowComponent : Node3D
         }
     }
 
+    public override void _Process(double delta)
+    {
+        if (_isCharging)
+        {
+            float chargeFactor = (MaxThrowForce - ThrowForce) / ChargeSpeed;
+            _currentForce = Mathf.Clamp(_currentForce + (float)delta * chargeFactor, ThrowForce, MaxThrowForce);
+        }
+    }
+
+    public async void StartDelayedCharge()
+    {
+        await ToSignal(GetTree().CreateTimer(ChargeStartDelay), SceneTreeTimer.SignalName.Timeout);
+        _isCharging = true;
+    }
+
+    public void ResetCharge()
+    {
+        _currentForce = ThrowForce;
+        _isCharging = false;
+    }
+    public void Throw(Rat rat)
+    {
+        float curveSpeed = Mathf.Remap(
+            _currentForce,
+            ThrowForce,
+            MaxThrowForce,
+            RatCurveState.MIN_SPEED,
+            RatCurveState.MAX_SPEED
+        );
+        RatCurveState newState = new(rat, _pathArray, curveSpeed);
+        rat.InjectState("throw", newState);
+
+        ResetCharge();
+    }
+
     private void GeneratePath()
     {
         List<Vector3> points = new();
 
         Vector3 position = GlobalPosition;
-        Vector3 velocity = -Player.Camera.GlobalBasis.Z * ThrowForce;
+        Vector3 velocity = (-Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(AngleAdjust), 0)) * _currentForce;
 
         int bounces = 0;
 
@@ -90,9 +133,6 @@ public partial class ThrowComponent : Node3D
                 position = next;
             }
         }
-
-        // if (points.Count % 2 != 0) points.RemoveAt(points.Count - 1);
-
         _pathArray = points.ToArray();
     }
 
@@ -129,13 +169,16 @@ public partial class ThrowComponent : Node3D
 
     public void Enable()
     {
-        Preview = true;
+        _preview = true;
+        _reticleMeshInstance.Show();
     }
 
     public void Reset()
     {
-        Preview = false;
+        _preview = false;
         _pathArray = null;
         _immediateMesh.ClearSurfaces();
+        _reticleMeshInstance.Hide();
+        ResetCharge();
     }
 }
