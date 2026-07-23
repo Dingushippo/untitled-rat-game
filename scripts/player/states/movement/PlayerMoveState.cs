@@ -32,10 +32,11 @@ public class PlayerMoveState : PlayerState
         }
     }
 
-    private void HandleMovement(float delta)
+    protected virtual void HandleMovement(float delta)
     {
+        float speedOverride = _player.CrouchComponent.IsCrouching ? _player.CrouchSpeed : 0;
         float acceleration = _player.GetInputVector() == Vector2.Zero ? _player.Friction : _player.Acceleration;
-        Vector3 velocity = _player.GetMovementInputVelocity(acceleration, delta);
+        Vector3 velocity = _player.GetMovementInputVelocity(acceleration, delta, speedOverride);
         _player.Velocity = velocity;
     }
 }

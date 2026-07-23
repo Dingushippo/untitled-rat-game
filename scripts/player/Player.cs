@@ -16,18 +16,21 @@ public partial class Player : CharacterBody3D
 
     public Vector3 Gravity;
     public GrabComponent GrabComponent;
+    public CrouchComponent CrouchComponent;
     private FiniteStateMachine _movementFsm;
     private FiniteStateMachine _handFsm;
 
     public override void _Ready()
     {
         GrabComponent = new(this);
+        CrouchComponent = new(this);
         Gravity = GetGravity();
         InitStateMachines();
     }
 
     public override void _Process(double delta)
     {
+        CrouchComponent.Update();
         _movementFsm.StateProcess((float)delta);
         _handFsm.StateProcess((float)delta);
     }
@@ -55,7 +58,7 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add("jump", new PlayerJumpState(this));
         _movementFsm.Add("falling", new PlayerFallingState(this));
         _movementFsm.Add("vault", new PlayerVaultState(this));
-        _movementFsm.InitState("falling");
+        _movementFsm.InitState("idle");
         _movementFsm.Debug = true;
 
         _handFsm = new(this);
