@@ -21,12 +21,13 @@ size = Vector2(0.5, 0.5)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("Camera", "VaultRaycast") groups=["player"]]
+[node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("Camera", "VaultRaycast", "ThrowComponent") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_dqkch")
 Camera = NodePath("Camera3D")
 VaultRaycast = NodePath("VaultRaycast")
+ThrowComponent = NodePath("Camera3D/ThrowComponent")
 SprintSpeed = 14.0
 Acceleration = 50.0
 AirAcceleration = 30.0
@@ -52,7 +53,9 @@ transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0.86460876,
 script = ExtResource("4_dqkch")
 Player = NodePath("../..")
 ReticleMesh = SubResource("PlaneMesh_dqkch")
+AngleAdjust = 15.0
 BounceDecay = 0.9
+MaxBounces = 20
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -61,3 +64,9 @@ mesh = SubResource("CapsuleMesh_pso3n")
 [node name="VaultRaycast" type="RayCast3D" parent="." unique_id=2043323760]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -1.207)
 target_position = Vector3(0, -1.755, 0)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=1889566807]
+offset_right = 40.0
+offset_bottom = 40.0

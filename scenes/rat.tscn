@@ -283,6 +283,8 @@ _data = {
 
 [node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("NavAgent", "Collider")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
+collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_0g0h3")
 NavAgent = NodePath("NavigationAgent3D")
 Collider = NodePath("CollisionShape3D")
