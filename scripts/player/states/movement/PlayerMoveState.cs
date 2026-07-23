@@ -4,6 +4,8 @@ public class PlayerMoveState : PlayerState
 {
     public PlayerMoveState(Player owner) : base(owner) { }
 
+    private Vector2 _inputDir;
+
     public override void PhysicsProcess(float delta)
     {
         if (!_player.IsOnFloor())
@@ -16,7 +18,7 @@ public class PlayerMoveState : PlayerState
 
         _player.MoveAndSlide();
 
-        if (new Vector2(_player.Velocity.X, _player.Velocity.Z).Length() < 0.05f)
+        if (new Vector2(_player.Velocity.X, _player.Velocity.Z).Length() < 0.05f && _inputDir == Vector2.Zero)
         {
             fsm.ChangeState("idle");
         }
@@ -32,43 +34,8 @@ public class PlayerMoveState : PlayerState
 
     private void HandleMovement(float delta)
     {
-        Vector2 input = Input.GetVector(
-            "move_left",
-            "move_right",
-            "move_forward",
-            "move_back");
-
-        float speed = Input.IsActionPressed("sprint")
-            ? _player.SprintSpeed
-            : _player.Speed;
-
-        Vector3 velocity = _player.Velocity;
-
-        Vector3 target = Vector3.Zero;
-
-        if (input != Vector2.Zero)
-        {
-            float yaw = _player.Rotation.Y;
-
-            Vector3 forward = new(Mathf.Sin(yaw), 0, Mathf.Cos(yaw));
-            Vector3 right = new(forward.Z, 0, -forward.X);
-
-            Vector3 desired =
-                (right * input.X + forward * input.Y).Normalized();
-
-            target = desired * speed;
-        }
-
-        Vector3 horizontal = new(velocity.X, 0, velocity.Z);
-
-        float accel = input == Vector2.Zero
-            ? _player.Friction
-            : _player.Acceleration;
-
-        horizontal = horizontal.MoveToward(target, accel * delta);
-        velocity.X = horizontal.X;
-        velocity.Z = horizontal.Z;
-
+        float acceleration = _player.GetInputVector() == Vector2.Zero ? _player.Friction : _player.Acceleration;
+        Vector3 velocity = _player.GetMovementInputVelocity(acceleration, delta);
         _player.Velocity = velocity;
     }
 }

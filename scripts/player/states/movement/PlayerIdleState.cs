@@ -15,7 +15,6 @@ public class PlayerIdleState : PlayerState
     {
         if (@event.IsActionPressed("jump") && _player.IsOnFloor())
         {
-            GD.Print("jump");
             fsm.ChangeState("jump", this);
         }
     }

@@ -9,13 +9,13 @@ public class PlayerFallingState : PlayerState
     public PlayerFallingState(Player owner) : base(owner) { }
 
 
-    private float _timer;
+    private float _timer = 99f;
     public override void PhysicsProcess(float delta)
     {
         _timer += delta;
         HandleAirMovement(delta);
 
-        _player.Velocity += _player.gravity * delta;
+        _player.Velocity += _player.Gravity * delta;
 
         _player.MoveAndSlide();
 
@@ -23,14 +23,15 @@ public class PlayerFallingState : PlayerState
         {
             fsm.ChangeState("move", this);
         }
-        else if (Input.IsActionPressed("jump") && _timer <= COYOTY_TIMER_LENGTH)
-        {
-            fsm.ChangeState("jump", this);
-        }
-        else if (_player.VaultRaycast.IsColliding() && Input.IsActionPressed("jump") && CanVault())
+        if (_player.VaultRaycast.IsColliding() && Input.IsActionPressed("jump") && CanVault())
         {
             fsm.ChangeState("vault", this);
         }
+        else if (Input.IsActionJustPressed("jump") && _timer <= COYOTY_TIMER_LENGTH)
+        {
+            fsm.ChangeState("jump", this);
+        }
+
 
     }
     public override void Enter(State previous = null)
@@ -40,38 +41,8 @@ public class PlayerFallingState : PlayerState
 
     private void HandleAirMovement(float delta)
     {
-        Vector2 input = Input.GetVector(
-            "move_left",
-            "move_right",
-            "move_forward",
-            "move_back");
-
-        if (input == Vector2.Zero)
-            return;
-
-        float speed = Input.IsActionPressed("sprint")
-            ? _player.SprintSpeed
-            : _player.Speed;
-
-        float yaw = _player.Rotation.Y;
-
-        Vector3 forward = new(Mathf.Sin(yaw), 0, Mathf.Cos(yaw));
-        Vector3 right = new(forward.Z, 0, -forward.X);
-
-        Vector3 desired =
-            (right * input.X + forward * input.Y).Normalized();
-
-        Vector3 velocity = _player.Velocity;
-        Vector3 horizontal = new(velocity.X, 0, velocity.Z);
-
-        // Smaller acceleration in the air
-        horizontal = horizontal.MoveToward(
-            desired * speed,
-            _player.AirAcceleration * delta);
-
-        velocity.X = horizontal.X;
-        velocity.Z = horizontal.Z;
-
+        Vector3 velocity = _player.GetMovementInputVelocity(_player.AirAcceleration, delta);
+        if (velocity == Vector3.Zero) return;
         _player.Velocity = velocity;
     }
 
@@ -80,8 +51,8 @@ public class PlayerFallingState : PlayerState
         Vector3 collisionPoint = _player.VaultRaycast.GetCollisionPoint();
         if (Utils.Raycast(_player, collisionPoint, collisionPoint + Vector3.Up * 2f, out _, _player.CollisionMask))
         {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 }
