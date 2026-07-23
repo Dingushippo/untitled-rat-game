@@ -8,9 +8,9 @@ public class PlayerState : State
 /*
 using Godot;
 
-public class NewPlayerState : PlayerState
+public class PlayerNewState : PlayerState
 {
-    public NewPlayerState(Player owner) : base(owner) { }
+    public PlayerNewState(Player owner) : base(owner) { }
     public override void PhysicsProcess(float delta) { }
     public override void Process(float delta) { }
     public override void Enter(State previous = null) { }
