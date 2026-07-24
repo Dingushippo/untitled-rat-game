@@ -49,6 +49,8 @@ public partial class Rat : CharacterBody3D
         _fsm.Add("follow", new RatFollowState(this, NavAgent));
         _fsm.Add("target_reached", new RatTargetReachedState(this));
         _fsm.Add("idle", new RatIdleState(this));
+        _fsm.Add("falling", new RatFallingState(this));
+        _fsm.Add("landed", new RatLandedState(this));
         _fsm.InitState("idle");
         _fsm.Debug = true;
     }

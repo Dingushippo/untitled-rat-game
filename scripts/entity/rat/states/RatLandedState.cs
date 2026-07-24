@@ -1,8 +1,31 @@
+using Godot;
+
 public class RatLandedState : RatState
 {
+    private Tween _landTween;
     public RatLandedState(Rat owner) : base(owner) { }
     public override void PhysicsProcess(float delta) { }
     public override void Process(float delta) { }
-    public override void Enter(State previous = null) { }
-    public override void Exit() { }
+    public override void Enter(State previous = null)
+    {
+        Vector3 landingDirection = new Vector3(0, _rat.GlobalRotation.Y, 0);
+
+        // TODO change to use raycast
+        Vector3 landingPosition = _rat.GlobalPosition;
+        landingPosition.Y = 0;
+
+        _landTween = _rat.CreateTween();
+        _landTween.SetParallel(true);
+        _landTween.TweenProperty(_rat, "rotation", landingDirection, 0.35f);
+        _landTween.TweenProperty(_rat, "global_position", landingPosition, 0.35f);
+        _landTween.Chain();
+        _landTween.TweenCallback(Callable.From(() => fsm.ChangeState("idle", this)));
+    }
+    public override void Exit()
+    {
+        if (_landTween.IsRunning())
+        {
+            _landTween.Kill();
+        }
+    }
 }

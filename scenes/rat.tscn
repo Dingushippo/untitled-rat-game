@@ -309,6 +309,7 @@ shape = SubResource("CapsuleShape3D_6s34g")
 
 [node name="control" type="Node3D" parent="." unique_id=224714301]
 transform = Transform3D(-2.5, 0, -3.774895e-07, 0, 2.5, 0, 3.774895e-07, 0, -2.5, 0, 0, 0)
+metadata/_edit_lock_ = true
 
 [node name="Skeleton3D" type="Skeleton3D" parent="control" unique_id=1932009099]
 bones/0/name = "DEF-spine"
@@ -633,10 +634,14 @@ bones/45/enabled = true
 bones/45/position = Vector3(5.3290705e-15, 0.038249575, 1.7041923e-14)
 bones/45/rotation = Quaternion(-0.032922164, -1.1914459e-07, -2.7472371e-08, 0.99945796)
 bones/45/scale = Vector3(1, 0.99999994, 0.99999994)
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="control/Skeleton3D" unique_id=1894871172]
+cast_shadow = 0
 mesh = SubResource("ArrayMesh_hf05y")
 skin = SubResource("Skin_3aldu")
+skeleton = NodePath("..")
+metadata/_edit_lock_ = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1910641866]
 root_motion_local = true

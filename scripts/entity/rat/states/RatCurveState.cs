@@ -4,7 +4,7 @@ using System.Reflection.Metadata;
 public class RatCurveState : RatState
 {
     public const float MIN_SPEED = 3f;
-    public const float MAX_SPEED = 6f;
+    public const float MAX_SPEED = 10f;
     private float _progress = 0;
 
     private int _currentIndex = 0;
@@ -19,7 +19,7 @@ public class RatCurveState : RatState
     {
         if (_currentIndex >= _pathArray.Length)
         {
-            fsm.ChangeState("idle");
+            fsm.ChangeState("landed");
             return;
         }
 
@@ -37,7 +37,6 @@ public class RatCurveState : RatState
             _progress = 0;
             _currentIndex++;
         }
-
     }
     public override void Process(float delta) { }
     public override void Enter(State previous = null) { }
