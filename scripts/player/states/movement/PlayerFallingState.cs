@@ -37,6 +37,11 @@ public class PlayerFallingState : PlayerState
     public override void Enter(State previous = null)
     {
         if (previous is not PlayerJumpState) _timer = 0;
+        _player.CrouchComponent.Enabled = false;
+    }
+    public override void Exit()
+    {
+        _player.CrouchComponent.Enabled = true;
     }
 
     private void HandleAirMovement(float delta)

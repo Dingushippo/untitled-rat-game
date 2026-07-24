@@ -30,6 +30,14 @@ public class PlayerMoveState : PlayerState
         {
             fsm.ChangeState("jump", this);
         }
+        if (@event.IsActionPressed("sprint"))
+        {
+            _player.CrouchComponent.TryStand();
+        }
+        if (@event.IsActionPressed("crouch") && Input.IsActionPressed("sprint") && !_player.CrouchComponent.IsCrouching)
+        {
+            fsm.ChangeState("slide");
+        }
     }
 
     protected virtual void HandleMovement(float delta)
