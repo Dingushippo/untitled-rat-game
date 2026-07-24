@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -109,30 +110,80 @@ public partial class ThrowComponent : Node3D
         Vector3 velocity = (-Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(AngleAdjust), 0)) * _currentForce;
 
         int bounces = 0;
+        _material.AlbedoColor = Colors.Red;
+
+        bool homing = false;
+        Vector3 target = Vector3.Zero;
 
         while (points.Count < MaxPoints)
         {
+            if (homing)
+            {
+                // Steer toward the target while maintaining speed.
+                Vector3 desiredVelocity =
+                    (target - position).Normalized() * velocity.Length();
+
+                // Lower = slower turn, Higher = snappier turn.
+                const float SteeringStrength = 8f;
+
+                velocity = velocity.Lerp(
+                    desiredVelocity,
+                    SteeringStrength * Step
+                );
+
+                position += velocity * Step;
+                points.Add(position);
+
+                // Close enough.
+                if (position.DistanceTo(target) < 0.05f)
+                {
+                    points.Add(target);
+                    break;
+                }
+
+                continue;
+            }
+
             velocity += _gravity * Step;
 
             Vector3 next = position + velocity * Step;
 
-            if (Utils.Raycast(this, position, next, out Dictionary hit, 1))
+            const uint collisionMask = 1 | 16;
+
+            if (Utils.Raycast(this, position, next, out Dictionary hit, collisionMask))
             {
-                Vector3 newPos = hit["position"].AsVector3();
-                points.Add(newPos);
+                // Facility hit -> begin homing instead of bouncing.
+                if ((GodotObject)hit["collider"] is Area3D area)
+                {
+                    _material.AlbedoColor = Colors.Green;
+
+                    FacilityBase facility = area.GetParent<FacilityBase>();
+
+                    // Start from the actual collision point.
+                    position = hit["position"].AsVector3();
+                    points.Add(position);
+
+                    target = facility.GetClosestWorkSlot(ToGlobal(position)).GlobalPosition;
+                    homing = true;
+
+                    continue;
+                }
+
+                position = hit["position"].AsVector3();
+                points.Add(position);
 
                 velocity = velocity.Bounce(hit["normal"].AsVector3()) * BounceDecay;
-                position = newPos;
 
                 if (++bounces > MaxBounces)
                     break;
             }
             else
             {
-                points.Add(next);
                 position = next;
+                points.Add(position);
             }
         }
+
         _pathArray = points.ToArray();
     }
 
