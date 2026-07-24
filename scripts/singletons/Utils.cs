@@ -9,6 +9,7 @@ public static partial class Utils
         PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(
             a, b, collisionMask
         );
+        query.CollideWithAreas = true;
         result = state.IntersectRay(query);
         return result.Count != 0;
     }

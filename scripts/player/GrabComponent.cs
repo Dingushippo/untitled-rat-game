@@ -18,7 +18,7 @@ public class GrabComponent
         _rayResult = null;
         Vector3 rayStart = _player.Camera.GlobalPosition;
         Vector3 rayEnd = rayStart + -_player.Camera.GlobalBasis.Z * GRAB_DISTANCE;
-        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, 8))
+        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, 4))
         {
             _rayResult = result;
         }
@@ -38,11 +38,11 @@ public class GrabComponent
     public bool TryGrab()
     {
         if (!CanGrab()) return false;
-        if ((GodotObject)_rayResult["collider"] is Rat rat)
+        if ((GodotObject)_rayResult["collider"] is InteractComponent component)
         {
-            CurrentGrabbed = rat;
-            RatGrabState grabState = new RatGrabState(rat, _player);
-            rat.InjectState("grab", grabState);
+            CurrentGrabbed = (Rat)component.GetParent();
+            RatGrabState grabState = new RatGrabState(CurrentGrabbed, _player);
+            CurrentGrabbed.InjectState("grab", grabState);
         }
         return true;
     }
