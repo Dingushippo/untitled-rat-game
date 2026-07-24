@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d1c70tsq6n0uu" path="res://assets/rough-checked-texture-collage.jpg" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/rat.tscn" id="2_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/player.tscn" id="3_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/facility_base.tscn" id="5_tbgi4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -95,3 +96,6 @@ transform = Transform3D(0.032515116, 0, 0.99947125, 0, 1, 0, -0.99947125, 0, 0.0
 
 [node name="Rat" parent="." unique_id=1864404930 instance=ExtResource("2_jyhfs")]
 transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.0344434, -0.01191923, -4.0976715)
+
+[node name="FacilityBase" parent="." unique_id=364601257 instance=ExtResource("5_tbgi4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -5.4256687)

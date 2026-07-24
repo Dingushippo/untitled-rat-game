@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://ccmwoc6oxxglf"]
+
+[ext_resource type="Script" uid="uid://c5o4hd0ij7hin" path="res://scenes/facilities/FacilityBase.cs" id="1_6j7fg"]
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_0evyo"]
+albedo_color = Color(1, 1, 0.101960786, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pso3n"]
+material = SubResource("ORMMaterial3D_0evyo")
+height = 1.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pso3n"]
+radius = 2.0
+
+[node name="FacilityBase" type="Node3D" unique_id=364601257 node_paths=PackedStringArray("WorkSlots")]
+script = ExtResource("1_6j7fg")
+WorkSlots = NodePath("WorkSlots")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=465564909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_pso3n")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=579690092]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1930877751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55843437, 0)
+shape = SubResource("SphereShape3D_pso3n")
+
+[node name="WorkSlots" type="Node3D" parent="." unique_id=303589596]
+
+[node name="Node3D" type="Node3D" parent="WorkSlots" unique_id=378523493]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.8)
+
+[node name="Node3D2" type="Node3D" parent="WorkSlots" unique_id=1338380574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.8)
+
+[node name="Node3D3" type="Node3D" parent="WorkSlots" unique_id=1720793786]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0, 0)
+
+[node name="Node3D4" type="Node3D" parent="WorkSlots" unique_id=266451350]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0)
