@@ -58,6 +58,7 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add("jump", new PlayerJumpState(this));
         _movementFsm.Add("falling", new PlayerFallingState(this));
         _movementFsm.Add("vault", new PlayerVaultState(this));
+        _movementFsm.Add("slide", new PlayerSlideState(this));
         _movementFsm.InitState("idle");
         _movementFsm.Debug = true;
 
