@@ -9,8 +9,8 @@ public partial class CrouchComponent
     const float CROUCH_ANIM_DURATION = 0.15f;
 
     public bool IsCrouching { get; private set; }
+    public bool Enabled = true;
     public bool ToggleCrouch = true;
-
     private bool _crouchToggled = false;
     private readonly Player _player;
 
@@ -22,6 +22,7 @@ public partial class CrouchComponent
 
     public void Update()
     {
+        if (!Enabled) return;
         if (ToggleCrouch)
             UpdateToggleMode();
         else
@@ -56,7 +57,7 @@ public partial class CrouchComponent
         TweenCrouchPos(CROUCHING_HEIGHT);
     }
 
-    private void TryStand()
+    public void TryStand()
     {
         if (!IsCrouching)
             return;
@@ -64,6 +65,8 @@ public partial class CrouchComponent
         if (CeilingBlocked())
             return;
 
+
+        _crouchToggled = false;
         IsCrouching = false;
         TweenCrouchPos(STANDING_HEIGHT);
     }
