@@ -30,6 +30,7 @@ public partial class ThrowComponent : Node3D
     private Vector3[] _pathArray;
     private bool _preview = false;
     private bool _isCharging = false;
+    private WorkSlot _targetedSlot = null; 
 
     public override void _Ready()
     {
@@ -97,8 +98,13 @@ public partial class ThrowComponent : Node3D
             RatCurveState.MAX_SPEED
         );
         RatCurveState newState = new(rat, _pathArray, curveSpeed);
+        if (_targetedSlot != null) 
+        {
+            _targetedSlot.TryReserve(rat);
+            _targetedSlot = null;
+        }
+        
         rat.InjectState("throw", newState);
-
         ResetCharge();
     }
 
@@ -108,11 +114,12 @@ public partial class ThrowComponent : Node3D
 
         Vector3 position = GlobalPosition;
         Vector3 velocity = (-Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(AngleAdjust), 0)) * _currentForce;
-
+        
         int bounces = 0;
         _material.AlbedoColor = Colors.Red;
 
         bool homing = false;
+
         Vector3 target = Vector3.Zero;
 
         while (points.Count < MaxPoints)
@@ -155,18 +162,20 @@ public partial class ThrowComponent : Node3D
                 // Facility hit -> begin homing instead of bouncing.
                 if ((GodotObject)hit["collider"] is Area3D area)
                 {
-                    _material.AlbedoColor = Colors.Green;
-
                     FacilityBase facility = area.GetParent<FacilityBase>();
 
                     // Start from the actual collision point.
                     position = hit["position"].AsVector3();
                     points.Add(position);
 
-                    target = facility.GetClosestWorkSlot(ToGlobal(position)).GlobalPosition;
-                    homing = true;
-
-                    continue;
+                    if (facility.TryGetClosestWorkSlot(ToGlobal(position), out WorkSlot slot))
+                    {
+                        _material.AlbedoColor = Colors.Green;
+                        homing = true;
+                        target = slot.GlobalPosition;
+                        _targetedSlot = slot;
+                        continue;
+                    }
                 }
 
                 position = hit["position"].AsVector3();
