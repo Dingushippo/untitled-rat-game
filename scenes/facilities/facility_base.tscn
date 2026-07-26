@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ccmwoc6oxxglf"]
 
 [ext_resource type="Script" uid="uid://c5o4hd0ij7hin" path="res://scenes/facilities/FacilityBase.cs" id="1_6j7fg"]
+[ext_resource type="Script" uid="uid://dadi1gcc2viyk" path="res://scripts/WorkSlot.cs" id="2_d0lwy"]
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_0evyo"]
 albedo_color = Color(1, 1, 0.101960786, 1)
@@ -12,9 +13,9 @@ height = 1.0
 [sub_resource type="SphereShape3D" id="SphereShape3D_pso3n"]
 radius = 2.0
 
-[node name="FacilityBase" type="Node3D" unique_id=364601257 node_paths=PackedStringArray("WorkSlots")]
+[node name="FacilityBase" type="Node3D" unique_id=364601257 node_paths=PackedStringArray("WorkSlotGroup")]
 script = ExtResource("1_6j7fg")
-WorkSlots = NodePath("WorkSlots")
+WorkSlotGroup = NodePath("WorkSlots")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=465564909]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -30,14 +31,18 @@ shape = SubResource("SphereShape3D_pso3n")
 
 [node name="WorkSlots" type="Node3D" parent="." unique_id=303589596]
 
-[node name="Node3D" type="Node3D" parent="WorkSlots" unique_id=378523493]
+[node name="WorkSlot" type="Marker3D" parent="WorkSlots" unique_id=1914397893]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.8)
+script = ExtResource("2_d0lwy")
 
-[node name="Node3D2" type="Node3D" parent="WorkSlots" unique_id=1338380574]
+[node name="WorkSlot2" type="Marker3D" parent="WorkSlots" unique_id=1271552307]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.8)
+script = ExtResource("2_d0lwy")
 
-[node name="Node3D3" type="Node3D" parent="WorkSlots" unique_id=1720793786]
+[node name="WorkSlot3" type="Marker3D" parent="WorkSlots" unique_id=1089600338]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0, 0)
+script = ExtResource("2_d0lwy")
 
-[node name="Node3D4" type="Node3D" parent="WorkSlots" unique_id=266451350]
+[node name="WorkSlot4" type="Marker3D" parent="WorkSlots" unique_id=943344011]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0)
+script = ExtResource("2_d0lwy")

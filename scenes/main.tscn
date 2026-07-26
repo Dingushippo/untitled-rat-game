@@ -97,5 +97,17 @@ transform = Transform3D(0.032515116, 0, 0.99947125, 0, 1, 0, -0.99947125, 0, 0.0
 [node name="Rat" parent="." unique_id=1864404930 instance=ExtResource("2_jyhfs")]
 transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.0344434, -0.01191923, -4.0976715)
 
+[node name="Rat2" parent="." unique_id=656995802 instance=ExtResource("2_jyhfs")]
+transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.9491115, -0.01191923, -4.0976715)
+
+[node name="Rat3" parent="." unique_id=1407895806 instance=ExtResource("2_jyhfs")]
+transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -5.9780483, -0.01191923, -4.0976715)
+
+[node name="Rat4" parent="." unique_id=174221093 instance=ExtResource("2_jyhfs")]
+transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -7.5121546, -0.01191923, -4.0976715)
+
+[node name="Rat5" parent="." unique_id=1139278137 instance=ExtResource("2_jyhfs")]
+transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -9.550504, -0.01191923, -4.0976715)
+
 [node name="FacilityBase" parent="." unique_id=364601257 instance=ExtResource("5_tbgi4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -5.4256687)
