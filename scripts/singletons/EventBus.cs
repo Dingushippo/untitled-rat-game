@@ -42,4 +42,6 @@ public enum Event
 	DebugAimMarker,
 	ObjectPlaced,
 	NavigationRegionReady,
+	RatSlotted,
+	RatUnslotted,
 }

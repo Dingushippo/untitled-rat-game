@@ -5,21 +5,23 @@ public class RatCurveState : RatState
 {
     public const float MIN_SPEED = 3f;
     public const float MAX_SPEED = 10f;
+    public WorkSlot WorkSlot = null;
     private float _progress = 0;
-
     private int _currentIndex = 0;
     private Vector3[] _pathArray;
     private float _speed;
-    public RatCurveState(Rat owner, Vector3[] pathArray, float speed) : base(owner)
+    public RatCurveState(Rat owner, Vector3[] pathArray, float speed, WorkSlot slot = null) : base(owner)
     {
         _pathArray = pathArray;
         _speed = speed;
+        WorkSlot = slot;
     }
     public override void PhysicsProcess(float delta)
     {
         if (_currentIndex >= _pathArray.Length)
         {
-            fsm.ChangeState("landed");
+            string nextState = WorkSlot == null ? "landed" : "slotted";
+            fsm.ChangeState(nextState, this);
             return;
         }
 
@@ -38,7 +40,4 @@ public class RatCurveState : RatState
             _currentIndex++;
         }
     }
-    public override void Process(float delta) { }
-    public override void Enter(State previous = null) { }
-    public override void Exit() { }
 }

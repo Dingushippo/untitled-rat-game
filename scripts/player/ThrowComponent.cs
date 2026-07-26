@@ -97,7 +97,7 @@ public partial class ThrowComponent : Node3D
             RatCurveState.MIN_SPEED,
             RatCurveState.MAX_SPEED
         );
-        RatCurveState newState = new(rat, _pathArray, curveSpeed);
+        RatCurveState newState = new(rat, _pathArray, curveSpeed, _targetedSlot);
         if (_targetedSlot != null) 
         {
             _targetedSlot.TryReserve(rat);

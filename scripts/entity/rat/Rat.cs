@@ -51,7 +51,14 @@ public partial class Rat : CharacterBody3D
         _fsm.Add("idle", new RatIdleState(this));
         _fsm.Add("falling", new RatFallingState(this));
         _fsm.Add("landed", new RatLandedState(this));
+        _fsm.Add("slotted", new RatSlottedState(this));
         _fsm.InitState("idle");
-        _fsm.Debug = false;
+        _fsm.Debug = true;
+    }
+
+    public void SetNavAgentEnabled(bool enabled)
+    {
+        NavAgent.SetProcess(enabled);
+        NavAgent.SetPhysicsProcess(enabled);
     }
 }
