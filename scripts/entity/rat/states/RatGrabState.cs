@@ -12,9 +12,11 @@ public class RatGrabState : RatState
         _prevParent = _rat.GetParent();
         _rat.GlobalPosition = _player.ThrowComponent.GlobalPosition;
         _rat.Reparent(_player.ThrowComponent);
+        _rat.Collider.Disabled = true;
     }
     public override void Exit()
     {
         _rat.Reparent(_prevParent);
+        _rat.Collider.Disabled = false;
     }
 }

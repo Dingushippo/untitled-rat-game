@@ -52,15 +52,6 @@ public partial class Rat : CharacterBody3D
         _fsm.Add("falling", new RatFallingState(this));
         _fsm.Add("landed", new RatLandedState(this));
         _fsm.InitState("idle");
-        _fsm.Debug = true;
-    }
-
-
-    private void OnDebugMouseClick(object[] args)
-    {
-        Vector3 pos = (Vector3)args[0];
-        GD.Print($"Setting TargetPosition to {pos}");
-        NavigationTargetPosition = pos;
-        _fsm.ChangeState("follow");
+        _fsm.Debug = false;
     }
 }
