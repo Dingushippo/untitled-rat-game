@@ -14,6 +14,8 @@ public class PlayerMoveState : PlayerState
             return;
         }
 
+        _inputDir = _player.GetInputVector();
+
         HandleMovement(delta);
 
         _player.MoveAndSlide();
@@ -43,8 +45,10 @@ public class PlayerMoveState : PlayerState
     protected virtual void HandleMovement(float delta)
     {
         float speedOverride = _player.CrouchComponent.IsCrouching ? _player.CrouchSpeed : 0;
-        float acceleration = _player.GetInputVector() == Vector2.Zero ? _player.Friction : _player.Acceleration;
-        Vector3 velocity = _player.GetMovementInputVelocity(acceleration, delta, speedOverride);
-        _player.Velocity = velocity;
+        _player.Velocity = _player.GetMovementInputVelocity(
+            _player.Acceleration,
+            _player.Deceleration,
+            delta,
+            speedOverride);
     }
 }

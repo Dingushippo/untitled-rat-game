@@ -46,9 +46,10 @@ public class PlayerFallingState : PlayerState
 
     private void HandleAirMovement(float delta)
     {
-        Vector3 velocity = _player.GetMovementInputVelocity(_player.AirAcceleration, delta);
-        if (velocity == Vector3.Zero) return;
-        _player.Velocity = velocity;
+        _player.Velocity = _player.GetMovementInputVelocity(
+            _player.AirAcceleration,
+            _player.AirDeceleration,
+            delta);
     }
 
     private bool CanVault()

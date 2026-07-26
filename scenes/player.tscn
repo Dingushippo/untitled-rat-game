@@ -48,8 +48,10 @@ transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0.86460876,
 script = ExtResource("4_dqkch")
 Player = NodePath("../..")
 ReticleMesh = SubResource("PlaneMesh_dqkch")
+Step = 0.05
 BounceDecay = 0.9
 MaxBounces = 3
+MaxPoints = 250
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

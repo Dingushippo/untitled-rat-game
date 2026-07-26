@@ -9,9 +9,14 @@ public partial class Player : CharacterBody3D
     [Export] public float Speed = 10f;
     [Export] public float SprintSpeed = 15f;
     [Export] public float CrouchSpeed = 5f;
-    [Export] public float Acceleration = 10f;
-    [Export] public float AirAcceleration = 6f;
-    [Export] public float Friction = 20f;
+    [Export] public float Acceleration = 55f;
+    [Export] public float Deceleration = 90f;
+    [Export] public float AirAcceleration = 25f;
+    [Export] public float AirDeceleration = 0f;
+
+    // How much harder we accelerate when the input fights the current velocity.
+    // 1 = no extra bite on turns, higher = snappier direction changes.
+    [Export] public float TurnBrakeMultiplier = 2.5f;
     [Export] public float JumpForce = 10f;
 
     public Vector3 Gravity;
@@ -60,7 +65,7 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add("vault", new PlayerVaultState(this));
         _movementFsm.Add("slide", new PlayerSlideState(this));
         _movementFsm.InitState("idle");
-        _movementFsm.Debug = true;
+        _movementFsm.Debug = false;
 
         _handFsm = new(this);
         _handFsm.Add("empty", new HandEmptyState(this));
@@ -79,12 +84,9 @@ public partial class Player : CharacterBody3D
         );
     }
 
-    public Vector3 GetMovementInputVelocity(float acceleration, float delta, float speedOverride = 0)
+    public Vector3 GetMovementInputVelocity(float acceleration, float deceleration, float delta, float speedOverride = 0)
     {
         Vector2 input = GetInputVector();
-
-        if (input == Vector2.Zero)
-            return Vector3.Zero;
 
         float speed;
         if (speedOverride != 0) speed = speedOverride;
@@ -96,16 +98,29 @@ public partial class Player : CharacterBody3D
         Vector3 forward = new(Mathf.Sin(yaw), 0, Mathf.Cos(yaw));
         Vector3 right = new(forward.Z, 0, -forward.X);
 
-        Vector3 desired =
-            (right * input.X + forward * input.Y).Normalized();
+        Vector3 desired = (right * input.X + forward * input.Y).LimitLength() * speed;
 
         Vector3 velocity = Velocity;
         Vector3 horizontal = new(velocity.X, 0, velocity.Z);
 
-        // Smaller acceleration in the air
-        horizontal = horizontal.MoveToward(
-            desired * speed,
-            acceleration * delta);
+        float rate;
+        if (desired.IsZeroApprox())
+        {
+            // No input: brake. In air this is 0, so momentum is preserved.
+            rate = deceleration;
+        }
+        else
+        {
+            // Input held: scale up the rate as the desired direction turns away from
+            // the current velocity, so reversing doesn't have to coast through zero.
+            float alignment = horizontal.IsZeroApprox()
+                ? 1f
+                : desired.Normalized().Dot(horizontal.Normalized());
+
+            rate = acceleration * Mathf.Lerp(TurnBrakeMultiplier, 1f, (alignment + 1f) * 0.5f);
+        }
+
+        horizontal = horizontal.MoveToward(desired, rate * delta);
 
         velocity.X = horizontal.X;
         velocity.Z = horizontal.Z;
