@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="FacilityDef" format=3 uid="uid://c46gibkbxlvm"]
+
+[ext_resource type="Script" uid="uid://tbwlcju5hrln" path="res://scripts/resources/FacilityDef.cs" id="1_jx4dq"]
+
+[resource]
+script = ExtResource("1_jx4dq")
+Id = "crypt_garden"
+DisplayName = "Crypt garden"
+SlotCount = 4
+Inputs = null
+Outputs = Dictionary[String, int]({
+"ichor_root": 1
+})
+CycleSeconds = 6.0
+metadata/_custom_type_script = "uid://tbwlcju5hrln"
