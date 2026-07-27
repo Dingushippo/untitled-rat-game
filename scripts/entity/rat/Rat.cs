@@ -7,6 +7,7 @@ public partial class Rat : CharacterBody3D
     [Export] public NavigationAgent3D NavAgent;
     [Export] public CollisionShape3D Collider;
     [Export] public RatDef RatDef;
+    [Export] public RatFlightTuning FlightTuning;
     [Export] public float Speed = 10f;
     [Export] public float Acceleration = 10f;
     [Export] public Vector3 GrabOrientation { get; set; }
@@ -30,6 +31,8 @@ public partial class Rat : CharacterBody3D
 
     public override void _Ready()
     {
+        FlightTuning ??= new RatFlightTuning();
+
         if (NavAgent == null)
         {
             GD.PrintErr("Rat requires a NavigationAgent3D to function.");

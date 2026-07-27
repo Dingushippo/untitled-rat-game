@@ -2,18 +2,11 @@ using Godot;
 
 public class RatCurveState : RatState
 {
-    public const float MIN_SPEED = 3f;
-    public const float MAX_SPEED = 10f;
-
-    private const float TURN_SPEED = 10f;
-    private const float LOOK_AHEAD_DISTANCE = 0.75f;
-    private const float MAX_PITCH_DEGREES = 35f;
-    private const float APPROACH_BLEND_DISTANCE = 1.5f;
-
     public WorkSlot WorkSlot = null;
 
     private readonly Vector3[] _pathArray;
     private readonly float[] _distanceToEnd;
+    private readonly RatFlightTuning _tuning;
     private readonly float _speed;
     private int _currentIndex = 0;
 
@@ -22,6 +15,7 @@ public class RatCurveState : RatState
         _pathArray = pathArray;
         _speed = speed;
         WorkSlot = slot;
+        _tuning = owner.FlightTuning;
 
         _distanceToEnd = new float[_pathArray.Length];
         for (int i = _pathArray.Length - 2; i >= 0; i--)
@@ -44,6 +38,11 @@ public class RatCurveState : RatState
         }
 
         Advance(_speed * delta);
+
+        // Advance can consume the last point; the state change happens next frame.
+        if (_currentIndex >= _pathArray.Length)
+            return;
+
         UpdateRotation(delta);
     }
 
@@ -70,7 +69,7 @@ public class RatCurveState : RatState
 
     private void UpdateRotation(float delta)
     {
-        Vector3 direction = LookAheadPoint(LOOK_AHEAD_DISTANCE) - _rat.GlobalPosition;
+        Vector3 direction = LookAheadPoint(_tuning.LookAheadDistance) - _rat.GlobalPosition;
         Vector3 flatDirection = new(direction.X, 0f, direction.Z);
 
         Vector3 rotation = _rat.Rotation;
@@ -81,19 +80,19 @@ public class RatCurveState : RatState
 
         float targetPitch = Mathf.Clamp(
             Mathf.Atan2(direction.Y, flatDirection.Length()),
-            -Mathf.DegToRad(MAX_PITCH_DEGREES),
-            Mathf.DegToRad(MAX_PITCH_DEGREES)
+            -Mathf.DegToRad(_tuning.MaxPitchDegrees),
+            Mathf.DegToRad(_tuning.MaxPitchDegrees)
         );
 
         // Settle into the slot's facing over the last stretch so the handoff isn't a snap.
         if (WorkSlot != null)
         {
-            float blend = 1f - Mathf.Clamp(_distanceToEnd[_currentIndex] / APPROACH_BLEND_DISTANCE, 0f, 1f);
+            float blend = 1f - Mathf.Clamp(_distanceToEnd[_currentIndex] / _tuning.ApproachBlendDistance, 0f, 1f);
             targetYaw = Mathf.LerpAngle(targetYaw, WorkSlot.GlobalRotation.Y, blend);
             targetPitch = Mathf.Lerp(targetPitch, 0f, blend);
         }
 
-        float weight = TURN_SPEED * delta;
+        float weight = _tuning.TurnSpeed * delta;
         rotation.X = Mathf.LerpAngle(rotation.X, targetPitch, weight);
         rotation.Y = Mathf.LerpAngle(rotation.Y, targetYaw, weight);
         rotation.Z = Mathf.LerpAngle(rotation.Z, 0f, weight);

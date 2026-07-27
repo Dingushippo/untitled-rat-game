@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SimpleThrow" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://beto8f5fr0mq0" path="res://scripts/player/throws/SimpleThrow.cs" id="1_throw"]
+
+[resource]
+script = ExtResource("1_throw")
+SteeringStrength = 8.0
+ArrivalDistance = 0.05
+ApproachHeight = 0.1
+CurveSpacing = 0.05
+TangentStrength = 0.135
+BounceDecay = 0.8
+MaxBounces = 5
+metadata/_custom_type_script = "uid://beto8f5fr0mq0"

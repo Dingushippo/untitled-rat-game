@@ -3,8 +3,9 @@
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/player/Player.cs" id="1_dqkch"]
 [ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/player/ThrowComponent.cs" id="4_dqkch"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/player/PlayerCamera.cs" id="4_fjrip"]
-[ext_resource type="Script" uid="uid://beto8f5fr0mq0" path="res://scripts/player/throws/SimpleThrow.cs" id="5_qlg0r"]
 [ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/hand_controller.tscn" id="6_tuyoq"]
+[ext_resource type="Resource" path="res://resources/throws/simple_throw.tres" id="7_throw"]
+[ext_resource type="Resource" path="res://resources/tuning/throw_tuning.tres" id="8_tuning"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
@@ -19,14 +20,6 @@ emission_energy_multiplier = 4.0
 [sub_resource type="PlaneMesh" id="PlaneMesh_dqkch"]
 material = SubResource("ORMMaterial3D_qlg0r")
 size = Vector2(0.5, 0.5)
-
-[sub_resource type="Resource" id="Resource_dqkch"]
-script = ExtResource("5_qlg0r")
-MaxBounces = 5
-ApproachHeight = 0.1
-CurveSpacing = 0.05
-TangentStrength = 0.135
-metadata/_custom_type_script = "uid://beto8f5fr0mq0"
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
@@ -58,12 +51,8 @@ transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0.86460876,
 script = ExtResource("4_dqkch")
 Player = NodePath("../..")
 ReticleMesh = SubResource("PlaneMesh_dqkch")
-ThrowType = SubResource("Resource_dqkch")
-ThrowForce = 7.0
-MaxThrowForce = 12.0
-ChargeDuration = 1.5
-BounceDecay = 0.8
-MaxPoints = 250
+ThrowType = ExtResource("7_throw")
+Tuning = ExtResource("8_tuning")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

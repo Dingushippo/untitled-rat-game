@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ThrowTuning" format=3 uid="uid://b2dawaso2loby"]
+
+[ext_resource type="Script" uid="uid://bcka81cu8l6d5" path="res://scripts/resources/ThrowTuning.cs" id="1_tuning"]
+
+[resource]
+script = ExtResource("1_tuning")
+ThrowForce = 11.8
+MaxThrowForce = 15.7
+ChargeStartDelay = 0.2
+AngleAdjust = 16.5
+Step = 0.02

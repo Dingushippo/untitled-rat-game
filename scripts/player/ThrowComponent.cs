@@ -8,16 +8,7 @@ public partial class ThrowComponent : Node3D
     [Export] public Player Player;
     [Export] public Mesh ReticleMesh;
     [Export] public ThrowType ThrowType;
-    [Export] public float ThrowForce = 10f;
-    [Export] public float MaxThrowForce = 30f;
-    [Export] public float ChargeDuration = 2f;
-    [Export] public float ChargeStartDelay = 0.2f;
-    [Export] public float AngleAdjust = 0f;
-    [Export] public float Step = 0.02f;
-    [Export] public float BounceDecay = 0.5f;
-    [Export] public int MaxBounces = 1;
-    [Export] public int MaxPoints = 1000;
-
+    [Export] public ThrowTuning Tuning;
 
     private MeshInstance3D _pathMeshInstance;
     private MeshInstance3D _reticleMeshInstance;
@@ -30,8 +21,10 @@ public partial class ThrowComponent : Node3D
     private bool _isCharging = false;
     public override void _Ready()
     {
+        Tuning ??= new ThrowTuning();
+
         _gravity = Player.GetGravity();
-        _currentForce = ThrowForce;
+        _currentForce = Tuning.ThrowForce;
 
         _pathMeshInstance = new();
         AddChild(_pathMeshInstance);
@@ -61,11 +54,11 @@ public partial class ThrowComponent : Node3D
             ThrowContext ctx = new ThrowContext(
                 this,
                 GlobalPosition,
-                -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(AngleAdjust), 0),
+                -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(Tuning.AngleAdjust), 0),
                 _currentForce,
                 _gravity,
-                Step,
-                MaxPoints
+                Tuning.Step,
+                Tuning.MaxPoints
             );
             _currentPath = ThrowType.Simulate(ctx);
             _material.AlbedoColor = _currentPath.Homing ? Colors.Green : Colors.Red;
@@ -81,13 +74,13 @@ public partial class ThrowComponent : Node3D
         _chargeTween = CreateTween();
         _chargeTween.TweenMethod(
             Callable.From<float>(v => _currentForce = v),
-            ThrowForce,
-            MaxThrowForce,
-            ChargeDuration
-        ).SetDelay(ChargeStartDelay);
+            Tuning.ThrowForce,
+            Tuning.MaxThrowForce,
+            Tuning.ChargeDuration
+        ).SetDelay(Tuning.ChargeStartDelay);
         _isCharging = true;
 
-        EventBus.Publish(Event.CameraCharge, ChargeDuration, ChargeStartDelay);
+        EventBus.Publish(Event.CameraCharge, Tuning.ChargeDuration, Tuning.ChargeStartDelay);
     }
 
     public void ResetCharge()
@@ -96,7 +89,7 @@ public partial class ThrowComponent : Node3D
         {
             _chargeTween.Kill();
         }
-        _currentForce = ThrowForce;
+        _currentForce = Tuning.ThrowForce;
 
         // Only when the charge is abandoned - a completed throw hands the
         // camera over to the impact effect instead.
@@ -109,18 +102,14 @@ public partial class ThrowComponent : Node3D
 
     public void Throw(Rat rat)
     {
-        float chargeAmount = Mathf.IsEqualApprox(MaxThrowForce, ThrowForce)
-            ? 1f
-            : Mathf.Clamp((_currentForce - ThrowForce) / (MaxThrowForce - ThrowForce), 0f, 1f);
+        RatFlightTuning flight = rat.FlightTuning;
 
-        float curveSpeed = Mathf.Remap(
-            _currentForce,
-            ThrowForce,
-            MaxThrowForce,
-            RatCurveState.MIN_SPEED,
-            RatCurveState.MAX_SPEED
-        );
-        GD.Print($"Targeted slot: {_currentPath.TargetedSlot}");
+        float chargeAmount = Mathf.IsEqualApprox(Tuning.MaxThrowForce, Tuning.ThrowForce)
+            ? 1f
+            : Mathf.Clamp((_currentForce - Tuning.ThrowForce) / (Tuning.MaxThrowForce - Tuning.ThrowForce), 0f, 1f);
+
+        float curveSpeed = Mathf.Lerp(flight.MinSpeed, flight.MaxSpeed, chargeAmount);
+
         RatCurveState newState = new(rat, _currentPath.Points, curveSpeed, _currentPath.TargetedSlot);
         if (_currentPath.TargetedSlot != null)
         {

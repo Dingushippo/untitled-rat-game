@@ -9,6 +9,7 @@
 [ext_resource type="Animation" uid="uid://csaal7y1hb886" path="res://assets/animations/run.res" id="7_7bnys"]
 [ext_resource type="Animation" uid="uid://cgy2hujuwtkbu" path="res://assets/animations/struggle.res" id="8_kc3ue"]
 [ext_resource type="Animation" uid="uid://cyem0o0fvldsf" path="res://assets/animations/walk.res" id="9_ucpu4"]
+[ext_resource type="Resource" path="res://resources/tuning/rat_flight_tuning.tres" id="10_flight"]
 
 [sub_resource type="Resource" id="Resource_5f0dk"]
 script = ExtResource("2_0g0h3")
@@ -295,6 +296,7 @@ script = ExtResource("1_0g0h3")
 NavAgent = NodePath("NavigationAgent3D")
 Collider = NodePath("CollisionShape3D")
 RatDef = SubResource("Resource_5f0dk")
+FlightTuning = ExtResource("10_flight")
 Speed = 5.01
 Acceleration = 2.995
 

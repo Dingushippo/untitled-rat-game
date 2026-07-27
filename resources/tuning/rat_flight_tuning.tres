@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RatFlightTuning" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/RatFlightTuning.cs" id="1_flight"]
+
+[resource]
+script = ExtResource("1_flight")
+MinSpeed = 3.0
+MaxSpeed = 10.0
+TurnSpeed = 10.0
+LookAheadDistance = 0.75
+MaxPitchDegrees = 35.0
+ApproachBlendDistance = 1.5
+SettleDuration = 0.35

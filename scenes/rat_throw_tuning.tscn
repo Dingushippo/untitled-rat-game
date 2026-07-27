@@ -41,14 +41,6 @@ material = SubResource("ORMMaterial3D_pso3n")
 [node name="Player" parent="." unique_id=716301107 instance=ExtResource("2_vlfn6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.076132774, 0, -1.6454906)
 
-[node name="ThrowComponent" parent="Player/Camera3D" parent_id_path=PackedInt32Array(716301107, 2056591493) index="1" unique_id=1814457487]
-ThrowForce = 7.0
-MaxThrowForce = 12.0
-ChargeDuration = 1.5
-AngleAdjust = 5.0
-BounceDecay = 0.8
-MaxBounces = 1
-
 [node name="Rat" parent="." unique_id=656995802 instance=ExtResource("3_j5j5i")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -1.185, 0, -3.195)
 debug = false
