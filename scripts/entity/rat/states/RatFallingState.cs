@@ -11,7 +11,4 @@ public class RatFallingState : RatState
             fsm.ChangeState("landed", this);
         }
     }
-    public override void Process(float delta) { }
-    public override void Enter(State previous = null) { }
-    public override void Exit() { }
 }

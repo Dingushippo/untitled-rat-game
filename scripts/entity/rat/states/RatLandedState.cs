@@ -17,7 +17,6 @@ public class RatLandedState : RatState
         _landTween = _rat.CreateTween();
         _landTween.SetParallel(true);
         _landTween.TweenProperty(_rat, "rotation", landingDirection, 0.35f);
-        _landTween.TweenProperty(_rat, "global_position", landingPosition, 0.35f);
         _landTween.Chain();
         _landTween.TweenCallback(Callable.From(() => fsm.ChangeState("idle", this)));
     }

@@ -1,45 +1,121 @@
 using Godot;
-using System.Reflection.Metadata;
-using System.Runtime.Serialization;
 
 public class RatCurveState : RatState
 {
     public const float MIN_SPEED = 3f;
     public const float MAX_SPEED = 10f;
+
+    private const float TURN_SPEED = 10f;
+    private const float LOOK_AHEAD_DISTANCE = 0.75f;
+    private const float MAX_PITCH_DEGREES = 35f;
+    private const float APPROACH_BLEND_DISTANCE = 1.5f;
+
     public WorkSlot WorkSlot = null;
-    private float _progress = 0;
+
+    private readonly Vector3[] _pathArray;
+    private readonly float[] _distanceToEnd;
+    private readonly float _speed;
     private int _currentIndex = 0;
-    private Vector3[] _pathArray;
-    private float _speed;
+
     public RatCurveState(Rat owner, Vector3[] pathArray, float speed, WorkSlot slot = null) : base(owner)
     {
         _pathArray = pathArray;
         _speed = speed;
         WorkSlot = slot;
+
+        _distanceToEnd = new float[_pathArray.Length];
+        for (int i = _pathArray.Length - 2; i >= 0; i--)
+        {
+            _distanceToEnd[i] = _distanceToEnd[i + 1] + _pathArray[i].DistanceTo(_pathArray[i + 1]);
+        }
     }
+
     public override void PhysicsProcess(float delta)
     {
         if (_currentIndex >= _pathArray.Length)
         {
-            string nextState = WorkSlot == null ? "landed" : "slotted";
+            string nextState;
+            if (WorkSlot != null) nextState = "slotted";
+            else if (!_rat.IsOnFloor()) nextState = "falling";
+            else nextState = "landed";
+
             fsm.ChangeState(nextState, this);
             return;
         }
 
-        Vector3 startPoint = _rat.GlobalPosition;
-        Vector3 targetPoint = _pathArray[_currentIndex];
-        if (_rat.GlobalPosition != targetPoint)
-            _rat.LookAt(targetPoint);
+        Advance(_speed * delta);
+        UpdateRotation(delta);
+    }
 
-        _progress += _speed * delta;
-        _rat.GlobalPosition = startPoint.Lerp(targetPoint, _progress);
-
-        if (_rat.GlobalPosition.DistanceSquaredTo(targetPoint) < 1.0)
+    /// <summary>Walks the polyline at a constant speed, consuming as many points as the step covers.</summary>
+    private void Advance(float distance)
+    {
+        while (distance > 0f && _currentIndex < _pathArray.Length)
         {
-            _rat.GlobalPosition = targetPoint;
-            _progress = 0;
-            _currentIndex++;
+            Vector3 toTarget = _pathArray[_currentIndex] - _rat.GlobalPosition;
+            float toTargetLength = toTarget.Length();
+
+            if (toTargetLength <= distance || toTargetLength < 0.0001f)
+            {
+                _rat.GlobalPosition = _pathArray[_currentIndex];
+                distance -= toTargetLength;
+                _currentIndex++;
+                continue;
+            }
+
+            _rat.GlobalPosition += toTarget / toTargetLength * distance;
+            return;
         }
+    }
+
+    private void UpdateRotation(float delta)
+    {
+        Vector3 direction = LookAheadPoint(LOOK_AHEAD_DISTANCE) - _rat.GlobalPosition;
+        Vector3 flatDirection = new(direction.X, 0f, direction.Z);
+
+        Vector3 rotation = _rat.Rotation;
+
+        float targetYaw = flatDirection.LengthSquared() > 0.0001f
+            ? Mathf.Atan2(-flatDirection.X, -flatDirection.Z)
+            : rotation.Y;
+
+        float targetPitch = Mathf.Clamp(
+            Mathf.Atan2(direction.Y, flatDirection.Length()),
+            -Mathf.DegToRad(MAX_PITCH_DEGREES),
+            Mathf.DegToRad(MAX_PITCH_DEGREES)
+        );
+
+        // Settle into the slot's facing over the last stretch so the handoff isn't a snap.
+        if (WorkSlot != null)
+        {
+            float blend = 1f - Mathf.Clamp(_distanceToEnd[_currentIndex] / APPROACH_BLEND_DISTANCE, 0f, 1f);
+            targetYaw = Mathf.LerpAngle(targetYaw, WorkSlot.GlobalRotation.Y, blend);
+            targetPitch = Mathf.Lerp(targetPitch, 0f, blend);
+        }
+
+        float weight = TURN_SPEED * delta;
+        rotation.X = Mathf.LerpAngle(rotation.X, targetPitch, weight);
+        rotation.Y = Mathf.LerpAngle(rotation.Y, targetYaw, weight);
+        rotation.Z = Mathf.LerpAngle(rotation.Z, 0f, weight);
+        _rat.Rotation = rotation;
+    }
+
+    /// <summary>Point roughly <paramref name="distance"/> further along the path, for a stable heading.</summary>
+    private Vector3 LookAheadPoint(float distance)
+    {
+        Vector3 previous = _rat.GlobalPosition;
+        float travelled = 0f;
+
+        for (int i = _currentIndex; i < _pathArray.Length; i++)
+        {
+            travelled += previous.DistanceTo(_pathArray[i]);
+            previous = _pathArray[i];
+
+            if (travelled >= distance)
+                return _pathArray[i];
+        }
+
+        return _pathArray[^1];
     }
 
     public override void Exit()

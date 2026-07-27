@@ -11,7 +11,16 @@ public partial class Rat : CharacterBody3D
     [Export] public float Acceleration = 10f;
     [Export] public Vector3 GrabOrientation { get; set; }
     [Export] public Vector3 GrabOffset { get; set; }
-    [Export] bool debug = true;
+    [Export]
+    bool debug
+    {
+        get => debug;
+        set
+        {
+            debug = value;
+            _fsm.Debug = debug;
+        }
+    }
 
     public Vector3 NavigationTargetPosition;
     private Node3D _navigationTarget;
@@ -46,7 +55,6 @@ public partial class Rat : CharacterBody3D
     {
         _fsm = new FiniteStateMachine(this);
         _fsm.Add("follow", new RatFollowState(this, NavAgent));
-        _fsm.Add("target_reached", new RatTargetReachedState(this));
         _fsm.Add("idle", new RatIdleState(this));
         _fsm.Add("falling", new RatFallingState(this));
         _fsm.Add("landed", new RatLandedState(this));
