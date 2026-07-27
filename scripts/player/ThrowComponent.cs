@@ -79,8 +79,15 @@ public partial class ThrowComponent : Node3D
     public async void StartDelayedCharge()
     {
         _chargeTween = CreateTween();
-        _chargeTween.TweenProperty(this, "_currentForce", MaxThrowForce, ChargeDuration).SetDelay(ChargeStartDelay);
+        _chargeTween.TweenMethod(
+            Callable.From<float>(v => _currentForce = v),
+            ThrowForce,
+            MaxThrowForce,
+            ChargeDuration
+        ).SetDelay(ChargeStartDelay);
         _isCharging = true;
+
+        EventBus.Publish(Event.CameraCharge, ChargeDuration, ChargeStartDelay);
     }
 
     public void ResetCharge()
@@ -90,10 +97,22 @@ public partial class ThrowComponent : Node3D
             _chargeTween.Kill();
         }
         _currentForce = ThrowForce;
+
+        // Only when the charge is abandoned - a completed throw hands the
+        // camera over to the impact effect instead.
+        if (_isCharging)
+        {
+            _isCharging = false;
+            EventBus.Publish(Event.CameraChargeReset);
+        }
     }
 
     public void Throw(Rat rat)
     {
+        float chargeAmount = Mathf.IsEqualApprox(MaxThrowForce, ThrowForce)
+            ? 1f
+            : Mathf.Clamp((_currentForce - ThrowForce) / (MaxThrowForce - ThrowForce), 0f, 1f);
+
         float curveSpeed = Mathf.Remap(
             _currentForce,
             ThrowForce,
@@ -109,10 +128,11 @@ public partial class ThrowComponent : Node3D
         }
 
         rat.InjectState("throw", newState);
+        _isCharging = false;
         ResetCharge();
 
         EventBus.Publish(Event.RatThrown);
-        EventBus.Publish(Event.CameraImpact, 0.1f, 0.35f);
+        EventBus.Publish(Event.CameraImpact, chargeAmount, 0.35f);
     }
 
     private void GenerateMesh()

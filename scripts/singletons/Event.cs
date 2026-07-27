@@ -3,6 +3,8 @@ public enum Event
     RatThrown,
     RatLanded,
     CameraImpact,
+    CameraCharge,
+    CameraChargeReset,
     ObjectPlaced,
     NavigationRegionReady,
     RatSlotted,
