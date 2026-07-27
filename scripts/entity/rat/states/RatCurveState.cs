@@ -1,5 +1,6 @@
 using Godot;
 using System.Reflection.Metadata;
+using System.Runtime.Serialization;
 
 public class RatCurveState : RatState
 {
@@ -27,8 +28,8 @@ public class RatCurveState : RatState
 
         Vector3 startPoint = _rat.GlobalPosition;
         Vector3 targetPoint = _pathArray[_currentIndex];
-
-        _rat.LookAt(targetPoint);
+        if (_rat.GlobalPosition != targetPoint)
+            _rat.LookAt(targetPoint);
 
         _progress += _speed * delta;
         _rat.GlobalPosition = startPoint.Lerp(targetPoint, _progress);
