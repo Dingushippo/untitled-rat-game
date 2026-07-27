@@ -26,8 +26,6 @@ public partial class Rat : CharacterBody3D
             GD.PrintErr("Rat requires a NavigationAgent3D to function.");
         }
 
-        // EventBus.Subscribe(Event.DebugAimMarker, OnDebugMouseClick);
-
         InitStateMachine();
     }
 

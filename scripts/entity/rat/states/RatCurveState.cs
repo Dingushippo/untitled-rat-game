@@ -40,4 +40,10 @@ public class RatCurveState : RatState
             _currentIndex++;
         }
     }
+
+    public override void Exit()
+    {
+        EventBus.Publish(Event.RatLanded);
+    }
+
 }

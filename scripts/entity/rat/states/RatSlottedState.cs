@@ -2,7 +2,7 @@ using Godot;
 using System.Diagnostics.Tracing;
 
 
-public class RatSlottedState : RatLandedState
+public class RatSlottedState : RatState
 {
     private WorkSlot _workSlot;
     public RatSlottedState(Rat owner) : base(owner) { }
@@ -23,12 +23,16 @@ public class RatSlottedState : RatLandedState
         _rat.SetNavAgentEnabled(false);
 
         // TODO Play animation associated with facility/slot
-        
+
         EventBus.Publish(Event.RatSlotted, _workSlot.Facility, _workSlot, _rat);
     }
     public override void Exit()
     {
         _rat.SetNavAgentEnabled(true);
+        if (_workSlot is not null)
+        {
+            _workSlot.Release();
+        }
         EventBus.Publish(Event.RatUnslotted, _workSlot.Facility, _workSlot, _rat);
     }
 }

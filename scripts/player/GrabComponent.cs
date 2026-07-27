@@ -40,11 +40,16 @@ public class GrabComponent
         if (!CanGrab()) return false;
         if ((GodotObject)_rayResult["collider"] is InteractComponent component)
         {
-            CurrentGrabbed = (Rat)component.GetParent();
-            RatGrabState grabState = new RatGrabState(CurrentGrabbed, _player);
-            CurrentGrabbed.InjectState("grab", grabState);
+            InjectGrabState(component.GetParent() as Rat);
         }
         return true;
+    }
+
+    public void InjectGrabState(Rat rat)
+    {
+        CurrentGrabbed = rat;
+        RatGrabState grabState = new RatGrabState(rat, _player);
+        rat.InjectState("grab", grabState);
     }
 
     public void Release()
