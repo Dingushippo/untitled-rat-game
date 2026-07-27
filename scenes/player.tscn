@@ -24,7 +24,7 @@ size = Vector2(0.5, 0.5)
 script = ExtResource("5_qlg0r")
 MaxBounces = 5
 ApproachHeight = 0.1
-CurveStep = 0.02
+CurveSpacing = 0.05
 TangentStrength = 0.135
 metadata/_custom_type_script = "uid://beto8f5fr0mq0"
 

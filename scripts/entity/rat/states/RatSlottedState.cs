@@ -17,7 +17,7 @@ public class RatSlottedState : RatState
 
         Tween slotTween = _rat.CreateTween();
         slotTween.SetParallel(true);
-        slotTween.TweenProperty(_rat, "rotation", _workSlot.GlobalRotation, 0.35f);
+        slotTween.TweenProperty(_rat, "quaternion", LocalSlotRotation(), 0.35f);
         slotTween.TweenProperty(_rat, "global_position", _workSlot.GlobalPosition, 0.35f);
 
         _rat.SetNavAgentEnabled(false);
@@ -29,10 +29,25 @@ public class RatSlottedState : RatState
     public override void Exit()
     {
         _rat.SetNavAgentEnabled(true);
+
         if (_workSlot is not null)
         {
             _workSlot.Release();
         }
         EventBus.Publish(Event.RatUnslotted, _workSlot.Facility, _workSlot, _rat);
+    }
+
+    /// <summary>Slot facing expressed in the rat's parent space, as a quaternion so the tween slerps
+    /// the short way round instead of unwinding Euler angles.</summary>
+    private Quaternion LocalSlotRotation()
+    {
+        Basis target = _workSlot.GlobalBasis.Orthonormalized();
+
+        if (_rat.GetParent() is Node3D parent)
+        {
+            target = parent.GlobalBasis.Orthonormalized().Inverse() * target;
+        }
+
+        return target.GetRotationQuaternion();
     }
 }
