@@ -6,6 +6,7 @@ public partial class Rat : CharacterBody3D
 {
     [Export] public NavigationAgent3D NavAgent;
     [Export] public CollisionShape3D Collider;
+    [Export] public RatDef RatDef;
     [Export] public float Speed = 10f;
     [Export] public float Acceleration = 10f;
     [Export] public Vector3 GrabOrientation { get; set; }

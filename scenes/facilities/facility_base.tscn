@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://ccmwoc6oxxglf"]
 
-[ext_resource type="Script" uid="uid://c5o4hd0ij7hin" path="res://scenes/facilities/FacilityBase.cs" id="1_6j7fg"]
+[ext_resource type="Script" uid="uid://c5o4hd0ij7hin" path="res://scripts/FacilityBase.cs" id="1_grg31"]
 [ext_resource type="Script" uid="uid://dadi1gcc2viyk" path="res://scripts/WorkSlot.cs" id="2_d0lwy"]
+[ext_resource type="Resource" uid="uid://c46gibkbxlvm" path="res://resources/facilities/CryptGarden.tres" id="2_woqmr"]
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_0evyo"]
 albedo_color = Color(1, 1, 0.101960786, 1)
@@ -13,9 +14,11 @@ height = 1.0
 [sub_resource type="SphereShape3D" id="SphereShape3D_pso3n"]
 radius = 2.0
 
-[node name="FacilityBase" type="Node3D" unique_id=364601257 node_paths=PackedStringArray("WorkSlotGroup")]
-script = ExtResource("1_6j7fg")
+[node name="FacilityBase" type="Node3D" unique_id=364601257 node_paths=PackedStringArray("WorkSlotGroup", "DebugLabel")]
+script = ExtResource("1_grg31")
 WorkSlotGroup = NodePath("WorkSlots")
+Facility = ExtResource("2_woqmr")
+DebugLabel = NodePath("DBG_Label")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=465564909]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -46,3 +49,7 @@ script = ExtResource("2_d0lwy")
 [node name="WorkSlot4" type="Marker3D" parent="WorkSlots" unique_id=943344011]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0)
 script = ExtResource("2_d0lwy")
+
+[node name="DBG_Label" type="Label3D" parent="." unique_id=1095051596]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5342169, 0)
+text = "Test"

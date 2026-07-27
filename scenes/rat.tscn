@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://fr1ly1jvytyp"]
 
 [ext_resource type="Script" uid="uid://wgjoesivcax6" path="res://scripts/entity/rat/Rat.cs" id="1_0g0h3"]
+[ext_resource type="Script" uid="uid://buk1fupp26own" path="res://scripts/resources/RatDef.cs" id="2_0g0h3"]
 [ext_resource type="Animation" uid="uid://lkqr1g7vepv5" path="res://assets/animations/RESET.res" id="4_0g0h3"]
 [ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/components/InteractComponent.cs" id="4_3csnj"]
 [ext_resource type="Animation" uid="uid://dj3juhr2gp0sd" path="res://assets/animations/dance.res" id="5_1ux2h"]
@@ -8,6 +9,11 @@
 [ext_resource type="Animation" uid="uid://csaal7y1hb886" path="res://assets/animations/run.res" id="7_7bnys"]
 [ext_resource type="Animation" uid="uid://cgy2hujuwtkbu" path="res://assets/animations/struggle.res" id="8_kc3ue"]
 [ext_resource type="Animation" uid="uid://cyem0o0fvldsf" path="res://assets/animations/walk.res" id="9_ucpu4"]
+
+[sub_resource type="Resource" id="Resource_5f0dk"]
+script = ExtResource("2_0g0h3")
+Id = "base_rat"
+metadata/_custom_type_script = "uid://buk1fupp26own"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3csnj"]
 radius = 14.313511
@@ -288,6 +294,7 @@ collision_mask = 9
 script = ExtResource("1_0g0h3")
 NavAgent = NodePath("NavigationAgent3D")
 Collider = NodePath("CollisionShape3D")
+RatDef = SubResource("Resource_5f0dk")
 Speed = 5.01
 Acceleration = 2.995
 
