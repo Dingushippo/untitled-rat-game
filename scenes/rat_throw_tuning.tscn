@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://b1v3jifhrbck6"]
+
+[ext_resource type="Script" uid="uid://blgc2rap0yq7x" path="res://scripts/singletons/Game/RatThrowTuning.cs" id="1_c6ehr"]
+[ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/player.tscn" id="2_vlfn6"]
+[ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/rat.tscn" id="3_j5j5i"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c6ehr"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_vlfn6"]
+sky_material = SubResource("ProceduralSkyMaterial_c6ehr")
+
+[sub_resource type="Environment" id="Environment_j5j5i"]
+background_mode = 1
+background_color = Color(0.46666667, 0.21568628, 0.21568628, 1)
+sky = SubResource("Sky_vlfn6")
+glow_enabled = true
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_pso3n"]
+albedo_color = Color(0.15686275, 0.4117647, 0.3882353, 1)
+
+[node name="RatThrowTuning" type="Node3D" unique_id=564041277 node_paths=PackedStringArray("Player", "rat")]
+script = ExtResource("1_c6ehr")
+Player = NodePath("Player")
+rat = NodePath("Rat")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=306537898]
+environment = SubResource("Environment_j5j5i")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2028092612]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=632321023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -50)
+use_collision = true
+size = Vector3(10, 1, 100)
+material = SubResource("ORMMaterial3D_pso3n")
+
+[node name="Player" parent="." unique_id=716301107 instance=ExtResource("2_vlfn6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.076132774, 0, -1.6454906)
+
+[node name="ThrowComponent" parent="Player/Camera3D" parent_id_path=PackedInt32Array(716301107, 2056591493) index="1" unique_id=1814457487]
+ThrowForce = 7.0
+MaxThrowForce = 12.0
+ChargeDuration = 1.5
+AngleAdjust = 5.0
+BounceDecay = 0.8
+MaxBounces = 1
+
+[node name="Rat" parent="." unique_id=656995802 instance=ExtResource("3_j5j5i")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -1.185, 0, -3.195)
+debug = false
+
+[editable path="Player"]
+[editable path="Rat"]
