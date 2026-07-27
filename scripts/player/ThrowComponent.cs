@@ -1,10 +1,6 @@
 using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 public partial class ThrowComponent : Node3D
 {
@@ -12,7 +8,7 @@ public partial class ThrowComponent : Node3D
     [Export] public Mesh ReticleMesh;
     [Export] public float ThrowForce = 10f;
     [Export] public float MaxThrowForce = 30f;
-    [Export] public float ChargeSpeed = 2f;
+    [Export] public float ChargeDuration = 2f;
     [Export] public float ChargeStartDelay = 0.2f;
     [Export] public float AngleAdjust = 0f;
     [Export] public float Step = 0.02f;
@@ -30,7 +26,7 @@ public partial class ThrowComponent : Node3D
     private Vector3[] _pathArray;
     private bool _preview = false;
     private bool _isCharging = false;
-    private WorkSlot _targetedSlot = null; 
+    private WorkSlot _targetedSlot = null;
 
     public override void _Ready()
     {
@@ -68,26 +64,23 @@ public partial class ThrowComponent : Node3D
         }
     }
 
-    public override void _Process(double delta)
-    {
-        if (_isCharging)
-        {
-            float chargeFactor = (MaxThrowForce - ThrowForce) / ChargeSpeed;
-            _currentForce = Mathf.Clamp(_currentForce + (float)delta * chargeFactor, ThrowForce, MaxThrowForce);
-        }
-    }
-
+    private Tween _chargeTween;
     public async void StartDelayedCharge()
     {
-        await ToSignal(GetTree().CreateTimer(ChargeStartDelay), SceneTreeTimer.SignalName.Timeout);
+        _chargeTween = CreateTween();
+        _chargeTween.TweenProperty(this, "_currentForce", MaxThrowForce, ChargeDuration).SetDelay(ChargeStartDelay);
         _isCharging = true;
     }
 
     public void ResetCharge()
     {
+        if (_chargeTween != null)
+        {
+            _chargeTween.Kill();
+        }
         _currentForce = ThrowForce;
-        _isCharging = false;
     }
+
     public void Throw(Rat rat)
     {
         float curveSpeed = Mathf.Remap(
@@ -98,14 +91,17 @@ public partial class ThrowComponent : Node3D
             RatCurveState.MAX_SPEED
         );
         RatCurveState newState = new(rat, _pathArray, curveSpeed, _targetedSlot);
-        if (_targetedSlot != null) 
+        if (_targetedSlot != null)
         {
             _targetedSlot.TryReserve(rat);
             _targetedSlot = null;
         }
-        
+
         rat.InjectState("throw", newState);
         ResetCharge();
+
+        EventBus.Publish(Event.RatThrown);
+        EventBus.Publish(Event.CameraImpact, 0.1f, 0.35f);
     }
 
     private void GeneratePath()
@@ -114,13 +110,14 @@ public partial class ThrowComponent : Node3D
 
         Vector3 position = GlobalPosition;
         Vector3 velocity = (-Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(AngleAdjust), 0)) * _currentForce;
-        
+
         int bounces = 0;
         _material.AlbedoColor = Colors.Red;
 
         bool homing = false;
 
         Vector3 target = Vector3.Zero;
+        _targetedSlot = null;
 
         while (points.Count < MaxPoints)
         {

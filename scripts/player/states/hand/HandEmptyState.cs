@@ -8,6 +8,10 @@ public class HandEmptyState : PlayerState
     public override void PhysicsProcess(float delta)
     {
         _player.GrabComponent.PhysicsUpdate();
+        if (_player.GrabComponent.HasGrabbed())
+        {
+            fsm.ChangeState("grab");
+        }
     }
 
     public override void HandleInput(InputEvent @event)

@@ -1,7 +1,8 @@
 public enum Event
 {
-    MouseClick,
-    DebugAimMarker,
+    RatThrown,
+    RatLanded,
+    CameraImpact,
     ObjectPlaced,
     NavigationRegionReady,
     RatSlotted,
