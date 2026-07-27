@@ -2,10 +2,12 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
+[GlobalClass]
 public partial class ThrowComponent : Node3D
 {
     [Export] public Player Player;
     [Export] public Mesh ReticleMesh;
+    [Export] public ThrowType ThrowType;
     [Export] public float ThrowForce = 10f;
     [Export] public float MaxThrowForce = 30f;
     [Export] public float ChargeDuration = 2f;
@@ -23,11 +25,9 @@ public partial class ThrowComponent : Node3D
     private OrmMaterial3D _material;
     private float _currentForce = 0;
     private Vector3 _gravity;
-    private Vector3[] _pathArray;
+    private ThrowPath _currentPath;
     private bool _preview = false;
     private bool _isCharging = false;
-    private WorkSlot _targetedSlot = null;
-
     public override void _Ready()
     {
         _gravity = Player.GetGravity();
@@ -58,7 +58,18 @@ public partial class ThrowComponent : Node3D
     {
         if (_preview)
         {
-            GeneratePath();
+            ThrowContext ctx = new ThrowContext(
+                this,
+                GlobalPosition,
+                -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(AngleAdjust), 0),
+                _currentForce,
+                _gravity,
+                Step,
+                MaxPoints
+            );
+            _currentPath = ThrowType.Simulate(ctx);
+            _material.AlbedoColor = _currentPath.Homing ? Colors.Green : Colors.Red;
+
             GenerateMesh();
             SetReticle();
         }
@@ -90,11 +101,11 @@ public partial class ThrowComponent : Node3D
             RatCurveState.MIN_SPEED,
             RatCurveState.MAX_SPEED
         );
-        RatCurveState newState = new(rat, _pathArray, curveSpeed, _targetedSlot);
-        if (_targetedSlot != null)
+        GD.Print($"Targeted slot: {_currentPath.TargetedSlot}");
+        RatCurveState newState = new(rat, _currentPath.Points, curveSpeed, _currentPath.TargetedSlot);
+        if (_currentPath.TargetedSlot != null)
         {
-            _targetedSlot.TryReserve(rat);
-            _targetedSlot = null;
+            _currentPath.TargetedSlot.TryReserve(rat);
         }
 
         rat.InjectState("throw", newState);
@@ -104,101 +115,12 @@ public partial class ThrowComponent : Node3D
         EventBus.Publish(Event.CameraImpact, 0.1f, 0.35f);
     }
 
-    private void GeneratePath()
-    {
-        List<Vector3> points = new();
-
-        Vector3 position = GlobalPosition;
-        Vector3 velocity = (-Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(AngleAdjust), 0)) * _currentForce;
-
-        int bounces = 0;
-        _material.AlbedoColor = Colors.Red;
-
-        bool homing = false;
-
-        Vector3 target = Vector3.Zero;
-        _targetedSlot = null;
-
-        while (points.Count < MaxPoints)
-        {
-            if (homing)
-            {
-                // Steer toward the target while maintaining speed.
-                Vector3 desiredVelocity =
-                    (target - position).Normalized() * velocity.Length();
-
-                // Lower = slower turn, Higher = snappier turn.
-                const float SteeringStrength = 8f;
-
-                velocity = velocity.Lerp(
-                    desiredVelocity,
-                    SteeringStrength * Step
-                );
-
-                position += velocity * Step;
-                points.Add(position);
-
-                // Close enough.
-                if (position.DistanceTo(target) < 0.05f)
-                {
-                    points.Add(target);
-                    break;
-                }
-
-                continue;
-            }
-
-            velocity += _gravity * Step;
-
-            Vector3 next = position + velocity * Step;
-
-            const uint collisionMask = 1 | 16;
-
-            if (Utils.Raycast(this, position, next, out Dictionary hit, collisionMask))
-            {
-                // Facility hit -> begin homing instead of bouncing.
-                if ((GodotObject)hit["collider"] is Area3D area)
-                {
-                    FacilityBase facility = area.GetParent<FacilityBase>();
-
-                    // Start from the actual collision point.
-                    position = hit["position"].AsVector3();
-                    points.Add(position);
-
-                    if (facility.TryGetClosestWorkSlot(ToGlobal(position), out WorkSlot slot))
-                    {
-                        _material.AlbedoColor = Colors.Green;
-                        homing = true;
-                        target = slot.GlobalPosition;
-                        _targetedSlot = slot;
-                        continue;
-                    }
-                }
-
-                position = hit["position"].AsVector3();
-                points.Add(position);
-
-                velocity = velocity.Bounce(hit["normal"].AsVector3()) * BounceDecay;
-
-                if (++bounces > MaxBounces)
-                    break;
-            }
-            else
-            {
-                position = next;
-                points.Add(position);
-            }
-        }
-
-        _pathArray = points.ToArray();
-    }
-
     private void GenerateMesh()
     {
         _immediateMesh.ClearSurfaces();
         _immediateMesh.SurfaceBegin(Mesh.PrimitiveType.LineStrip, _material);
 
-        foreach (Vector3 v in _pathArray)
+        foreach (Vector3 v in _currentPath.Points)
         {
             _immediateMesh.SurfaceAddVertex(ToLocal(v));
         }
@@ -209,7 +131,7 @@ public partial class ThrowComponent : Node3D
 
     private void SetReticle()
     {
-        Vector3 reticlePos = _pathArray[_pathArray.Length - 1] + Vector3.Up * 0.01f;
+        Vector3 reticlePos = _currentPath.End + Vector3.Up * 0.01f;
         Vector3 targetRaycastPos = reticlePos + Vector3.Down;
         if (Utils.Raycast(this, reticlePos, targetRaycastPos, out Dictionary result, 1))
         {
@@ -233,7 +155,6 @@ public partial class ThrowComponent : Node3D
     public void Reset()
     {
         _preview = false;
-        _pathArray = null;
         _immediateMesh.ClearSurfaces();
         _reticleMeshInstance.Hide();
         ResetCharge();
