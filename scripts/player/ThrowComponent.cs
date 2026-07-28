@@ -56,7 +56,7 @@ public partial class ThrowComponent : Node3D
                 GlobalPosition,
                 -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(Tuning.AngleAdjust), 0),
                 _currentForce,
-                _gravity,
+                _gravity * Player.GrabComponent.CurrentGrabbed.RatDef.Mass,
                 Tuning.Step,
                 Tuning.MaxPoints
             );

@@ -6,7 +6,7 @@ public readonly struct ThrowContext
     public readonly Vector3 Origin;
     public readonly Vector3 Direction;
     public readonly float Force;
-    public readonly Vector3 Gravity;
+    public readonly Vector3 GravityForce;
     public readonly float Step;
     public readonly int MaxPoints;
 
@@ -16,7 +16,7 @@ public readonly struct ThrowContext
         Origin = origin;
         Direction = direction;
         Force = force;
-        Gravity = gravity;
+        GravityForce = gravity;
         Step = step;
         MaxPoints = maxPoints;
     }

@@ -19,7 +19,7 @@ public partial class SimpleThrow : ThrowType
 
         while (points.Count < ctx.MaxPoints)
         {
-            velocity += ctx.Gravity * ctx.Step;
+            velocity += ctx.GravityForce * ctx.Step;
 
             Vector3 next = position + velocity * ctx.Step;
 
