@@ -6,16 +6,16 @@ public class RatCurveState : RatState
     public WorkSlot WorkSlot => Target.IsSlot ? Target.WorkSlot : null;
 
     private readonly Vector3[] _pathArray;
+    private readonly float[] _speeds;
     private readonly float[] _distanceToEnd;
     private readonly RatFlightTuning _tuning;
-    private readonly float _speed;
     private int _currentIndex = 0;
 
-    public RatCurveState(Rat owner, Vector3[] pathArray, float speed, ThrowTarget target = default) : base(owner)
+    public RatCurveState(Rat owner, ThrowPath path) : base(owner)
     {
-        _pathArray = pathArray;
-        _speed = speed;
-        Target = target;
+        _pathArray = path.Points;
+        _speeds = path.Speeds;
+        Target = path.ThrowTarget;
         _tuning = owner.FlightTuning;
 
         _distanceToEnd = new float[_pathArray.Length];
@@ -35,11 +35,16 @@ public class RatCurveState : RatState
             else if (!_rat.IsOnFloor()) nextState = "falling";
             else nextState = "landed";
 
+            // Hand the flight's momentum over so the rat keeps arcing instead of stopping dead in
+            // mid-air and dropping straight down when the simulated path runs out.
+            if (nextState == "falling")
+                _rat.Velocity = ExitVelocity();
+
             fsm.ChangeState(nextState, this);
             return;
         }
 
-        Advance(_speed * delta);
+        Advance(delta);
 
         // Advance can consume the last point; the state change happens next frame.
         if (_currentIndex >= _pathArray.Length)
@@ -48,25 +53,58 @@ public class RatCurveState : RatState
         UpdateRotation(delta);
     }
 
-    /// <summary>Walks the polyline at a constant speed, consuming as many points as the step covers.</summary>
-    private void Advance(float distance)
+    /// <summary>
+    /// Walks the polyline over <paramref name="time"/> seconds using each segment's own simulated
+    /// speed, so the rat actually slows toward the apex, accelerates on the way down, and leaves a
+    /// bounce slower than it arrived. Advancing by a fixed distance instead would discard all of
+    /// that and play every arc back at one flat speed.
+    /// </summary>
+    private void Advance(float time)
     {
-        while (distance > 0f && _currentIndex < _pathArray.Length)
+        while (time > 0f && _currentIndex < _pathArray.Length)
         {
             Vector3 toTarget = _pathArray[_currentIndex] - _rat.GlobalPosition;
             float toTargetLength = toTarget.Length();
 
-            if (toTargetLength <= distance || toTargetLength < 0.0001f)
+            if (toTargetLength < 0.0001f)
             {
                 _rat.GlobalPosition = _pathArray[_currentIndex];
-                distance -= toTargetLength;
                 _currentIndex++;
                 continue;
             }
 
-            _rat.GlobalPosition += toTarget / toTargetLength * distance;
+            float speed = SpeedAt(_currentIndex);
+            float timeToPoint = toTargetLength / speed;
+
+            if (timeToPoint <= time)
+            {
+                _rat.GlobalPosition = _pathArray[_currentIndex];
+                time -= timeToPoint;
+                _currentIndex++;
+                continue;
+            }
+
+            _rat.GlobalPosition += toTarget / toTargetLength * speed * time;
             return;
         }
+    }
+
+    private float SpeedAt(int index)
+    {
+        float simulated = _speeds != null && index < _speeds.Length ? _speeds[index] : _tuning.MinSpeed;
+        return Mathf.Max(simulated * _tuning.SpeedScale, _tuning.MinSpeed);
+    }
+
+    /// <summary>Direction and speed of the path's final segment, for a seamless handoff to free fall.</summary>
+    private Vector3 ExitVelocity()
+    {
+        if (_pathArray.Length < 2)
+            return Vector3.Zero;
+
+        Vector3 last = _pathArray[^1] - _pathArray[^2];
+        return last.LengthSquared() < 0.0001f
+            ? Vector3.Zero
+            : last.Normalized() * SpeedAt(_pathArray.Length - 1);
     }
 
     private void UpdateRotation(float delta)

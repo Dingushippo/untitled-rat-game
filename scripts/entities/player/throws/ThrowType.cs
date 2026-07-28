@@ -13,6 +13,9 @@ public abstract partial class ThrowType : Resource
     [Export] public float CurveSpacing = 0.05f;
     [Export(PropertyHint.Range, "0, 1.0")] public float TangentStrength = 0.2f;
 
+    /// <summary>Speed the rat eases down to as the homing curve delivers it, so arrival isn't a stop-dead.</summary>
+    [Export(PropertyHint.Range, "0.5,20,0.1")] public float ArrivalSpeed = 5f;
+
     public abstract ThrowPath Simulate(ThrowContext ctx);
 
     protected Vector3 Steer(Vector3 pos, Vector3 vel, Vector3 target, float step)
@@ -21,8 +24,10 @@ public abstract partial class ThrowType : Resource
         return vel.Lerp(desired, Mathf.Clamp(SteeringStrength * step, 0, 1));
     }
 
-    protected bool HomeTo(ThrowContext ctx, List<Vector3> points, Vector3 pos, Vector3 vel, Vector3 target, float clearanceY = float.NegativeInfinity)
+    protected bool HomeTo(ThrowContext ctx, ThrowPathBuilder path, Vector3 pos, Vector3 vel, Vector3 target, float clearanceY = float.NegativeInfinity)
     {
+        float entrySpeed = vel.Length();
+
         Vector3 p0 = pos;
         Vector3 p1 = p0 + vel * pos.DistanceTo(target) * TangentStrength;
         p1.Y = Mathf.Max(p1.Y, target.Y);
@@ -55,7 +60,7 @@ public abstract partial class ThrowType : Resource
         float length = travelled[BEZIER_RESOLUTION];
         if (length < 0.0001f)
         {
-            points.Add(target);
+            path.Add(target, ArrivalSpeed);
             return true;
         }
 
@@ -76,7 +81,10 @@ public abstract partial class ThrowType : Resource
                 ? (distance - travelled[segment - 1]) / segmentLength
                 : 0f;
 
-            points.Add(samples[segment - 1].Lerp(samples[segment], weight));
+            path.Add(
+                samples[segment - 1].Lerp(samples[segment], weight),
+                Mathf.Lerp(entrySpeed, ArrivalSpeed, (float)i / count)
+            );
         }
 
         return true;

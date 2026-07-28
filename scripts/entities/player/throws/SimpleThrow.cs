@@ -1,6 +1,5 @@
 using Godot;
 using Godot.Collections;
-using System.Collections.Generic;
 
 
 [GlobalClass]
@@ -12,19 +11,28 @@ public partial class SimpleThrow : ThrowType
     /// <summary>Facility catch volumes - detection only, they never deflect the arc.</summary>
     private const uint FACILITY_TRIGGER_LAYER = 16;
 
-    [Export] public float BounceDecay = 0.8f;
+    [ExportGroup("Bounce")]
+    /// <summary>Fraction of the into-surface speed that comes back out. A rat is not a superball.</summary>
+    [Export(PropertyHint.Range, "0,1,0.01")] public float Restitution = 0.35f;
+
+    /// <summary>Fraction of the along-surface speed scrubbed off by the impact.</summary>
+    [Export(PropertyHint.Range, "0,1,0.01")] public float SurfaceFriction = 0.3f;
+
+    /// <summary>Below this the rebound is too feeble to be worth drawing; drop and let it land.</summary>
+    [Export(PropertyHint.Range, "0,10,0.1")] public float MinBounceSpeed = 1.5f;
+
     [Export] public int MaxBounces = 1;
 
     public override ThrowPath Simulate(ThrowContext ctx)
     {
-        List<Vector3> points = new();
+        ThrowPathBuilder path = new();
 
         Vector3 position = ctx.Origin;
         Vector3 velocity = ctx.Direction * ctx.Force;
 
         int bounces = 0;
 
-        while (points.Count < ctx.MaxPoints)
+        while (path.Count < ctx.MaxPoints)
         {
             velocity += ctx.GravityForce * ctx.Step;
 
@@ -33,7 +41,7 @@ public partial class SimpleThrow : ThrowType
             if (!Utils.Raycast(ctx.Rat, position, next, out Dictionary hit, SOLID_LAYER | FACILITY_TRIGGER_LAYER))
             {
                 position = next;
-                points.Add(position);
+                path.Add(position, velocity.Length());
                 continue;
             }
 
@@ -44,16 +52,16 @@ public partial class SimpleThrow : ThrowType
                 if (area.GetParent() is FacilityBase facility
                     && facility.TryGetThrowTarget(hitPosition, ctx.Rat, out ThrowTarget target))
                 {
-                    points.Add(hitPosition);
+                    path.Add(hitPosition, velocity.Length());
                     bool isHoming = HomeTo(
                         ctx,
-                        points,
+                        path,
                         hitPosition,
                         velocity,
                         target.Position,
                         ApproachClearance(ctx, hitPosition, target)
                     );
-                    return new ThrowPath(points.ToArray(), target, homing: isHoming);
+                    return path.Build(target, homing: isHoming);
                 }
 
                 // Nothing to aim at here, so pass through the trigger and let the facility's own
@@ -61,7 +69,7 @@ public partial class SimpleThrow : ThrowType
                 if (!Utils.Raycast(ctx.Rat, hitPosition, next, out hit, SOLID_LAYER, collideWithAreas: false))
                 {
                     position = next;
-                    points.Add(position);
+                    path.Add(position, velocity.Length());
                     continue;
                 }
 
@@ -69,15 +77,30 @@ public partial class SimpleThrow : ThrowType
             }
 
             position = hitPosition;
-            points.Add(position);
+            path.Add(position, velocity.Length());
 
-            velocity = velocity.Bounce(hit["normal"].AsVector3()) * BounceDecay;
+            velocity = Deflect(velocity, hit["normal"].AsVector3());
 
-            if (++bounces > MaxBounces)
+            if (++bounces > MaxBounces || velocity.Length() < MinBounceSpeed)
                 break;
         }
 
-        return new ThrowPath(points.ToArray());
+        return path.Build();
+    }
+
+    /// <summary>
+    /// Splits the impact into its into-surface and along-surface parts and damps them separately.
+    /// A single uniform decay on <c>Vector3.Bounce</c> cannot express that: it returns the same
+    /// fraction of speed no matter how the rat hits, so a near-vertical throw rebounded almost as
+    /// fast as it arrived. Restitution is what kills that, friction is what makes glancing hits
+    /// skid instead of skipping.
+    /// </summary>
+    private Vector3 Deflect(Vector3 velocity, Vector3 normal)
+    {
+        Vector3 intoSurface = normal * velocity.Dot(normal);
+        Vector3 alongSurface = velocity - intoSurface;
+
+        return alongSurface * (1f - SurfaceFriction) - intoSurface * Restitution;
     }
 
     /// <summary>
