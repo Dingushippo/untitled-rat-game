@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_throw")
-MaxBounces = 3
+MaxBounces = 20
 ArrivalDistance = 0.05
 ApproachHeight = 0.1
 CurveSpacing = 0.05

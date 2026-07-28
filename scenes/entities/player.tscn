@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/entities/player/abilities/ThrowComponent.cs" id="4_dqkch"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/entities/hand_controller.tscn" id="6_tuyoq"]
-[ext_resource type="Resource" path="res://resources/throws/simple_throw.tres" id="7_throw"]
-[ext_resource type="Resource" path="res://resources/tuning/throw_tuning.tres" id="8_tuning"]
+[ext_resource type="Resource" uid="uid://ca2tgeh8qeapw" path="res://resources/throws/simple_throw.tres" id="7_throw"]
+[ext_resource type="Resource" uid="uid://b2dawaso2loby" path="res://resources/tuning/throw_tuning.tres" id="8_tuning"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
