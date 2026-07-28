@@ -19,6 +19,12 @@ public partial class FacilityBase : StaticBody3D
     private ProductionComponent _production;
     private int _lastOutputTotal = -1;
 
+    /// <summary>
+    /// World Y of the top of this facility's collision shapes. Homing throws lift their approach
+    /// above this so the curve arcs over the structure instead of clipping through it.
+    /// </summary>
+    public float ColliderTopY { get; private set; }
+
     public override void _Ready()
     {
         if (Facility is null)
@@ -38,6 +44,7 @@ public partial class FacilityBase : StaticBody3D
         }
 
         _production = new ProductionComponent(_workSlots);
+        ColliderTopY = ComputeColliderTopY();
 
         // A null/empty filter set means the facility accepts nothing by throw, which is
         // correct for a raw producer - only recipes with inputs have an intake.
@@ -141,6 +148,26 @@ public partial class FacilityBase : StaticBody3D
 
         InventoryTransfer.Move(Output, rat.Cargo);
         RefreshOutputPrompt();
+    }
+
+    /// <summary>Highest point of any owned collision shape, in world space.</summary>
+    private float ComputeColliderTopY()
+    {
+        float top = GlobalPosition.Y;
+
+        foreach (Node child in GetChildren())
+        {
+            if (child is not CollisionShape3D shapeNode || shapeNode.Disabled || shapeNode.Shape is null)
+                continue;
+
+            Mesh debugMesh = shapeNode.Shape.GetDebugMesh();
+            if (debugMesh is null) continue;
+
+            Aabb bounds = shapeNode.GlobalTransform * debugMesh.GetAabb();
+            top = Mathf.Max(top, bounds.End.Y);
+        }
+
+        return top;
     }
 
     private void RefreshOutputPrompt()

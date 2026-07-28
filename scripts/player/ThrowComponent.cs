@@ -10,6 +10,11 @@ public partial class ThrowComponent : Node3D
     [Export] public ThrowType ThrowType;
     [Export] public ThrowTuning Tuning;
 
+    [ExportGroup("Path colours")]
+    [Export] public Color FreeThrowColor = Colors.Red;
+    [Export] public Color SlotThrowColor = Colors.Green;
+    [Export] public Color IntakeThrowColor = Colors.DeepSkyBlue;
+
     private MeshInstance3D _pathMeshInstance;
     private MeshInstance3D _reticleMeshInstance;
     private ImmediateMesh _immediateMesh;
@@ -61,11 +66,18 @@ public partial class ThrowComponent : Node3D
                 Tuning.MaxPoints
             );
             _currentPath = ThrowType.Simulate(ctx);
-            _material.AlbedoColor = _currentPath.Homing ? Colors.Green : Colors.Red;
+            _material.AlbedoColor = PathColor(_currentPath);
 
             GenerateMesh();
             SetReticle();
         }
+    }
+
+    /// <summary>Blue means the throw feeds the facility, green means it staffs a slot.</summary>
+    private Color PathColor(ThrowPath path)
+    {
+        if (path.ThrowTarget.IsIntake) return IntakeThrowColor;
+        return path.Homing ? SlotThrowColor : FreeThrowColor;
     }
 
     private Tween _chargeTween;

@@ -21,13 +21,22 @@ public abstract partial class ThrowType : Resource
         return vel.Lerp(desired, Mathf.Clamp(SteeringStrength * step, 0, 1));
     }
 
-    protected bool HomeTo(ThrowContext ctx, List<Vector3> points, Vector3 pos, Vector3 vel, Vector3 target)
+    protected bool HomeTo(ThrowContext ctx, List<Vector3> points, Vector3 pos, Vector3 vel, Vector3 target, float clearanceY = float.NegativeInfinity)
     {
         Vector3 p0 = pos;
         Vector3 p1 = p0 + vel * pos.DistanceTo(target) * TangentStrength;
         p1.Y = Mathf.Max(p1.Y, target.Y);
         Vector3 p2 = target + Vector3.Up * ApproachHeight;
         Vector3 p3 = target;
+
+        // Lift the middle control points over the structure, otherwise a curve aimed at a slot on
+        // the far side cuts straight through the facility's collider.
+        if (!float.IsNegativeInfinity(clearanceY))
+        {
+            float minY = clearanceY + ApproachHeight;
+            p1.Y = Mathf.Max(p1.Y, minY);
+            p2.Y = Mathf.Max(p2.Y, minY);
+        }
 
         // Sample finely first so the curve can be re-sampled by arc length -
         // stepping t uniformly bunches points up wherever the curve is tight.
