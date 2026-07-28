@@ -22,6 +22,7 @@ public partial class Player : CharacterBody3D
     public Vector3 Gravity;
     public GrabComponent GrabComponent;
     public CrouchComponent CrouchComponent;
+    public InteractComponent InteractComponent;
     private FiniteStateMachine _movementFsm;
     private FiniteStateMachine _handFsm;
 
@@ -29,6 +30,7 @@ public partial class Player : CharacterBody3D
     {
         GrabComponent = new(this);
         CrouchComponent = new(this);
+        InteractComponent = new(this);
         Gravity = GetGravity();
         InitStateMachines();
     }
@@ -41,6 +43,7 @@ public partial class Player : CharacterBody3D
     }
     public override void _PhysicsProcess(double delta)
     {
+        InteractComponent.PhysicsUpdate();
         _movementFsm.StatePhysicsProcess((float)delta);
         _handFsm.StatePhysicsProcess((float)delta);
     }

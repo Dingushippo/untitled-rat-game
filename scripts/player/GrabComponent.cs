@@ -1,13 +1,14 @@
 using Godot;
 using Godot.Collections;
 using System.Diagnostics.Tracing;
+using System.Runtime.CompilerServices;
 
 public class GrabComponent
 {
     const float GRAB_DISTANCE = 3f;
     public Rat CurrentGrabbed;
     private Player _player;
-    private Dictionary _rayResult;
+    private InteractAreaComponent _interactAreaComponent;
     public GrabComponent(Player player)
     {
         _player = player;
@@ -15,18 +16,21 @@ public class GrabComponent
 
     public void PhysicsUpdate()
     {
-        _rayResult = null;
-        Vector3 rayStart = _player.Camera.GlobalPosition;
-        Vector3 rayEnd = rayStart + -_player.Camera.GlobalBasis.Z * GRAB_DISTANCE;
-        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, 4))
-        {
-            _rayResult = result;
-        }
+        _interactAreaComponent = _player.InteractComponent.ComponentLookedAt;
     }
 
     public bool HasGrabbed() => CurrentGrabbed != null;
 
-    public bool CanGrab() => _rayResult != null;
+    public bool CanGrab(out Rat rat)
+    {
+        rat = null;
+        if (_interactAreaComponent != null && _interactAreaComponent.GetOwner() is Rat ratOut)
+        {
+            rat = ratOut;
+            return true;
+        }
+        return false;
+    }
 
     public Rat Retrieve()
     {
@@ -37,12 +41,12 @@ public class GrabComponent
 
     public bool TryGrab()
     {
-        if (!CanGrab()) return false;
-        if ((GodotObject)_rayResult["collider"] is InteractComponent component)
+        if (CanGrab(out Rat rat))
         {
-            InjectGrabState(component.GetParent() as Rat);
+            InjectGrabState(rat);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void InjectGrabState(Rat rat)

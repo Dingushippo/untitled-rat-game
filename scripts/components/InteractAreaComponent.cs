@@ -3,7 +3,7 @@ using Godot;
 
 
 [GlobalClass]
-public partial class InteractComponent : Area3D
+public partial class InteractAreaComponent : Area3D
 {
     [Export] public string InteractionText = "Interact";
     [Export] public bool ShowInteractionText = true;
@@ -20,12 +20,12 @@ public partial class InteractComponent : Area3D
     }
 
     private void InstantiateInteractionLabel()
-    {        
+    {
         interactionLabel = new Label3D
         {
             Visible = false,
             Text = InteractionText,
-            Billboard = BaseMaterial3D.BillboardModeEnum.Enabled,
+            // Billboard = BaseMaterial3D.BillboardModeEnum.FixedY,
             Transform = new Transform3D(Basis.Identity, InteractionTextOffset),
         };
         AddChild(interactionLabel);
