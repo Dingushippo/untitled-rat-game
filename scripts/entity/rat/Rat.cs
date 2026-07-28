@@ -22,11 +22,10 @@ public partial class Rat : CharacterBody3D
             _fsm.Debug = debug;
         }
     }
-
+    public Inventory Cargo;
     public Vector3 NavigationTargetPosition;
     private Node3D _navigationTarget;
     private Node3D _navigationTargetOriginal;
-
     private FiniteStateMachine _fsm;
 
     public override void _Ready()
@@ -37,7 +36,7 @@ public partial class Rat : CharacterBody3D
         {
             GD.PrintErr("Rat requires a NavigationAgent3D to function.");
         }
-
+        Cargo = new Inventory(RatDef.MaxCapacity);
         InitStateMachine();
     }
 

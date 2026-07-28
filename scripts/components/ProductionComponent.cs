@@ -15,24 +15,27 @@ public class ProductionComponent
         _workSlots = workSlots;
     }
 
-    public void Process(FacilityDef facility, float delta)
+    public void Process(FacilityBase @base, float delta)
     {
         StaffedSlots = _workSlots.Count(slot => slot.IsOccupied);
         ProductionRate = _workSlots.Sum(slot => slot.Occupant?.RatDef.WorkRate ?? 0) / StaffedSlots;
 
         if (StaffedSlots == 0) return;
 
-        if (Buffer > facility.BufferSize)
+        if (@base.Output.Total > @base.Facility.BufferSize)
         {
             ProductionRate /= BUFFER_PENALTY;
         }
-        if (_timer < facility.CycleSeconds)
+        if (_timer < @base.Facility.CycleSeconds)
         {
             _timer += StaffedSlots * ProductionRate * delta;
             return;
         }
-        Buffer += facility.Outputs.Sum(f => f.Value);
-        EventBus.Publish(Event.ProductionCompleted, facility.Outputs);
+        if (@base.Input.TryRemove(@base.Facility.Inputs))
+        {
+            @base.Output.Add(@base.Facility.Inputs);
+            EventBus.Publish(Event.ProductionCompleted, @base.Facility.Outputs);
+        }
         _timer = 0;
     }
 
