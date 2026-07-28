@@ -1,9 +1,9 @@
 [gd_scene format=4 uid="uid://fr1ly1jvytyp"]
 
-[ext_resource type="Script" uid="uid://wgjoesivcax6" path="res://scripts/entity/rat/Rat.cs" id="1_0g0h3"]
-[ext_resource type="Script" uid="uid://buk1fupp26own" path="res://scripts/resources/RatDef.cs" id="2_0g0h3"]
+[ext_resource type="Script" uid="uid://wgjoesivcax6" path="res://scripts/entities/rat/Rat.cs" id="1_0g0h3"]
+[ext_resource type="Script" uid="uid://buk1fupp26own" path="res://scripts/entities/rat/RatDef.cs" id="2_0g0h3"]
 [ext_resource type="Animation" uid="uid://lkqr1g7vepv5" path="res://assets/animations/RESET.res" id="4_0g0h3"]
-[ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/components/InteractComponent.cs" id="4_3csnj"]
+[ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/interaction/InteractAreaComponent.cs" id="4_3csnj"]
 [ext_resource type="Animation" uid="uid://dj3juhr2gp0sd" path="res://assets/animations/dance.res" id="5_1ux2h"]
 [ext_resource type="Animation" uid="uid://ceab7y7x038uw" path="res://assets/animations/idle.res" id="6_fdlk1"]
 [ext_resource type="Animation" uid="uid://csaal7y1hb886" path="res://assets/animations/run.res" id="7_7bnys"]

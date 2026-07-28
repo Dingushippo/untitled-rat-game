@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://dbw8km56wffhp"]
 
-[ext_resource type="Script" uid="uid://bfww8bukelfaw" path="res://scripts/NavigationRegion3d.cs" id="1_jyhfs"]
+[ext_resource type="Script" uid="uid://bfww8bukelfaw" path="res://scripts/world/NavigationRegion3d.cs" id="1_jyhfs"]
 [ext_resource type="Texture2D" uid="uid://d1c70tsq6n0uu" path="res://assets/rough-checked-texture-collage.jpg" id="1_sugp2"]
-[ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/rat.tscn" id="2_jyhfs"]
-[ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/player.tscn" id="3_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/entities/rat.tscn" id="2_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="3_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/facility_base.tscn" id="5_tbgi4"]
 [ext_resource type="Resource" path="res://resources/facilities/FungalStill.tres" id="6_fstil"]
 

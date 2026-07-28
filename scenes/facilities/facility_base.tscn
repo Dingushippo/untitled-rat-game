@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://ccmwoc6oxxglf"]
 
-[ext_resource type="Script" uid="uid://c5o4hd0ij7hin" path="res://scripts/FacilityBase.cs" id="1_grg31"]
-[ext_resource type="Script" uid="uid://dadi1gcc2viyk" path="res://scripts/WorkSlot.cs" id="2_d0lwy"]
+[ext_resource type="Script" uid="uid://c5o4hd0ij7hin" path="res://scripts/facilities/FacilityBase.cs" id="1_grg31"]
+[ext_resource type="Script" uid="uid://dadi1gcc2viyk" path="res://scripts/facilities/WorkSlot.cs" id="2_d0lwy"]
 [ext_resource type="Resource" uid="uid://c46gibkbxlvm" path="res://resources/facilities/CryptGarden.tres" id="2_woqmr"]
-[ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/components/InteractAreaComponent.cs" id="3_woqmr"]
+[ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/interaction/InteractAreaComponent.cs" id="3_woqmr"]
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_0evyo"]
 albedo_color = Color(1, 1, 0.101960786, 1)

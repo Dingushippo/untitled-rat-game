@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ObjectResource" format=3 uid="uid://cm3vqabjmt3ra"]
 
-[ext_resource type="Script" uid="uid://dctljiq1jpchh" path="res://scripts/resources/ObjectResource.cs" id="1_5jlya"]
+[ext_resource type="Script" uid="uid://dctljiq1jpchh" path="res://scripts/placement/ObjectResource.cs" id="1_5jlya"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_yipj1"]
 radius = 0.25

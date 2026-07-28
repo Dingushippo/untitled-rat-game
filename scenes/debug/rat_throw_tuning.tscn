@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://b1v3jifhrbck6"]
 
-[ext_resource type="Script" uid="uid://blgc2rap0yq7x" path="res://scripts/singletons/Game/RatThrowTuning.cs" id="1_c6ehr"]
-[ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/player.tscn" id="2_vlfn6"]
-[ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/rat.tscn" id="3_j5j5i"]
+[ext_resource type="Script" uid="uid://blgc2rap0yq7x" path="res://scripts/debug/RatThrowTuning.cs" id="1_c6ehr"]
+[ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="2_vlfn6"]
+[ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/entities/rat.tscn" id="3_j5j5i"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c6ehr"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)

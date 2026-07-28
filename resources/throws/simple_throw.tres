@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SimpleThrow" format=3 uid="uid://ca2tgeh8qeapw"]
 
-[ext_resource type="Script" uid="uid://beto8f5fr0mq0" path="res://scripts/player/throws/SimpleThrow.cs" id="1_throw"]
+[ext_resource type="Script" uid="uid://beto8f5fr0mq0" path="res://scripts/entities/player/throws/SimpleThrow.cs" id="1_throw"]
 
 [resource]
 script = ExtResource("1_throw")

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="FacilityDef" format=3]
 
-[ext_resource type="Script" uid="uid://tbwlcju5hrln" path="res://scripts/resources/FacilityDef.cs" id="1_jx4dq"]
+[ext_resource type="Script" uid="uid://tbwlcju5hrln" path="res://scripts/facilities/FacilityDef.cs" id="1_jx4dq"]
 
 [resource]
 script = ExtResource("1_jx4dq")

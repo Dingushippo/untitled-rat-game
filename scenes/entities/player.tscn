@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://doppcexk44ncy"]
 
-[ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/player/Player.cs" id="1_dqkch"]
-[ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/player/ThrowComponent.cs" id="4_dqkch"]
-[ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/player/PlayerCamera.cs" id="4_fjrip"]
-[ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/hand_controller.tscn" id="6_tuyoq"]
+[ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/entities/player/Player.cs" id="1_dqkch"]
+[ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/entities/player/abilities/ThrowComponent.cs" id="4_dqkch"]
+[ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
+[ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/entities/hand_controller.tscn" id="6_tuyoq"]
 [ext_resource type="Resource" path="res://resources/throws/simple_throw.tres" id="7_throw"]
 [ext_resource type="Resource" path="res://resources/tuning/throw_tuning.tres" id="8_tuning"]
 
