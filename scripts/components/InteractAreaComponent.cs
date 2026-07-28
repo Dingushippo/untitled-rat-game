@@ -25,7 +25,7 @@ public partial class InteractAreaComponent : Area3D
         {
             Visible = false,
             Text = InteractionText,
-            // Billboard = BaseMaterial3D.BillboardModeEnum.FixedY,
+            Billboard = BaseMaterial3D.BillboardModeEnum.FixedY,
             Transform = new Transform3D(Basis.Identity, InteractionTextOffset),
         };
         AddChild(interactionLabel);
