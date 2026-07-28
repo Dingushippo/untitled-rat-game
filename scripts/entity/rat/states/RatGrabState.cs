@@ -13,10 +13,15 @@ public class RatGrabState : RatState
         _rat.GlobalPosition = _player.ThrowComponent.GlobalPosition;
         _rat.Reparent(_player.ThrowComponent);
         _rat.Collider.Disabled = true;
+
+        // Held rats sit right in front of the camera; leaving them on the interact layer
+        // would swallow every raycast aimed at whatever the player is walking up to.
+        _rat.InteractArea?.SetActive(false);
     }
     public override void Exit()
     {
         _rat.Reparent(_prevParent);
         _rat.Collider.Disabled = false;
+        _rat.InteractArea?.SetActive(true);
     }
 }

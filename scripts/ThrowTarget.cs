@@ -9,6 +9,11 @@ public readonly struct ThrowTarget
     public readonly WorkSlot WorkSlot;
     public Vector3 Position => Anchor.GlobalPosition;
 
+    /// <summary>A default ThrowTarget means "no target"; a real one always has a facility.</summary>
+    public bool IsValid => Facility != null && Anchor != null;
+    public bool IsSlot => IsValid && Kind == ThrowTargetKind.Slot;
+    public bool IsIntake => IsValid && Kind == ThrowTargetKind.Intake;
+
     private ThrowTarget(
         ThrowTargetKind kind,
         FacilityBase facility,

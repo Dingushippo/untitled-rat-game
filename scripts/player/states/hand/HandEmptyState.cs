@@ -16,8 +16,11 @@ public class HandEmptyState : PlayerState
 
     public override void HandleInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("grab"))
+        if (@event.IsActionPressed("interact"))
         {
+            // Facilities and other handlers claim the key first; picking up a rat is the fallback.
+            if (_player.InteractComponent.IsLookingAtHandler) return;
+
             if (_player.GrabComponent.TryGrab())
             {
                 fsm.ChangeState("grab");

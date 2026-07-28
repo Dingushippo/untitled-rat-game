@@ -10,8 +10,12 @@ public class HandGrabState : PlayerState
     }
     public override void HandleInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("grab"))
+        if (@event.IsActionPressed("interact"))
         {
+            // "interact" doubles as grab/drop: if the crosshair is on something that handles
+            // interaction, that wins and the rat stays in hand.
+            if (_player.InteractComponent.IsLookingAtHandler) return;
+
             if (_player.GrabComponent.HasGrabbed())
             {
                 _player.GrabComponent.Release();

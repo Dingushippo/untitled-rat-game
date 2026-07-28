@@ -22,7 +22,7 @@ public partial class HandController : Node3D
     
 	public override void _Input(InputEvent @event)
     {
-        if (@event.IsActionPressed("grab") && _handTarget != null)
+        if (@event.IsActionPressed("interact") && _handTarget != null)
 		{
 			ReleaseTarget();
 		}

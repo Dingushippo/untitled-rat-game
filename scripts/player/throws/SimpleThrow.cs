@@ -25,7 +25,7 @@ public partial class SimpleThrow : ThrowType
 
             const uint collisionMask = 1 | 16;
 
-            if (Utils.Raycast(ctx.Source, position, next, out Dictionary hit, collisionMask))
+            if (Utils.Raycast(ctx.Rat, position, next, out Dictionary hit, collisionMask))
             {
                 position = hit["position"].AsVector3();
                 points.Add(position);
@@ -34,10 +34,10 @@ public partial class SimpleThrow : ThrowType
                     FacilityBase facility = area.GetParent<FacilityBase>();
                     if (facility != null)
                     {
-                        if (facility.TryGetClosestWorkSlot(position, out WorkSlot slot))
+                        if (facility.TryGetThrowTarget(position, ctx.Rat, out ThrowTarget target))
                         {
-                            bool isHoming = HomeTo(ctx, points, position, velocity, slot.GlobalPosition);
-                            return new ThrowPath(points.ToArray(), slot, homing: isHoming);
+                            bool isHoming = HomeTo(ctx, points, position, velocity, target.Position);
+                            return new ThrowPath(points.ToArray(), target, homing: isHoming);
                         }
                     }
                 }

@@ -52,7 +52,7 @@ public partial class ThrowComponent : Node3D
         if (_preview)
         {
             ThrowContext ctx = new ThrowContext(
-                this,
+                Player.GrabComponent.CurrentGrabbed,
                 GlobalPosition,
                 -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(Tuning.AngleAdjust), 0),
                 _currentForce,
@@ -110,10 +110,10 @@ public partial class ThrowComponent : Node3D
 
         float curveSpeed = Mathf.Lerp(flight.MinSpeed, flight.MaxSpeed, chargeAmount);
 
-        RatCurveState newState = new(rat, _currentPath.Points, curveSpeed, _currentPath.TargetedSlot);
-        if (_currentPath.TargetedSlot != null)
+        RatCurveState newState = new(rat, _currentPath.Points, curveSpeed, _currentPath.ThrowTarget);
+        if (_currentPath.ThrowTarget.IsSlot)
         {
-            _currentPath.TargetedSlot.TryReserve(rat);
+            _currentPath.ThrowTarget.WorkSlot.TryReserve(rat);
         }
 
         rat.InjectState("throw", newState);

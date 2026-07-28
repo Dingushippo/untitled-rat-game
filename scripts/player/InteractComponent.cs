@@ -9,6 +9,12 @@ public partial class InteractComponent
     public InteractAreaComponent ComponentLookedAt;
     private Player _player;
 
+    /// <summary>
+    /// True when the thing under the crosshair actually handles interaction. "interact" doubles as
+    /// grab/drop, so the hand states use this to know when to yield the key.
+    /// </summary>
+    public bool IsLookingAtHandler => ComponentLookedAt is not null && ComponentLookedAt.HasHandler;
+
     public InteractComponent(Player player)
     {
         _player = player;
@@ -20,27 +26,23 @@ public partial class InteractComponent
         Vector3 rayStart = _player.Camera.GlobalPosition;
         Vector3 rayEnd = rayStart + -_player.Camera.GlobalBasis.Z * InteractDistance;
 
-        // InteractAreaComponent newComponent = null;
-        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, 4))
+        InteractAreaComponent newComponent = null;
+        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, InteractAreaComponent.INTERACT_LAYER))
         {
             RayResult = result;
-            InteractAreaComponent newComponent = (InteractAreaComponent)RayResult["collider"];
-            if (newComponent != ComponentLookedAt && ComponentLookedAt != null)
-            {
-                ComponentLookedAt.IsLookedAwayFrom();
-            }
-            ComponentLookedAt = newComponent;
-            ComponentLookedAt.IsLookedAt();
+            newComponent = result["collider"].As<GodotObject>() as InteractAreaComponent;
         }
-        else if (ComponentLookedAt != null)
+
+        if (newComponent != ComponentLookedAt)
         {
-            ComponentLookedAt.IsLookedAwayFrom();
-            ComponentLookedAt = null;
+            ComponentLookedAt?.IsLookedAwayFrom();
+            ComponentLookedAt = newComponent;
         }
+        ComponentLookedAt?.IsLookedAt();
 
         if (Input.IsActionJustPressed("interact") && ComponentLookedAt != null)
         {
-            ComponentLookedAt.Interact();
+            ComponentLookedAt.Interact(_player);
         }
     }
 }

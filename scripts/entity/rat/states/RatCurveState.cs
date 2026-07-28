@@ -2,7 +2,8 @@ using Godot;
 
 public class RatCurveState : RatState
 {
-    public WorkSlot WorkSlot = null;
+    public readonly ThrowTarget Target;
+    public WorkSlot WorkSlot => Target.IsSlot ? Target.WorkSlot : null;
 
     private readonly Vector3[] _pathArray;
     private readonly float[] _distanceToEnd;
@@ -10,11 +11,11 @@ public class RatCurveState : RatState
     private readonly float _speed;
     private int _currentIndex = 0;
 
-    public RatCurveState(Rat owner, Vector3[] pathArray, float speed, WorkSlot slot = null) : base(owner)
+    public RatCurveState(Rat owner, Vector3[] pathArray, float speed, ThrowTarget target = default) : base(owner)
     {
         _pathArray = pathArray;
         _speed = speed;
-        WorkSlot = slot;
+        Target = target;
         _tuning = owner.FlightTuning;
 
         _distanceToEnd = new float[_pathArray.Length];
@@ -29,7 +30,8 @@ public class RatCurveState : RatState
         if (_currentIndex >= _pathArray.Length)
         {
             string nextState;
-            if (WorkSlot != null) nextState = "slotted";
+            if (Target.IsSlot) nextState = "slotted";
+            else if (Target.IsIntake) nextState = "intake";
             else if (!_rat.IsOnFloor()) nextState = "falling";
             else nextState = "landed";
 
@@ -85,10 +87,10 @@ public class RatCurveState : RatState
         );
 
         // Settle into the slot's facing over the last stretch so the handoff isn't a snap.
-        if (WorkSlot != null)
+        if (Target.IsSlot)
         {
             float blend = 1f - Mathf.Clamp(_distanceToEnd[_currentIndex] / _tuning.ApproachBlendDistance, 0f, 1f);
-            targetYaw = Mathf.LerpAngle(targetYaw, WorkSlot.GlobalRotation.Y, blend);
+            targetYaw = Mathf.LerpAngle(targetYaw, Target.WorkSlot.GlobalRotation.Y, blend);
             targetPitch = Mathf.Lerp(targetPitch, 0f, blend);
         }
 

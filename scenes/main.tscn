@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/rat.tscn" id="2_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/player.tscn" id="3_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/facility_base.tscn" id="5_tbgi4"]
+[ext_resource type="Resource" path="res://resources/facilities/FungalStill.tres" id="6_fstil"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -111,3 +112,7 @@ transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -9.550504, -0.01
 
 [node name="FacilityBase" parent="." unique_id=364601257 instance=ExtResource("5_tbgi4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -5.4256687)
+
+[node name="FungalStill" parent="." unique_id=364601258 instance=ExtResource("5_tbgi4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -5.4256687)
+Facility = ExtResource("6_fstil")

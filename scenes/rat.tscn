@@ -288,13 +288,14 @@ _data = {
 &"walk": ExtResource("9_ucpu4")
 }
 
-[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("NavAgent", "Collider")]
+[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("NavAgent", "Collider", "InteractArea")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 collision_layer = 8
 collision_mask = 9
 script = ExtResource("1_0g0h3")
 NavAgent = NodePath("NavigationAgent3D")
 Collider = NodePath("CollisionShape3D")
+InteractArea = NodePath("InteractComponent")
 RatDef = SubResource("Resource_5f0dk")
 FlightTuning = ExtResource("10_flight")
 Speed = 5.01

@@ -30,11 +30,11 @@ public class RatSlottedState : RatState
     {
         _rat.SetNavAgentEnabled(true);
 
-        if (_workSlot is not null)
-        {
-            _workSlot.Release();
-        }
-        EventBus.Publish(Event.RatUnslotted, _workSlot.Facility, _workSlot, _rat);
+        if (_workSlot is null) return;
+
+        FacilityBase facility = _workSlot.Facility;
+        _workSlot.Release();
+        EventBus.Publish(Event.RatUnslotted, facility, _workSlot, _rat);
     }
 
     /// <summary>Slot facing expressed in the rat's parent space, as a quaternion so the tween slerps

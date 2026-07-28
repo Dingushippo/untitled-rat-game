@@ -1,15 +1,20 @@
-[gd_resource type="Resource" script_class="FacilityDef" format=3 uid="uid://c46gibkbxlvm"]
+[gd_resource type="Resource" script_class="FacilityDef" format=3]
 
 [ext_resource type="Script" uid="uid://tbwlcju5hrln" path="res://scripts/resources/FacilityDef.cs" id="1_jx4dq"]
 
 [resource]
 script = ExtResource("1_jx4dq")
-Id = "crypt_garden"
-DisplayName = "Crypt garden"
+Id = "fungal_still"
+DisplayName = "Fungal still"
 SlotCount = 3
-Inputs = {}
+Inputs = Dictionary[String, int]({
+"ichor_root": 2
+})
 Outputs = Dictionary[String, int]({
-"ichor_root": 1
+"stew": 1
 })
 CycleSeconds = 6.0
+CatchRadius = 2.0
+BufferSize = 10
+BufferPenaltyRatio = 0.5
 metadata/_custom_type_script = "uid://tbwlcju5hrln"

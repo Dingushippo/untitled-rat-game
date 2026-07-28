@@ -2,7 +2,7 @@ using Godot;
 
 public readonly struct ThrowContext
 {
-    public readonly Node3D Source;
+    public readonly Rat Rat;
     public readonly Vector3 Origin;
     public readonly Vector3 Direction;
     public readonly float Force;
@@ -10,9 +10,9 @@ public readonly struct ThrowContext
     public readonly float Step;
     public readonly int MaxPoints;
 
-    public ThrowContext(Node3D source, Vector3 origin, Vector3 direction, float force, Vector3 gravity, float step, int maxPoints)
+    public ThrowContext(Rat rat, Vector3 origin, Vector3 direction, float force, Vector3 gravity, float step, int maxPoints)
     {
-        Source = source;
+        Rat = rat;
         Origin = origin;
         Direction = direction;
         Force = force;

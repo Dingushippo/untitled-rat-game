@@ -6,6 +6,7 @@ public partial class Rat : CharacterBody3D
 {
     [Export] public NavigationAgent3D NavAgent;
     [Export] public CollisionShape3D Collider;
+    [Export] public InteractAreaComponent InteractArea;
     [Export] public RatDef RatDef;
     [Export] public RatFlightTuning FlightTuning;
     [Export] public float Speed = 10f;
@@ -61,6 +62,7 @@ public partial class Rat : CharacterBody3D
         _fsm.Add("falling", new RatFallingState(this));
         _fsm.Add("landed", new RatLandedState(this));
         _fsm.Add("slotted", new RatSlottedState(this));
+        _fsm.Add("intake", new RatIntakeState(this));
         _fsm.InitState("idle");
         _fsm.Debug = true;
     }

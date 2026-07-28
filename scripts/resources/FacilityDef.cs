@@ -12,4 +12,9 @@ public partial class FacilityDef : Resource
     [Export] public float CycleSeconds = 8f;
     [Export] public float CatchRadius = 2f;
     [Export] public int BufferSize = 10;
+
+    /// <summary>Fraction of the output buffer that may fill before production is throttled.</summary>
+    [Export(PropertyHint.Range, "0, 1.0")] public float BufferPenaltyRatio = 0.5f;
+
+    public bool HasInputs => Inputs is { Count: > 0 };
 }

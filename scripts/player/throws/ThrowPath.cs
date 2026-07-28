@@ -3,14 +3,14 @@ using Godot;
 public readonly struct ThrowPath
 {
     public readonly Vector3[] Points;
-    public readonly WorkSlot TargetedSlot;
+    public readonly ThrowTarget ThrowTarget;
     public readonly bool Homing;
     public readonly Vector3 End => Points[^1];
 
-    public ThrowPath(Vector3[] points, WorkSlot targetedSlot = null, bool homing = false)
+    public ThrowPath(Vector3[] points, ThrowTarget throwTarget = default, bool homing = false)
     {
         Points = points;
-        TargetedSlot = targetedSlot;
+        ThrowTarget = throwTarget;
         Homing = homing;
     }
 }
