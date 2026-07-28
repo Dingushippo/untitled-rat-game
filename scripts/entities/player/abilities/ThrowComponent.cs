@@ -56,22 +56,32 @@ public partial class ThrowComponent : Node3D
     {
         if (_preview)
         {
-            ThrowContext ctx = new ThrowContext(
-                Player.GrabComponent.CurrentGrabbed,
-                GlobalPosition,
-                -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(Tuning.AngleAdjust), 0),
-                _currentForce,
-                _gravity * Player.GrabComponent.CurrentGrabbed.RatDef.Mass,
-                Tuning.Step,
-                Tuning.MaxPoints
-            );
-            _currentPath = ThrowType.Simulate(ctx);
+            using (Profiler.Sample("throw.simulate"))
+            {
+                _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
+            }
+
             _material.AlbedoColor = PathColor(_currentPath);
 
-            GenerateMesh();
+            using (Profiler.Sample("throw.mesh"))
+            {
+                GenerateMesh();
+            }
+
             SetReticle();
         }
     }
+
+    /// <summary>Aim state for a simulation run. Public so the profiler bench can drive it headlessly.</summary>
+    public ThrowContext BuildContext(Rat rat) => new(
+        rat,
+        GlobalPosition,
+        -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(Tuning.AngleAdjust), 0),
+        _currentForce,
+        _gravity * rat.RatDef.Mass,
+        Tuning.Step,
+        Tuning.MaxPoints
+    );
 
     /// <summary>Blue means the throw feeds the facility, green means it staffs a slot.</summary>
     private Color PathColor(ThrowPath path)

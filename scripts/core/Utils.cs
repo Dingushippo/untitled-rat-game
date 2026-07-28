@@ -19,6 +19,9 @@ public static partial class Utils
         query.CollideWithAreas = collideWithAreas;
         query.CollideWithBodies = collideWithBodies;
         result = state.IntersectRay(query);
+
+        Profiler.Count("physics.raycast");
+
         return result.Count != 0;
     }
 }

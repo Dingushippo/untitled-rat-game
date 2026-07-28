@@ -18,6 +18,7 @@ config/icon="uid://bvu18xnn2piki"
 [autoload]
 
 ObjectManagerAutoload="*uid://xsdub88c27pl"
+ProfilerOverlay="*res://scripts/debug/ProfilerOverlay.cs"
 
 [dotnet]
 
