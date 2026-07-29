@@ -11,7 +11,7 @@ public partial class EconomyService : Node
     private const float GLOBAL_CYCLE_REDUCTION = 0.8f;
     private const float FERVOR_BOOST_THRESHOLD = 0.75f;
     public static EconomyService Instance {get; private set;}
-    public float CycleBoost => Fervor / 100 >= FERVOR_BOOST_THRESHOLD ? GLOBAL_CYCLE_REDUCTION : 1f;
+    public float CycleTimeScale => Fervor / 100 >= FERVOR_BOOST_THRESHOLD ? GLOBAL_CYCLE_REDUCTION : 1f;
     public int Tithes
     {
         get => _tithes;

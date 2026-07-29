@@ -12,10 +12,12 @@ public class ProductionComponent
 
     private readonly WorkSlot[] _workSlots;
     private float _timer = 0;
+    private float _cycleTimeScale;   
 
     public ProductionComponent(WorkSlot[] workSlots)
     {
         _workSlots = workSlots;
+        _cycleTimeScale = EconomyService.Instance.CycleTimeScale;
     }
 
     public void Process(FacilityBase @base, float delta)
@@ -32,7 +34,7 @@ public class ProductionComponent
         // Average worker quality, so one lazy rat doesn't out-weigh the rest of the crew.
         ProductionRate = _workSlots.Sum(slot => slot.Occupant?.RatDef.WorkRate ?? 0f) / StaffedSlots;
 
-        float rate = ProductionRate;
+        float rate = ProductionRate * _cycleTimeScale;
         if (@base.Output.Total >= def.BufferSize * def.BufferPenaltyRatio)
         {
             rate /= BUFFER_PENALTY;
@@ -55,6 +57,8 @@ public class ProductionComponent
             SetStalled(@base, Event.ProductionHalted, def.Outputs);
             return;
         }
+
+        _cycleTimeScale = EconomyService.Instance.CycleTimeScale;
 
         @base.Input.TryRemove(def.Inputs);
         @base.Output.TryAdd(def.Outputs);
