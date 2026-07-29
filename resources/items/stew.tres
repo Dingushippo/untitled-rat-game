@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3 uid="uid://b7njlag6b2rau"]
+
+[ext_resource type="Script" uid="uid://d150fpcmww084" path="res://scripts/inventory/ItemDef.cs" id="1_1xbrd"]
+
+[resource]
+script = ExtResource("1_1xbrd")
+Id = "stew"
+DisplayName = "Stew"
+BaseValue = 5
+metadata/_custom_type_script = "uid://d150fpcmww084"

@@ -17,6 +17,7 @@ config/icon="uid://bvu18xnn2piki"
 
 [autoload]
 
+ItemDatabase="*uid://cj3y3fmq12pmv"
 ObjectManagerAutoload="*uid://xsdub88c27pl"
 ProfilerOverlay="*res://scripts/debug/ProfilerOverlay.cs"
 

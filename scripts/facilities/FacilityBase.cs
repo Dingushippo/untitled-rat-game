@@ -173,17 +173,27 @@ public partial class FacilityBase : StaticBody3D
     private void RefreshOutputPrompt()
     {
         if (OutputInteract is null) return;
-        OutputInteract.SetInteractionText(Output.IsEmpty ? "Empty" : $"Collect: {Output}");
+
+        string contentString = string.Join(", ", Output.Contents.Select(
+            k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
+        );
+        OutputInteract.SetInteractionText(Output.IsEmpty ? "Empty" : $"Collect: {contentString}");
     }
 
     private void UpdateDebugLabel()
     {
         if (DebugLabel is null) return;
 
+        string inputString = string.Join(", ", Input.Contents.Select(
+            k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
+        );
+        string outputString = string.Join(", ", Output.Contents.Select(
+            k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
+        );
         DebugLabel.Text =
             $"{Facility.DisplayName}\n" +
             $"slots {_production.StaffedSlots}/{Facility.SlotCount}  " +
             $"{_production.GetProgress(Facility) * 100f:0}%{(_production.IsStalled ? " (stalled)" : "")}\n" +
-            $"in: {Input}\nout: {Output}";
+            $"in: {inputString}\nout: {outputString}";
     }
 }
