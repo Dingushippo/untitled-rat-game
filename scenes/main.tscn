@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/entities/rat.tscn" id="2_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="3_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/facility_base.tscn" id="5_tbgi4"]
-[ext_resource type="Resource" path="res://resources/facilities/FungalStill.tres" id="6_fstil"]
+[ext_resource type="Resource" uid="uid://w65gy87gwvfl" path="res://resources/facilities/FungalStill.tres" id="6_fstil"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)

@@ -78,6 +78,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0, 0)
 script = ExtResource("2_d0lwy")
 
 [node name="DBG_Label" type="Label3D" parent="." unique_id=1095051596]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5342169, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9605169, 0)
 billboard = 2
 text = "Test"
