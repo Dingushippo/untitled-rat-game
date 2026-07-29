@@ -15,4 +15,6 @@ public enum Event
     ItemsTransferred,
     ResourceChanged,
     Sundown,
+    ItemSold,
+    DayStarted,
 }

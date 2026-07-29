@@ -64,7 +64,7 @@ public partial class Rat : CharacterBody3D
         _fsm.Add("slotted", new RatSlottedState(this));
         _fsm.Add("intake", new RatIntakeState(this));
         _fsm.InitState("idle");
-        _fsm.Debug = true;
+        _fsm.Debug = false;
     }
 
     public void SetNavAgentEnabled(bool enabled)

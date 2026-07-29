@@ -4,15 +4,13 @@ using System.Linq;
 /// <summary>Runs a facility's recipe: staffed slots push a timer, a full cycle swaps Inputs for Outputs.</summary>
 public class ProductionComponent
 {
-    public const float BUFFER_PENALTY = 3f;
-
     public float ProductionRate;
     public int StaffedSlots;
     public bool IsStalled { get; private set; }
 
     private readonly WorkSlot[] _workSlots;
     private float _timer = 0;
-    private float _cycleTimeScale;   
+    private float _cycleTimeScale;
 
     public ProductionComponent(WorkSlot[] workSlots)
     {
@@ -37,7 +35,7 @@ public class ProductionComponent
         float rate = ProductionRate * _cycleTimeScale;
         if (@base.Output.Total >= def.BufferSize * def.BufferPenaltyRatio)
         {
-            rate /= BUFFER_PENALTY;
+            rate /= def.BufferPenalty;
         }
 
         _timer += StaffedSlots * rate * delta;
@@ -61,11 +59,18 @@ public class ProductionComponent
         _cycleTimeScale = EconomyService.Instance.CycleTimeScale;
 
         @base.Input.TryRemove(def.Inputs);
-        @base.Output.TryAdd(def.Outputs);
-
+        if (def.SellsOutput)
+        {
+            foreach (var (item, amount) in def.Outputs)
+                EventBus.Publish(Event.ItemSold, item, amount);
+        }
+        else
+        {
+            @base.Output.TryAdd(def.Outputs);
+            EventBus.Publish(Event.ProductionCompleted, @base, def.Outputs);
+        }
         _timer = 0f;
         IsStalled = false;
-        EventBus.Publish(Event.ProductionCompleted, @base, def.Outputs);
     }
 
     /// <summary>0-1 progress through the current cycle, for debug readouts and UI.</summary>
