@@ -12,5 +12,7 @@ public enum Event
     ProductionCompleted,
     ProductionHalted,
     ProductionMissingItems,
-    ItemsTransferred
+    ItemsTransferred,
+    ResourceChanged,
+    SunDown,
 }
