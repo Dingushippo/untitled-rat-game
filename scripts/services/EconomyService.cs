@@ -9,20 +9,20 @@ public enum Economy
 public partial class EconomyService : Node
 {
     private const float GLOBAL_CYCLE_REDUCTION = 0.8f;
-    private const float FERVOR_BOOST_THRESHOLD = 0.75f;
+    private const int FERVOR_BOOST_THRESHOLD = 75;
     public static EconomyService Instance {get; private set;}
-    public float CycleTimeScale => Fervor / 100 >= FERVOR_BOOST_THRESHOLD ? GLOBAL_CYCLE_REDUCTION : 1f;
+    public float CycleTimeScale => Fervor >= FERVOR_BOOST_THRESHOLD ? GLOBAL_CYCLE_REDUCTION : 1f;
     public int Tithes
     {
         get => _tithes;
-        set => _tithes = value;
+        private set => _tithes = value;
     }
 
     private int _tithes;
     public int Fervor
     {
         get => _fervor;
-        set => _fervor = Mathf.Clamp(value, 0, 100);
+        private set => _fervor = Mathf.Clamp(value, 0, 100);
     }
     private int _fervor;
     private int _fervorDecayPerMinute = 1;
@@ -50,6 +50,7 @@ public partial class EconomyService : Node
         if (_fervorDecayTimer < 60f)
         {
             _fervorDecayTimer += delta;
+            return;
         }
         Fervor -= _fervorDecayPerMinute;
         _fervorDecayTimer = 0;
@@ -57,13 +58,24 @@ public partial class EconomyService : Node
 
     public void AddTithes(int amount)
     {
-        EventBus.Publish(Event.ResourceChanged, Economy.Tithes, Tithes, Tithes + amount);
+        int oldTithes = Tithes;
         Tithes += amount;
+        // May need to introduce a cap here sometime
+        EventBus.Publish(Event.ResourceChanged, Economy.Tithes, oldTithes, Tithes);
     }
 
     public void AddFervor(int amount)
     {
-        EventBus.Publish(Event.ResourceChanged, Economy.Fervor, Fervor, Fervor + amount);
+        int oldFervor = Fervor;
         Fervor += amount;
+        if (oldFervor != Fervor)
+            EventBus.Publish(Event.ResourceChanged, Economy.Fervor, oldFervor, Fervor);
+    }
+
+    public void ResetForRun()
+    {
+        Fervor = 0;
+        Tithes = 0;
+        _fervorDecayTimer = 0;
     }
 }

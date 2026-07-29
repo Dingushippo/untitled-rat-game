@@ -14,5 +14,5 @@ public enum Event
     ProductionMissingItems,
     ItemsTransferred,
     ResourceChanged,
-    SunDown,
+    Sundown,
 }
