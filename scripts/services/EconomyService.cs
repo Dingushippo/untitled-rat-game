@@ -8,16 +8,18 @@ public enum Economy
 
 public partial class EconomyService : Node
 {
-    private const float GLOBAL_CYCLE_REDUCTION = 0.8f;
+    private const float FERVOR_CYCLE_BOOST_MULTIPLIER = 0.8f;
     private const int FERVOR_BOOST_THRESHOLD = 75;
-    public static EconomyService Instance {get; private set;}
-    public float CycleTimeScale => Fervor >= FERVOR_BOOST_THRESHOLD ? GLOBAL_CYCLE_REDUCTION : 1f;
+    public static EconomyService Instance { get; private set; }
+    public float CycleTimeScale => Fervor >= FERVOR_BOOST_THRESHOLD ? FERVOR_CYCLE_BOOST_MULTIPLIER : 1f;
     public int Tithes
     {
         get => _tithes;
         private set => _tithes = value;
     }
 
+    // TODO implement
+    private float _currentFervorMultiplier = 1f;
     private int _tithes;
     public int Fervor
     {
@@ -38,6 +40,7 @@ public partial class EconomyService : Node
         {
             QueueFree();
         }
+        EventBus.Subscribe(Event.ItemSold, OnItemSold);
     }
 
     public override void _Process(double delta)
@@ -54,6 +57,17 @@ public partial class EconomyService : Node
         }
         Fervor -= _fervorDecayPerMinute;
         _fervorDecayTimer = 0;
+    }
+
+    public void OnItemSold(params object[] args)
+    {
+        string itemId = (string)args[0];
+        int amount = (int)args[1];
+        ItemDef item = ItemDatabase.Get(itemId);
+        // TODO Possibly add global value stuff here, either positive or negative
+        AddTithes(item.BaseValue * amount);
+
+        GD.Print($"Sold x{amount} {item.DisplayName}, current tithes: {Tithes}"); // Temp print TODO remove
     }
 
     public void AddTithes(int amount)

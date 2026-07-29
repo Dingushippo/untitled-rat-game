@@ -17,7 +17,7 @@ public class Inventory : IInventory
     public Inventory(int capacity, IEnumerable<string> filter = null)
     {
         Capacity = capacity;
-        _filter = filter is null ? null : new HashSet<string>(filter);
+        _filter = filter is null ? null : [.. filter];
     }
 
     public bool Accepts(string item) => _filter is null || _filter.Contains(item);

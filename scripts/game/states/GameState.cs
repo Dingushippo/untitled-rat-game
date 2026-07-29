@@ -11,9 +11,9 @@ public class GameState : State
 using Godot;
 
 
-public class GameNewState : RatState
+public class GameNewState : GameState
 {
-    public GameNewState(Rat owner) : base(owner) { }
+    public GameNewState(GameManager owner) : base(owner) { }
     public override void PhysicsProcess(float delta) { }
     public override void Process(float delta) { }
     public override void Enter(State previous = null) { }

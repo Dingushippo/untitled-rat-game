@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://donjpjwykuacs"]
+
+[ext_resource type="Script" uid="uid://gyluklot7mxr" path="res://scripts/UI/Result.cs" id="1_mu1pk"]
+
+[node name="Result" type="Control" unique_id=1249482324 node_paths=PackedStringArray("RunSuccess", "RunStats", "Restart", "MainMenu")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mu1pk")
+RunSuccess = NodePath("VBoxContainer/RunSuccess")
+RunStats = NodePath("VBoxContainer/MarginContainer/RunStats")
+Restart = NodePath("VBoxContainer/RestartButton")
+MainMenu = NodePath("VBoxContainer/MainMenuButton")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=577048550]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="RunSuccess" type="Label" parent="VBoxContainer" unique_id=1502573466]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "Success"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=1052681632]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RunStats" type="RichTextLabel" parent="VBoxContainer/MarginContainer" unique_id=966019580]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Test
+Test2
+Test3"
+fit_content = true
+scroll_active = false
+
+[node name="RestartButton" type="Button" parent="VBoxContainer" unique_id=1449270585]
+layout_mode = 2
+text = "Restart"
+
+[node name="MainMenuButton" type="Button" parent="VBoxContainer" unique_id=1923236250]
+layout_mode = 2
+text = "Main menu"

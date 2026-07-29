@@ -11,17 +11,17 @@ config_version=5
 [application]
 
 config/name="Untitled rat game"
-run/main_scene="uid://dbw8km56wffhp"
+run/main_scene="uid://rrsxvvigmt1n"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="uid://bvu18xnn2piki"
 
 [autoload]
 
+ProfilerOverlay="*res://scripts/debug/ProfilerOverlay.cs"
 ItemDatabase="*uid://cj3y3fmq12pmv"
 EconomyService="*uid://x4awkh8khuuc"
 RunClock="*uid://egepafhmj6k8"
-ObjectManagerAutoload="uid://xsdub88c27pl"
-ProfilerOverlay="*res://scripts/debug/ProfilerOverlay.cs"
+GameManager="*uid://cpht2iorftx77"
 
 [dotnet]
 
