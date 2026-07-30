@@ -63,7 +63,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -1.207)
 target_position = Vector3(0, -1.755, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=1889566807]
-offset_right = 40.0
-offset_bottom = 40.0

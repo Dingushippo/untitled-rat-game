@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="3_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/facility_base.tscn" id="5_tbgi4"]
 [ext_resource type="Resource" uid="uid://w65gy87gwvfl" path="res://resources/facilities/FungalStill.tres" id="6_fstil"]
+[ext_resource type="Script" uid="uid://birj7k8r0p7js" path="res://scripts/entities/rat/RatSpawner.cs" id="7_o6xl0"]
+[ext_resource type="Script" uid="uid://buk1fupp26own" path="res://scripts/entities/rat/RatDef.cs" id="8_tipki"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -28,6 +30,12 @@ geometry_collision_mask = 4294901761
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 albedo_texture = ExtResource("1_sugp2")
 uv1_scale = Vector3(6, 6, 6)
+
+[sub_resource type="Resource" id="Resource_85g3d"]
+script = ExtResource("8_tipki")
+metadata/_custom_type_script = "uid://buk1fupp26own"
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_tipki"]
 
 [node name="Main" type="Node3D" unique_id=1325263966]
 
@@ -95,24 +103,21 @@ size = Vector3(14.083862, 3.3793945, 14)
 [node name="Player" parent="." unique_id=716301107 instance=ExtResource("3_tbgi4")]
 transform = Transform3D(0.032515116, 0, 0.99947125, 0, 1, 0, -0.99947125, 0, 0.032515116, -2.576, 0, -4.26)
 
-[node name="Rat" parent="." unique_id=1864404930 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.0344434, -0.01191923, -4.0976715)
-
-[node name="Rat2" parent="." unique_id=656995802 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -4.9491115, -0.01191923, -4.0976715)
-
-[node name="Rat3" parent="." unique_id=1407895806 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -5.9780483, -0.01191923, -4.0976715)
-
-[node name="Rat4" parent="." unique_id=174221093 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -7.5121546, -0.01191923, -4.0976715)
-
-[node name="Rat5" parent="." unique_id=1139278137 instance=ExtResource("2_jyhfs")]
-transform = Transform3D(0.40000004, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -9.550504, -0.01191923, -4.0976715)
-
 [node name="FacilityBase" parent="." unique_id=364601257 instance=ExtResource("5_tbgi4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -5.4256687)
 
 [node name="FungalStill" parent="." unique_id=364601258 instance=ExtResource("5_tbgi4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -5.4256687)
 Facility = ExtResource("6_fstil")
+
+[node name="RatSpawner" type="Node3D" parent="." unique_id=278025997]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.346146, 0, 9.042469)
+script = ExtResource("7_o6xl0")
+RatScene = ExtResource("2_jyhfs")
+ratDef = SubResource("Resource_85g3d")
+OuterRadius = 3.0
+Debug = true
+metadata/_custom_type_script = "uid://birj7k8r0p7js"
+
+[node name="@MeshInstance3D@20311" type="MeshInstance3D" parent="RatSpawner" unique_id=985356659]
+mesh = SubResource("ImmediateMesh_tipki")

@@ -17,4 +17,6 @@ public enum Event
     Sundown,
     ItemSold,
     DayStarted,
+    SpawnRat,
+    LevelLoaded,
 }
