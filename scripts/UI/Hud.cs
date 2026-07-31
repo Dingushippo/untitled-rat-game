@@ -13,15 +13,26 @@ public partial class Hud : Control
     [Export] public ProgressBar FervorProgressBar;
     public override void _Ready()
     {
-        EventBus.Subscribe(Event.ResourceChanged, OnResourceChanged);
-        EventBus.Subscribe(Event.QuotaUpdated, OnQuotaUpdated);
-        EventBus.Subscribe(Event.Sundown, OnSundown);
         SetDayLabel();
     }
 
     private void SetDayLabel() => DayLabel.Text = $"Day {RunClock.Instance.Day}";
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _EnterTree()
+    {
+        EventBus.Subscribe(Event.ResourceChanged, OnResourceChanged);
+        EventBus.Subscribe(Event.QuotaUpdated, OnQuotaUpdated);
+        EventBus.Subscribe(Event.Sundown, OnSundown);
+    }
+
+    public override void _ExitTree()
+    {
+        EventBus.Unsubscribe(Event.ResourceChanged, OnResourceChanged);
+        EventBus.Unsubscribe(Event.QuotaUpdated, OnQuotaUpdated);
+        EventBus.Unsubscribe(Event.Sundown, OnSundown);
+    }
+
+
     public override void _Process(double delta)
     {
         DayProgressBar.Value = RunClock.Instance.DayProgress;
