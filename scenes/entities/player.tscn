@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/entities/player/abilities/ThrowComponent.cs" id="4_dqkch"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/entities/hand_controller.tscn" id="6_tuyoq"]
+[ext_resource type="PackedScene" uid="uid://bu8fc86onllmh" path="res://scenes/ui/hud.tscn" id="7_ss7kx"]
 [ext_resource type="Resource" uid="uid://ca2tgeh8qeapw" path="res://resources/throws/simple_throw.tres" id="7_throw"]
 [ext_resource type="Resource" uid="uid://b2dawaso2loby" path="res://resources/tuning/throw_tuning.tres" id="8_tuning"]
 
@@ -63,3 +64,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -1.207)
 target_position = Vector3(0, -1.755, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
+
+[node name="HUD" parent="CanvasLayer" unique_id=1140804666 instance=ExtResource("7_ss7kx")]

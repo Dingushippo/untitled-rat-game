@@ -27,6 +27,10 @@ public partial class RatSpawner : Node3D
     }
     public override void _Ready()
     {
+        if (GetChildOrNull<MeshInstance3D>(0) != null)
+        {
+            return;
+        }
         _debugMesh = new MeshInstance3D
         {
             Mesh = _mesh

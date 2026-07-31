@@ -1,8 +1,9 @@
 using Godot;
+using System;
 
 public partial class RunClock : Node
 {
-    const float DAY_LENGTH = 420f;
+    const float DAY_LENGTH = 5f; // 420 default, 7 minutes
     public static RunClock Instance;
     private float _timer = 0;
     private bool _timerActive = false;
@@ -15,6 +16,12 @@ public partial class RunClock : Node
     {
         _timer = 0;
         Pause();
+    }
+
+    public void ResetFull()
+    {
+        Day = 1;
+        ResetTimer();
     }
     public void IncrementDay() => Day++;
 
@@ -40,6 +47,12 @@ public partial class RunClock : Node
         {
             EventBus.Publish(Event.Sundown, Day);
         }
+    }
+
+    public string TimeToSundown()
+    {
+        TimeSpan time = TimeSpan.FromSeconds(DAY_LENGTH - _timer);
+        return time.ToString(@"mm\:ss");
     }
 
 }

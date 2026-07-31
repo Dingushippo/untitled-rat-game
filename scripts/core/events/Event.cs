@@ -19,4 +19,5 @@ public enum Event
     DayStarted,
     SpawnRat,
     LevelLoaded,
+    QuotaUpdated,
 }
