@@ -7,7 +7,7 @@ public class GameRunState : GameState
 {
     private const string GAME_SCENE_PATH = "res://scenes/main.tscn";
     public GameRunState(GameManager owner) : base(owner) { }
-    public bool RunSuccess = false;
+    public bool RunSuccess;
     public int TotalStewsDelivered = 0;
     public int StewsDeliveredToday
     {
@@ -37,6 +37,8 @@ public class GameRunState : GameState
         _level = levelScene.Instantiate<Node3D>();
         _level.Ready += OnLevelLoaded;
 
+        RunSuccess = false;
+
         _manager.GetTree().ChangeSceneToNode(_level);
     }
 
@@ -51,7 +53,7 @@ public class GameRunState : GameState
         EventBus.Unsubscribe(Event.ItemSold, OnItemSold);
         EventBus.Unsubscribe(Event.Sundown, OnSundown);
         _level.Ready -= OnLevelLoaded;
-        RunClock.Instance.ResetTimer();
+        RunClock.Instance.ResetFull();
     }
 
     private int GetCurrentQuota() => _quotas[RunClock.Instance.Day - 1];
@@ -72,7 +74,6 @@ public class GameRunState : GameState
         GD.Print($"Stews delivered: {StewsDeliveredToday}/{quotaToMeet}");
         if (StewsDeliveredToday < quotaToMeet)
         {
-            RunSuccess = false;
             GD.Print("Run success");
             fsm.ChangeState("result", this);
             return;
