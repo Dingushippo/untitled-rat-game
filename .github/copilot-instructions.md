@@ -23,8 +23,7 @@ lives outside this repo, in an Obsidian vault, and the path depends on which
 machine is in use.
 
 - Windows: `C:\Users\danbj\Documents\Obsidian\vault\Game dev\Rat game`
-- Linux: TBD (to be filled in later)
+- Linux: `/home/dingus/Documents/Obsidian/Vault/Game dev/Rat game`
 
 Detect the current OS before reading or writing documentation, and use the
-matching path. If the Linux path is still unknown and I am on Linux, ask me for
-it rather than guessing.
+matching path.
