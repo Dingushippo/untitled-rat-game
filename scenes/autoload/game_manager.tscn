@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dddbcjta73bx1"]
 
 [ext_resource type="Script" uid="uid://cpht2iorftx77" path="res://scripts/game/GameManager.cs" id="1_tmdk2"]
-[ext_resource type="Resource" uid="uid://ba8bpmbr7ts53" path="res://resources/tuning/run_tuning_smoketest.tres" id="2_tmdk2"]
+[ext_resource type="Resource" uid="uid://3622oqnhffm8" path="res://resources/tuning/run_tuning.tres" id="2_tmdk2"]
 
 [node name="GameManager" type="Node" unique_id=1600033193]
 script = ExtResource("1_tmdk2")

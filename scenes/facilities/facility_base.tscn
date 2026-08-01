@@ -1,8 +1,7 @@
 [gd_scene format=3 uid="uid://ccmwoc6oxxglf"]
 
-[ext_resource type="Script" uid="uid://c5o4hd0ij7hin" path="res://scripts/facilities/FacilityBase.cs" id="1_grg31"]
+[ext_resource type="Script" uid="uid://xhywwkklvxog" path="res://scripts/facilities/ProductionFacility.cs" id="1_grg31"]
 [ext_resource type="Script" uid="uid://dadi1gcc2viyk" path="res://scripts/facilities/WorkSlot.cs" id="2_d0lwy"]
-[ext_resource type="Resource" uid="uid://c46gibkbxlvm" path="res://resources/facilities/CryptGarden.tres" id="2_woqmr"]
 [ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/interaction/InteractAreaComponent.cs" id="3_woqmr"]
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_0evyo"]
@@ -23,13 +22,13 @@ size = Vector3(0.5, 0.5, 0.5)
 [sub_resource type="SphereShape3D" id="SphereShape3D_pso3n"]
 radius = 1.8
 
-[node name="FacilityBase" type="StaticBody3D" unique_id=445804311 node_paths=PackedStringArray("WorkSlotGroup", "IntakeMarker", "DebugLabel", "OutputInteract")]
+[node name="ProductionFacility" type="StaticBody3D" unique_id=830481730 node_paths=PackedStringArray("WorkSlotGroup", "OutputInteract", "IntakeMarker", "DebugLabel")]
 script = ExtResource("1_grg31")
 WorkSlotGroup = NodePath("WorkSlots")
-IntakeMarker = NodePath("IntakeMarker")
-Facility = ExtResource("2_woqmr")
-DebugLabel = NodePath("DBG_Label")
 OutputInteract = NodePath("MeshInstance3D2/InteractAreaComponent")
+IntakeMarker = NodePath("IntakeMarker")
+DebugLabel = NodePath("DBG_Label")
+metadata/_custom_type_script = "uid://xhywwkklvxog"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=465564909]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

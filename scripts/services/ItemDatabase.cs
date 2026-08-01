@@ -62,10 +62,10 @@ public partial class ItemDatabase : Node
                 continue;
             }
 
-            FacilityDef facility = ResourceLoader.Load<FacilityDef>(FACILITY_RESOURCE_PATH.PathJoin(fileNameTrim));
+            ProductionDef facility = ResourceLoader.Load<ProductionDef>(FACILITY_RESOURCE_PATH.PathJoin(fileNameTrim));
             if (facility is null)
             {
-                GD.PrintErr($"{file} is not a valid FacilityDef");
+                GD.PrintErr($"{file} is not a valid ProductionDef");
                 continue;
             }
 
