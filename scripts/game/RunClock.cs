@@ -3,11 +3,15 @@ using System;
 
 public partial class RunClock : Node
 {
-    const float DAY_LENGTH = 20f; // 420 default, 7 minutes
+    const float DAY_LENGTH_DEFAULT = 420f;
+    const int START_TIME_SECONDS = 6 * 60 * 60; // 6:00 AM
+    const int END_TIME_SECONDS = 22 * 60 * 60; // 10:00 PM
     public static RunClock Instance;
     private float _timer = 0;
     private bool _timerActive = false;
-    public float DayProgress => Mathf.Clamp(_timer / DAY_LENGTH, 0, 1f);
+    private float _dayLength;
+    private string _currentTimeText = "";
+    public float DayProgress => Mathf.Clamp(_timer / _dayLength, 0, 1f);
     public int Day { get; private set; } = 1;
 
     public void Pause() => _timerActive = false;
@@ -37,22 +41,35 @@ public partial class RunClock : Node
         }
     }
 
+    public override void _Ready()
+    {
+        _dayLength = GameManager.Instance.Tuning != null ? GameManager.Instance.Tuning.DayLength : DAY_LENGTH_DEFAULT;
+        EventBus.Publish(Event.ClockTick, _currentTimeText, DayProgress);
+    }
+
     public override void _Process(double delta)
     {
         if (!_timerActive) return;
 
         _timer += (float)delta;
 
-        if (_timer >= DAY_LENGTH)
+        if (_currentTimeText != GetClockText())
+        {
+            _currentTimeText = GetClockText();
+            EventBus.Publish(Event.ClockTick, _currentTimeText, DayProgress);
+        }
+
+        if (_timer >= _dayLength)
         {
             EventBus.Publish(Event.Sundown, Day);
         }
     }
 
-    public string TimeToSundown()
+    public string GetClockText()
     {
-        TimeSpan time = TimeSpan.FromSeconds(DAY_LENGTH - _timer);
-        return time.ToString(@"mm\:ss");
+        int newTime = (int)Mathf.Remap(_timer, 0, _dayLength, START_TIME_SECONDS, END_TIME_SECONDS);
+        TimeSpan time = TimeSpan.FromSeconds(newTime);
+        return time.ToString(@"hh\:mm");
     }
 
 }

@@ -20,4 +20,5 @@ public enum Event
     SpawnRat,
     LevelLoaded,
     QuotaUpdated,
+    ClockTick,
 }

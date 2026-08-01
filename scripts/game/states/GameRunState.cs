@@ -19,15 +19,14 @@ public class GameRunState : GameState
         }
     }
     private int _stewsDeliveredToday = 0;
-    private int[] _quotas = { 4, 5, 6 };
-    private int[] _ratsSpawnedPerDay = { 6, 2, 2 };
     private Node3D _level;
     public override void PhysicsProcess(float delta) { }
     public override void Process(float delta) { }
     public override void Enter(State previous = null)
     {
         ResetRunState();
-        GD.Seed(1);
+
+        GD.Seed(_manager.Tuning.FixedSeed ? _manager.Tuning.Seed : (ulong)DateTime.Now.Ticks);
 
         EventBus.Subscribe(Event.ItemSold, OnItemSold);
         EventBus.Subscribe(Event.Sundown, OnSundown);
@@ -44,7 +43,10 @@ public class GameRunState : GameState
     private void OnLevelLoaded()
     {
         RunClock.Instance.Start();
-        EventBus.Publish(Event.SpawnRat, _ratsSpawnedPerDay[RunClock.Instance.Day - 1]);
+        EventBus.Publish(
+            Event.SpawnRat,
+            _manager.Tuning.RatsSpawnedPerDay[RunClock.Instance.Day - 1]
+        );
         EventBus.Publish(Event.DayStarted, 1);
         EventBus.Publish(Event.QuotaUpdated, _stewsDeliveredToday, GetCurrentQuota());
     }
@@ -56,7 +58,7 @@ public class GameRunState : GameState
         _level.Ready -= OnLevelLoaded;
     }
 
-    private int GetCurrentQuota() => _quotas[RunClock.Instance.Day - 1];
+    private int GetCurrentQuota() => _manager.Tuning.Quotas[RunClock.Instance.Day - 1];
     private void OnItemSold(object[] obj)
     {
         string item = (string)obj[0];
@@ -78,7 +80,7 @@ public class GameRunState : GameState
             fsm.ChangeState("result", this);
             return;
         }
-        if (clock.Day == _quotas.Length)
+        if (clock.Day == _manager.Tuning.Quotas.Length)
         {
             RunSuccess = true;
             GD.Print("Run success");
@@ -97,7 +99,7 @@ public class GameRunState : GameState
         clock.ResetTimer();
 
         EventBus.Publish(Event.DayStarted, clock.Day);
-        EventBus.Publish(Event.SpawnRat, _ratsSpawnedPerDay[clock.Day - 1]);
+        EventBus.Publish(Event.SpawnRat, _manager.Tuning.RatsSpawnedPerDay[clock.Day - 1]);
     }
 
     private void ResetRunState()

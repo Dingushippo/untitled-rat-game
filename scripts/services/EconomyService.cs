@@ -67,8 +67,6 @@ public partial class EconomyService : Node
         // TODO Possibly add global value stuff here, either positive or negative
         AddTithes(item.BaseValue * amount);
         AddFervor(2 * amount);
-
-        GD.Print($"Sold x{amount} {item.DisplayName}, current tithes: {Tithes}"); // Temp print TODO remove
     }
 
     public void AddTithes(int amount)

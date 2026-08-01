@@ -120,11 +120,6 @@ public partial class PlayerCamera : Camera3D
                 _cameraEnabled = !_cameraEnabled;
             }
         }
-
-        if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.Key1)
-        {
-            PlayImpact(1f, 0.35f);
-        }
     }
 
     private void OnCameraCharge(params object[] args)

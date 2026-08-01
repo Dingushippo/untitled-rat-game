@@ -9,6 +9,7 @@ public partial class Hud : Control
     [Export] public Label TitheLabel;
     [Export] public Label DayLabel;
     [Export] public Label QuotaLabel;
+    [Export] public Label ClockLabel;
     [Export] public ProgressBar DayProgressBar;
     [Export] public ProgressBar FervorProgressBar;
 
@@ -17,26 +18,31 @@ public partial class Hud : Control
         EventBus.Subscribe(Event.ResourceChanged, OnResourceChanged);
         EventBus.Subscribe(Event.QuotaUpdated, OnQuotaUpdated);
         EventBus.Subscribe(Event.DayStarted, OnDayStarted);
-        // EventBus.Subscribe(Event.Sundown, OnDayChanged);
+        EventBus.Subscribe(Event.ClockTick, OnClockTick);
     }
+
+
 
     public override void _ExitTree()
     {
         EventBus.Unsubscribe(Event.ResourceChanged, OnResourceChanged);
         EventBus.Unsubscribe(Event.QuotaUpdated, OnQuotaUpdated);
         EventBus.Unsubscribe(Event.DayStarted, OnDayStarted);
-        // EventBus.Unsubscribe(Event.Sundown, OnDayChanged);
+        EventBus.Unsubscribe(Event.ClockTick, OnClockTick);
+    }
+
+    private void OnClockTick(object[] obj)
+    {
+        string timeText = (string)obj[0];
+        float dayProgress = (float)obj[1];
+        DayProgressBar.Value = dayProgress;
+        ClockLabel.Text = timeText;
     }
 
     private void OnDayStarted(object[] obj)
     {
         int day = (int)obj[0];
         DayLabel.Text = $"Day {day}";
-    }
-
-    public override void _Process(double delta)
-    {
-        DayProgressBar.Value = RunClock.Instance.DayProgress;
     }
 
     private void OnQuotaUpdated(object[] args)

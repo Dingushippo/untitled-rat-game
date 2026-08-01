@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RunTuning" format=3 uid="uid://ba8bpmbr7ts53"]
+
+[ext_resource type="Script" uid="uid://c58yhqvn28p07" path="res://scripts/game/RunTuning.cs" id="1_3x1mt"]
+
+[resource]
+script = ExtResource("1_3x1mt")
+DayLength = 20.0
+Quotas = PackedInt32Array(1, 1, 1)
+DebugStateTransitions = true
+metadata/_custom_type_script = "uid://c58yhqvn28p07"
