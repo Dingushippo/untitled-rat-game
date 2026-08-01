@@ -19,25 +19,24 @@ public class GameRunState : GameState
         }
     }
     private int _stewsDeliveredToday = 0;
-    private int[] _quotas = { 0, 0, 0 };
+    private int[] _quotas = { 4, 5, 6 };
     private int[] _ratsSpawnedPerDay = { 6, 2, 2 };
     private Node3D _level;
     public override void PhysicsProcess(float delta) { }
     public override void Process(float delta) { }
     public override void Enter(State previous = null)
     {
+        ResetRunState();
         GD.Seed(1);
 
         EventBus.Subscribe(Event.ItemSold, OnItemSold);
         EventBus.Subscribe(Event.Sundown, OnSundown);
         EconomyService.Instance.ResetForRun();
-        RunClock.Instance.ResetTimer();
+        RunClock.Instance.ResetFull();
 
         PackedScene levelScene = GD.Load(GAME_SCENE_PATH) as PackedScene;
         _level = levelScene.Instantiate<Node3D>();
         _level.Ready += OnLevelLoaded;
-
-        RunSuccess = false;
 
         _manager.GetTree().ChangeSceneToNode(_level);
     }
@@ -46,6 +45,8 @@ public class GameRunState : GameState
     {
         RunClock.Instance.Start();
         EventBus.Publish(Event.SpawnRat, _ratsSpawnedPerDay[RunClock.Instance.Day - 1]);
+        EventBus.Publish(Event.DayStarted, 1);
+        EventBus.Publish(Event.QuotaUpdated, _stewsDeliveredToday, GetCurrentQuota());
     }
 
     public override void Exit()
@@ -53,7 +54,6 @@ public class GameRunState : GameState
         EventBus.Unsubscribe(Event.ItemSold, OnItemSold);
         EventBus.Unsubscribe(Event.Sundown, OnSundown);
         _level.Ready -= OnLevelLoaded;
-        RunClock.Instance.ResetFull();
     }
 
     private int GetCurrentQuota() => _quotas[RunClock.Instance.Day - 1];
@@ -71,7 +71,7 @@ public class GameRunState : GameState
     {
         RunClock clock = RunClock.Instance;
         int quotaToMeet = GetCurrentQuota();
-        GD.Print($"Stews delivered: {StewsDeliveredToday}/{quotaToMeet}");
+        GD.Print($"Stews delivered: {StewsDeliveredToday}/{quotaToMeet}, day {clock.Day}");
         if (StewsDeliveredToday < quotaToMeet)
         {
             GD.Print("Run success");
@@ -98,5 +98,13 @@ public class GameRunState : GameState
 
         EventBus.Publish(Event.DayStarted, clock.Day);
         EventBus.Publish(Event.SpawnRat, _ratsSpawnedPerDay[clock.Day - 1]);
+    }
+
+    private void ResetRunState()
+    {
+        RunSuccess = false;
+        TotalStewsDelivered = 0;
+        _stewsDeliveredToday = 0;
+        RunClock.Instance.ResetFull();
     }
 }

@@ -3,7 +3,7 @@ using System;
 
 public partial class RunClock : Node
 {
-    const float DAY_LENGTH = 5f; // 420 default, 7 minutes
+    const float DAY_LENGTH = 20f; // 420 default, 7 minutes
     public static RunClock Instance;
     private float _timer = 0;
     private bool _timerActive = false;
