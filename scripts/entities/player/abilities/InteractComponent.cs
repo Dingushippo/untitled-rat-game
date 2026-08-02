@@ -40,7 +40,8 @@ public partial class InteractComponent
             ComponentLookedAt?.IsLookedAwayFrom();
             ComponentLookedAt = interact;
         }
-        else if (interact is not null)
+        if (interact is not null && !interact.IsAvailableTo(_player)) interact = null;
+        if (interact is not null)
         {
             ComponentLookedAt?.IsLookedAt();
             if (Input.IsActionJustPressed("interact") && ComponentLookedAt != null)

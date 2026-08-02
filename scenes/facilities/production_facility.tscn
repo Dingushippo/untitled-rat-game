@@ -18,6 +18,7 @@ height = 1.0
 size = Vector3(0.5, 0.5, 0.5)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_gkoef"]
+radius = 1.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_pso3n"]
 radius = 1.8
@@ -46,6 +47,7 @@ mesh = SubResource("BoxMesh_pso3n")
 script = ExtResource("3_woqmr")
 InteractionText = "Collect"
 InteractionTextOffset = Vector3(0, 1, 0)
+RequiredHands = 2
 metadata/_custom_type_script = "uid://82n4sf5bywly"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/InteractAreaComponent" unique_id=557941140]

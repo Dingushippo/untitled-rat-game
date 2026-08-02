@@ -2,6 +2,7 @@ using System;
 using Godot;
 
 
+public enum HandRequirement { Any, Empty, HoldsRat }
 [GlobalClass]
 public partial class InteractAreaComponent : Area3D, IInteract
 {
@@ -11,6 +12,7 @@ public partial class InteractAreaComponent : Area3D, IInteract
     [Export] public bool ShowInteractionText = true;
     [Export] public Vector3 InteractionTextOffset = new Vector3(0, 2, 0);
     [Export] public bool IsEnabled = true;
+    [Export] public HandRequirement RequiredHands = HandRequirement.Any;
     public Action<Node3D> OnInteract;
     public Action OnLookedAt;
     public Action OnLookedAwayFrom;
@@ -71,6 +73,16 @@ public partial class InteractAreaComponent : Area3D, IInteract
     {
         if (!IsEnabled) return;
         OnInteract?.Invoke(interactor);
+    }
+
+    public bool IsAvailableTo(Node3D interactor)
+    {
+        if (interactor is not Player player) return false;
+        if (RequiredHands == HandRequirement.Any) return true;
+        bool hasGrab = player.GrabComponent.HasGrabbed();
+        if (RequiredHands == HandRequirement.HoldsRat && hasGrab) return true;
+        if (RequiredHands == HandRequirement.Empty && !hasGrab) return true;
+        return false;
     }
 
     /// <summary>Updates the floating prompt, so facilities can advertise what is collectable.</summary>

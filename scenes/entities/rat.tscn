@@ -322,6 +322,7 @@ collision_layer = 4
 collision_mask = 0
 script = ExtResource("4_3csnj")
 InteractionTextOffset = Vector3(0, 2, -1.5)
+RequiredHands = 1
 metadata/_custom_type_script = "uid://82n4sf5bywly"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractComponent" unique_id=1689416693]
