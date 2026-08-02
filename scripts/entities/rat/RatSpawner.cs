@@ -18,7 +18,6 @@ public partial class RatSpawner : Node3D
 
     public override void _EnterTree()
     {
-        GD.Print("Entered tree");
         EventBus.Subscribe(Event.SpawnRat, OnSpawnRat);
     }
     public override void _ExitTree()

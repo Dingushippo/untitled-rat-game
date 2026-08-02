@@ -31,7 +31,6 @@ public class RatLandedState : RatState
 
     private void SetNextState(State previous)
     {
-        GD.Print("Setting to follow");
         _rat.ResetTargetPosition();
         fsm.ChangeState("follow", this);
     }

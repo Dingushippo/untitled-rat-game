@@ -163,7 +163,6 @@ public partial class PlayerCamera : Camera3D
 
     private void PlayImpact(float charge, float duration)
     {
-        GD.Print($"CameraImpact! - args: {charge}, {duration}");
         float scale = Mathf.Lerp(MinImpactScale, 1f, Mathf.Clamp(charge, 0f, 1f));
 
         // Release: snap forward and up, roll slightly, widen the FOV.
