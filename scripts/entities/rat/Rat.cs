@@ -14,15 +14,16 @@ public partial class Rat : CharacterBody3D
     [Export] public Vector3 GrabOrientation { get; set; }
     [Export] public Vector3 GrabOffset { get; set; }
     [Export]
-    bool debug
+    public bool Debug
     {
-        get => debug;
+        get => _debug;
         set
         {
-            debug = value;
-            _fsm.Debug = debug;
+            _debug = value;
+            _fsm.Debug = _debug;
         }
     }
+    private bool _debug;
     public Inventory Cargo;
     public Vector3 NavigationTargetPosition;
     private Node3D _navigationTarget;
@@ -64,7 +65,7 @@ public partial class Rat : CharacterBody3D
         _fsm.Add("slotted", new RatSlottedState(this));
         _fsm.Add("intake", new RatIntakeState(this));
         _fsm.InitState("idle");
-        _fsm.Debug = false;
+        _fsm.Debug = _debug;
     }
 
     public void SetNavAgentEnabled(bool enabled)
