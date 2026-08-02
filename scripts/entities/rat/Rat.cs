@@ -42,7 +42,19 @@ public partial class Rat : CharacterBody3D
         }
         Cargo = new Inventory(RatDef.MaxCapacity);
         InitStateMachine();
+
+        InteractArea.OnInteract = OnInteract;
     }
+
+    private void OnInteract(Node3D interactor)
+    {
+        if (interactor is not Player player) return;
+        if (player.GrabComponent.HasGrabbed()) return;
+        player.GrabComponent.InjectGrabState(this);
+
+        // TODO add highlight on looked at
+    }
+
 
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
 

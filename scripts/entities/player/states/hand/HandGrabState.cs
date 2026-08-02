@@ -21,7 +21,6 @@ public class HandGrabState : PlayerState
                 _player.GrabComponent.Release();
                 fsm.ChangeState("empty");
             }
-
         }
         if (@event.IsActionPressed("throw"))
         {

@@ -3,7 +3,7 @@ using Godot;
 
 
 [GlobalClass]
-public partial class InteractAreaComponent : Area3D
+public partial class InteractAreaComponent : Area3D, IInteract
 {
     public const uint INTERACT_LAYER = 4;
 
