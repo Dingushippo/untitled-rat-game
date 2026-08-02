@@ -1,18 +1,23 @@
 shader_type spatial;
+render_mode cull_front, unshaded;
 
-// Higher values are smaller width.
-uniform float outline_width : hint_range(0.0, 10.0, 0.1) = 5.0;
+uniform vec4 outline_color : source_color;
+uniform float outline_width = 1.0;
 
-uniform vec4 base_color : source_color = vec4(1.0);
-
-float fresnel(float amount, vec3 normal, vec3 view)
-{
-	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0 )), amount);
+void vertex() {
+	vec4 clip_position = PROJECTION_MATRIX * (MODELVIEW_MATRIX * vec4(VERTEX, 1.0));
+	vec3 clip_normal = mat3(PROJECTION_MATRIX) * (mat3(MODELVIEW_MATRIX) * NORMAL);
+	
+	vec2 offset = normalize(clip_normal.xy) / VIEWPORT_SIZE * clip_position.w * outline_width * 2.0;
+	
+	clip_position.xy += offset;
+	
+	POSITION = clip_position;
 }
 
-void fragment()
-{
-	float basic_fresnel = fresnel(outline_width, NORMAL, VIEW);
-	basic_fresnel = step(0.5, basic_fresnel); //0.5 magic number seems to give the most intuitive control
-	ALBEDO = base_color.rgb - basic_fresnel;
+void fragment() {
+	ALBEDO = outline_color.rgb;
+	if (outline_color.a < 1.0) {
+		ALPHA = outline_color.a;
+	}
 }

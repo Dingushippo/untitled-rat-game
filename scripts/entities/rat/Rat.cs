@@ -7,6 +7,7 @@ public partial class Rat : CharacterBody3D
     [Export] public NavigationAgent3D NavAgent;
     [Export] public CollisionShape3D Collider;
     [Export] public InteractAreaComponent InteractArea;
+    [Export] public MeshInstance3D Mesh;
     [Export] public RatDef RatDef;
     [Export] public RatFlightTuning FlightTuning;
     [Export] public float Speed = 10f;
@@ -44,6 +45,8 @@ public partial class Rat : CharacterBody3D
         InitStateMachine();
 
         InteractArea.OnInteract = OnInteract;
+        InteractArea.OnLookedAt = OnLookedAt;
+        InteractArea.OnLookedAwayFrom = OnLookedAwayFrom;
     }
 
     private void OnInteract(Node3D interactor)
@@ -53,6 +56,22 @@ public partial class Rat : CharacterBody3D
         player.GrabComponent.InjectGrabState(this);
 
         // TODO add highlight on looked at
+    }
+
+    private void OnLookedAt()
+    {
+        if (Mesh.MaterialOverlay is ShaderMaterial mat)
+        {
+            mat.SetShaderParameter("outline_width", 2f);
+        }
+    }
+
+    private void OnLookedAwayFrom()
+    {
+        if (Mesh.MaterialOverlay is ShaderMaterial mat)
+        {
+            mat.SetShaderParameter("outline_width", 0f);
+        }
     }
 
 

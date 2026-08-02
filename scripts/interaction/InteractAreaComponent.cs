@@ -12,6 +12,8 @@ public partial class InteractAreaComponent : Area3D, IInteract
     [Export] public Vector3 InteractionTextOffset = new Vector3(0, 2, 0);
     [Export] public bool IsEnabled = true;
     public Action<Node3D> OnInteract;
+    public Action OnLookedAt;
+    public Action OnLookedAwayFrom;
 
     /// <summary>True when something is actually listening, so callers can tell a live prompt from scenery.</summary>
     public bool HasHandler => IsEnabled && OnInteract != null;
@@ -54,11 +56,15 @@ public partial class InteractAreaComponent : Area3D, IInteract
         {
             interactionLabel.Visible = true;
         }
+        OnLookedAt?.Invoke();
     }
 
     public void IsLookedAwayFrom()
     {
-        if (interactionLabel is not null) interactionLabel.Visible = false;
+        if (interactionLabel is null) return;
+
+        interactionLabel.Visible = false;
+        OnLookedAwayFrom?.Invoke();
     }
 
     public void Interact(Node3D interactor)
