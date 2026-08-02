@@ -3,6 +3,7 @@ using Godot;
 public partial class GameManager : Node
 {
     [Export] public RunTuning Tuning;
+    [Export] public bool Disabled;
     public static GameManager Instance;
     private FiniteStateMachine _fsm;
 
@@ -24,6 +25,16 @@ public partial class GameManager : Node
         }
         AssertTuning();
         _fsm = new(this);
+
+        if (Disabled)
+        {
+            SetProcess(false);
+            SetPhysicsProcess(false);
+            SetProcessInput(false);
+            SetProcessUnhandledInput(false);
+            return;
+        }
+
         _fsm.Add("menu", new GameMenuState(this));
         _fsm.Add("run", new GameRunState(this));
         _fsm.Add("result", new GameResultState(this));

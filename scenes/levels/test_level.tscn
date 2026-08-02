@@ -1,0 +1,147 @@
+[gd_scene format=3 uid="uid://duepatdtjpo6o"]
+
+[ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="1_jbqir"]
+[ext_resource type="Texture2D" uid="uid://d1c70tsq6n0uu" path="res://assets/rough-checked-texture-collage.jpg" id="1_yautc"]
+[ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/production_facility.tscn" id="2_cyt5c"]
+[ext_resource type="Resource" uid="uid://c46gibkbxlvm" path="res://resources/facilities/CryptGarden.tres" id="3_7x1jh"]
+[ext_resource type="Resource" uid="uid://gh4fshjj7hfn" path="res://resources/facilities/FungalStill.tres" id="4_hfwtw"]
+[ext_resource type="PackedScene" uid="uid://dioec4yt672pk" path="res://scenes/facilities/selling_facility.tscn" id="5_2mu0v"]
+[ext_resource type="Script" uid="uid://birj7k8r0p7js" path="res://scripts/entities/rat/RatSpawner.cs" id="7_jmx14"]
+[ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/entities/rat.tscn" id="8_hfwtw"]
+[ext_resource type="Script" uid="uid://buk1fupp26own" path="res://scripts/entities/rat/RatDef.cs" id="9_2mu0v"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jbqir"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_yautc"]
+sky_material = SubResource("ProceduralSkyMaterial_jbqir")
+
+[sub_resource type="Environment" id="Environment_fr1um"]
+background_mode = 2
+sky = SubResource("Sky_yautc")
+glow_enabled = true
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_pso3n"]
+agent_height = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fr1um"]
+albedo_texture = ExtResource("1_yautc")
+heightmap_scale = 9.886
+heightmap_texture = ExtResource("1_yautc")
+uv1_scale = Vector3(4.8, 8, 8.49)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eaa0b"]
+albedo_texture = ExtResource("1_yautc")
+uv1_scale = Vector3(2.6, 1, 1)
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_pso3n"]
+albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
+
+[sub_resource type="Resource" id="Resource_fqldq"]
+script = ExtResource("9_2mu0v")
+Id = "rat"
+metadata/_custom_type_script = "uid://buk1fupp26own"
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_a5rnb"]
+
+[node name="TestLevel" type="Node3D" unique_id=949261]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=130976187]
+environment = SubResource("Environment_fr1um")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=578672033]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1654694968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+navigation_mesh = SubResource("NavigationMesh_pso3n")
+
+[node name="Floor" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1605094053]
+use_collision = true
+size = Vector3(50, 1, 30)
+material = SubResource("StandardMaterial3D_fr1um")
+
+[node name="Pillar1" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1344834813]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 8, 5)
+use_collision = true
+size = Vector3(3, 15, 3)
+
+[node name="Pillar2" type="CSGBox3D" parent="NavigationRegion3D" unique_id=670439123]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 8, 5)
+use_collision = true
+size = Vector3(3, 15, 3)
+
+[node name="Pillar3" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1691168183]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 8, -4)
+use_collision = true
+size = Vector3(3, 15, 3)
+
+[node name="Pillar4" type="CSGBox3D" parent="NavigationRegion3D" unique_id=456129076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 8, -4)
+use_collision = true
+size = Vector3(3, 15, 3)
+
+[node name="ProductionFacility" parent="NavigationRegion3D" unique_id=830481730 instance=ExtResource("2_cyt5c")]
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, -22, 0.5, 12)
+Facility = ExtResource("3_7x1jh")
+
+[node name="ProductionFacility2" parent="NavigationRegion3D" unique_id=1965589425 instance=ExtResource("2_cyt5c")]
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, 21.781, 5, 12.17)
+Facility = ExtResource("4_hfwtw")
+
+[node name="SellingBooth" parent="NavigationRegion3D" unique_id=1067004511 instance=ExtResource("5_2mu0v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -13)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D" unique_id=535357847]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.068693, 2.5, 12)
+use_collision = true
+size = Vector3(6, 5, 6)
+material = SubResource("StandardMaterial3D_eaa0b")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="NavigationRegion3D" unique_id=720986800]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 22.068693, 0.34539938, 5.9304447)
+use_collision = true
+size = Vector3(6, 5, 9.996582)
+material = SubResource("StandardMaterial3D_eaa0b")
+
+[node name="Walls" type="Node" parent="." unique_id=1339308113]
+
+[node name="Wall_L" type="CSGBox3D" parent="Walls" unique_id=816793663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.25, 7.5, 0)
+use_collision = true
+size = Vector3(0.5, 15, 30)
+material = SubResource("ORMMaterial3D_pso3n")
+
+[node name="Wall_R" type="CSGBox3D" parent="Walls" unique_id=1128220066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.25, 7.5, 0)
+use_collision = true
+size = Vector3(0.5, 15, 30)
+material = SubResource("ORMMaterial3D_pso3n")
+
+[node name="Wall_T" type="CSGBox3D" parent="Walls" unique_id=265736164]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, -15)
+use_collision = true
+size = Vector3(50, 15, 0.5)
+material = SubResource("ORMMaterial3D_pso3n")
+
+[node name="Wall_B" type="CSGBox3D" parent="Walls" unique_id=962808649]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 15)
+use_collision = true
+size = Vector3(50, 15, 0.5)
+material = SubResource("ORMMaterial3D_pso3n")
+
+[node name="Player" parent="." unique_id=716301107 instance=ExtResource("1_jbqir")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, -2)
+
+[node name="RatSpawner" type="Node3D" parent="." unique_id=1995115668]
+script = ExtResource("7_jmx14")
+RatScene = ExtResource("8_hfwtw")
+ratDef = SubResource("Resource_fqldq")
+OuterRadius = 3.0
+Debug = true
+metadata/_custom_type_script = "uid://birj7k8r0p7js"
+
+[node name="@MeshInstance3D@77765" type="MeshInstance3D" parent="RatSpawner" unique_id=582595926]
+mesh = SubResource("ImmediateMesh_a5rnb")

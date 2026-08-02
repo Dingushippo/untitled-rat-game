@@ -4,4 +4,5 @@
 
 [resource]
 script = ExtResource("1_i43dx")
+Quotas = PackedInt32Array(40, 60, 100)
 metadata/_custom_type_script = "uid://c58yhqvn28p07"

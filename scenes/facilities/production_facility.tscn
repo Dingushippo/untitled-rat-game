@@ -80,3 +80,6 @@ script = ExtResource("2_d0lwy")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9605169, 0)
 billboard = 2
 text = "Test"
+
+[node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=151779173]
+vertices = PackedVector3Array(0.59807134, 0, 0.49492002, -0.95277953, 0, 0.49233958, -0.95794046, 0, -0.495973, 0.5929105, 0, -0.5140362)

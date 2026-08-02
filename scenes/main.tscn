@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/entities/rat.tscn" id="2_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="3_tbgi4"]
 [ext_resource type="Resource" uid="uid://c46gibkbxlvm" path="res://resources/facilities/CryptGarden.tres" id="5_85g3d"]
-[ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/facility_base.tscn" id="5_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/production_facility.tscn" id="5_tbgi4"]
 [ext_resource type="Resource" uid="uid://gh4fshjj7hfn" path="res://resources/facilities/FungalStill.tres" id="6_fstil"]
 [ext_resource type="Script" uid="uid://birj7k8r0p7js" path="res://scripts/entities/rat/RatSpawner.cs" id="7_o6xl0"]
 [ext_resource type="Script" uid="uid://buk1fupp26own" path="res://scripts/entities/rat/RatDef.cs" id="8_tipki"]

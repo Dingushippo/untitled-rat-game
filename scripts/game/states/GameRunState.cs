@@ -5,7 +5,7 @@ using System.Reflection.Metadata.Ecma335;
 
 public class GameRunState : GameState
 {
-    private const string GAME_SCENE_PATH = "res://scenes/main.tscn";
+    private const string GAME_SCENE_PATH = "res://scenes/levels/test_level.tscn";
     public GameRunState(GameManager owner) : base(owner) { }
     public bool RunSuccess;
     public int TotalStewsDelivered = 0;

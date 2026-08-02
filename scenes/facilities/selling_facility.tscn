@@ -45,3 +45,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.71353585, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=612204829]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3734219, 0)
 shape = SubResource("SphereShape3D_pso3n")
+
+[node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=1591411331]
+height = 0.8
+vertices = PackedVector3Array(0.28649724, 0, 0.26881245, -0.27234936, 0, 0.26527536, -0.26881242, 0, -0.27234942, 0.28649724, 0, -0.27234942)
