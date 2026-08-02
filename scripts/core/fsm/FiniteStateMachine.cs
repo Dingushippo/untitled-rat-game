@@ -28,6 +28,7 @@ public class FiniteStateMachine
 
     public void InitState(string newState)
     {
+        if (!ValidateState(newState)) return;
         CurrentState = states[newState];
         CurrentStateName = newState;
         CurrentState.Enter();
@@ -35,11 +36,22 @@ public class FiniteStateMachine
 
     public void ChangeState(string newState, State previous = null)
     {
+        if (!ValidateState(newState)) return;
         if (Debug) GD.Print($"{_owner} - Changing state from {CurrentStateName} to {newState}");
         PreviousStateName = CurrentStateName;
         CurrentState.Exit();
         CurrentState = states[newState];
         CurrentStateName = newState;
         CurrentState.Enter(previous);
+    }
+
+    private bool ValidateState(string state)
+    {
+        if (!states.TryGetValue(state, out State next))
+        {
+            GD.PushError($"{_owner}: no state '{state}' (have: {string.Join(", ", states.Keys)})");
+            return false;
+        }
+        return true;
     }
 }
