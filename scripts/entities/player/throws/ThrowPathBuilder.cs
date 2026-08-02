@@ -11,6 +11,8 @@ public sealed class ThrowPathBuilder
     private readonly List<Vector3> _points = new();
     private readonly List<float> _speeds = new();
 
+    public Vector3 ExitVelocity;
+
     public int Count => _points.Count;
 
     /// <param name="speed">Speed along the segment that ends at <paramref name="point"/>.</param>
@@ -21,5 +23,5 @@ public sealed class ThrowPathBuilder
     }
 
     public ThrowPath Build(ThrowTarget target = default, bool homing = false)
-        => new(_points.ToArray(), _speeds.ToArray(), target, homing);
+        => new(_points.ToArray(), _speeds.ToArray(), ExitVelocity, target, homing);
 }

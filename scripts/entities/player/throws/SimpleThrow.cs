@@ -5,11 +5,7 @@ using Godot.Collections;
 [GlobalClass]
 public partial class SimpleThrow : ThrowType
 {
-    /// <summary>World geometry and facility bodies - these deflect the arc.</summary>
-    private const uint SOLID_LAYER = 1;
-
-    /// <summary>Facility catch volumes - detection only, they never deflect the arc.</summary>
-    private const uint FACILITY_TRIGGER_LAYER = 16;
+    [Export] public float CollisionRadius = 0.25f;
 
     [ExportGroup("Bounce")]
     /// <summary>Fraction of the into-surface speed that comes back out. A rat is not a superball.</summary>
@@ -38,14 +34,15 @@ public partial class SimpleThrow : ThrowType
 
             Vector3 next = position + velocity * ctx.Step;
 
-            if (!Utils.Raycast(ctx.Rat, position, next, out Dictionary hit, SOLID_LAYER | FACILITY_TRIGGER_LAYER))
+            uint collisionMask = PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY);
+            if (!Utils.Raycast(ctx.Rat, position, next, out Dictionary hit, collisionMask))
             {
                 position = next;
                 path.Add(position, velocity.Length());
                 continue;
             }
 
-            Vector3 hitPosition = hit["position"].AsVector3();
+            Vector3 hitPosition = hit["position"].AsVector3(); // + hit["normal"].AsVector3() * CollisionRadius;
 
             if (hit["collider"].As<GodotObject>() is Area3D area)
             {
@@ -66,23 +63,27 @@ public partial class SimpleThrow : ThrowType
 
                 // Nothing to aim at here, so pass through the trigger and let the facility's own
                 // body produce the bounce instead of the catch volume.
-                if (!Utils.Raycast(ctx.Rat, hitPosition, next, out hit, SOLID_LAYER, collideWithAreas: false))
+                if (!Utils.Raycast(ctx.Rat, hitPosition, next, out hit, PhysicsLayers.WORLD, collideWithAreas: false))
                 {
                     position = next;
                     path.Add(position, velocity.Length());
                     continue;
                 }
 
-                hitPosition = hit["position"].AsVector3();
+                hitPosition = hit["position"].AsVector3() + hit["normal"].AsVector3() * CollisionRadius;
             }
 
             position = hitPosition;
             path.Add(position, velocity.Length());
 
             velocity = Deflect(velocity, hit["normal"].AsVector3());
+            path.ExitVelocity = velocity;
 
             if (++bounces > MaxBounces || velocity.Length() < MinBounceSpeed)
+            {
+                path.ExitVelocity = velocity;
                 break;
+            }
         }
 
         return path.Build();
@@ -111,7 +112,7 @@ public partial class SimpleThrow : ThrowType
     {
         Vector3 approach = target.Position + Vector3.Up * ApproachHeight;
 
-        return Utils.Raycast(ctx.Rat, from, approach, out _, SOLID_LAYER, collideWithAreas: false)
+        return Utils.Raycast(ctx.Rat, from, approach, out _, PhysicsLayers.WORLD, collideWithAreas: false)
             ? target.Facility.ColliderTopY
             : float.NegativeInfinity;
     }

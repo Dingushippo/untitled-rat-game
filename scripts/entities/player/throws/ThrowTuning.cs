@@ -4,8 +4,9 @@ using Godot;
 public partial class ThrowTuning : Resource
 {
     [ExportGroup("Force")]
-    [Export(PropertyHint.Range, "1,50,0.1")] public float ThrowForce = 7f;
-    [Export(PropertyHint.Range, "1,50,0.1")] public float MaxThrowForce = 12f;
+    [Export(PropertyHint.Range, "1,100,0.1")] public float ThrowForce = 7f;
+    [Export(PropertyHint.Range, "1,100,0.1")] public float MaxThrowForce = 12f;
+    [Export] public float ArcGravityScale = 3f;
 
     [ExportGroup("Charge")]
     [Export(PropertyHint.Range, "0.05,5,0.05")] public float ChargeDuration = 1.5f;

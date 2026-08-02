@@ -77,8 +77,8 @@ public partial class ThrowComponent : Node3D
         rat,
         GlobalPosition,
         -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(Tuning.AngleAdjust), 0),
-        _currentForce,
-        _gravity * rat.RatDef.Mass,
+        _currentForce / rat.RatDef.Mass,
+        _gravity * Tuning.ArcGravityScale,
         Tuning.Step,
         Tuning.MaxPoints
     );

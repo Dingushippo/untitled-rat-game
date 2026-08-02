@@ -10,9 +10,9 @@ public static class PhysicsLayers
     public static uint ENTITY = 8;
     public static uint FACILITY = 16;
 
-    public static uint GetOrMask(params int[] layers)
+    public static uint GetOrMask(params uint[] layers)
     {
-        if (layers.IsEmpty()) return 0;
+        if (layers.Length == 0) return 0;
         uint mask = 0;
         foreach (int layer in layers)
         {

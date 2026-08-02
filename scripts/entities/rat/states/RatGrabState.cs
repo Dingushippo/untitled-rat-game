@@ -21,7 +21,7 @@ public class RatGrabState : RatState
     public override void Exit()
     {
         _rat.Reparent(_prevParent);
-        _rat.Collider.Disabled = false;
+        // _rat.Collider.Disabled = false;
         _rat.InteractArea?.SetActive(true);
     }
 }

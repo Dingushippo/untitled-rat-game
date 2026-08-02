@@ -9,6 +9,7 @@ public partial class RatFlightTuning : Resource
 
     /// <summary>Floor so a near-vertical throw doesn't hang motionless at its apex.</summary>
     [Export(PropertyHint.Range, "0.1,10,0.1")] public float MinSpeed = 2f;
+    [Export] public float GroundProbeDistance { get; internal set; }
 
     [ExportGroup("Rotation")]
     [Export(PropertyHint.Range, "1,30,0.5")] public float TurnSpeed = 10f;

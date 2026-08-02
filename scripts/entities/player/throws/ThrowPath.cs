@@ -14,10 +14,13 @@ public readonly struct ThrowPath
     public readonly bool Homing;
     public readonly Vector3 End => Points[^1];
 
-    public ThrowPath(Vector3[] points, float[] speeds, ThrowTarget throwTarget = default, bool homing = false)
+    public readonly Vector3 ExitVelocity;
+
+    public ThrowPath(Vector3[] points, float[] speeds, Vector3 exitVelocity, ThrowTarget throwTarget = default, bool homing = false)
     {
         Points = points;
         Speeds = speeds;
+        ExitVelocity = exitVelocity;
         ThrowTarget = throwTarget;
         Homing = homing;
     }

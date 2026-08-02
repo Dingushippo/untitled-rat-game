@@ -43,9 +43,8 @@ script = ExtResource("4_fjrip")
 RotationTarget = NodePath("..")
 DebugAimMarker = true
 
-[node name="HandController" parent="Camera3D" unique_id=309927190 node_paths=PackedStringArray("camera") instance=ExtResource("6_tuyoq")]
+[node name="HandController" parent="Camera3D" unique_id=309927190 instance=ExtResource("6_tuyoq")]
 transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0, 0, 0)
-camera = NodePath("..")
 
 [node name="ThrowComponent" type="Node3D" parent="Camera3D" unique_id=1814457487 node_paths=PackedStringArray("Player")]
 transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0.86460876, -0.41891766, -0.86996555)
