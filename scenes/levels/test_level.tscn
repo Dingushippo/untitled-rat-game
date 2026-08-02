@@ -115,6 +115,7 @@ material = SubResource("StandardMaterial3D_eaa0b")
 
 [node name="Wall_L" type="CSGBox3D" parent="Walls" unique_id=816793663]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.25, 7.5, 0)
+use_collision = true
 size = Vector3(0.5, 15, 30)
 material = SubResource("ORMMaterial3D_pso3n")
 

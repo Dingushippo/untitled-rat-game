@@ -52,17 +52,14 @@ public partial class Rat : CharacterBody3D
     private void OnInteract(Node3D interactor)
     {
         if (interactor is not Player player) return;
-        if (player.GrabComponent.HasGrabbed()) return;
         player.GrabComponent.InjectGrabState(this);
-
-        // TODO add highlight on looked at
     }
 
     private void OnLookedAt()
     {
         if (Mesh.MaterialOverlay is ShaderMaterial mat)
         {
-            mat.SetShaderParameter("outline_width", 2f);
+            mat.SetShaderParameter("outline_width", 2.5f);
         }
     }
 
@@ -73,7 +70,6 @@ public partial class Rat : CharacterBody3D
             mat.SetShaderParameter("outline_width", 0f);
         }
     }
-
 
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
 

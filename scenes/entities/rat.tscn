@@ -307,7 +307,7 @@ InteractArea = NodePath("InteractComponent")
 Mesh = NodePath("control/Skeleton3D/Rat")
 RatDef = SubResource("Resource_5f0dk")
 FlightTuning = ExtResource("10_flight")
-Acceleration = 30.0
+Speed = 5.0
 Debug = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=249878393]
