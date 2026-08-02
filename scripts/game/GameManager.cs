@@ -4,7 +4,8 @@ public partial class GameManager : Node
 {
     [Export] public RunTuning Tuning;
     [Export] public bool Disabled;
-    public static GameManager Instance;
+    private static GameManager _instance;
+    public static GameManager Instance => _instance;
     private FiniteStateMachine _fsm;
 
     public override void _Process(double delta) => _fsm.StateProcess((float)delta);
@@ -14,15 +15,8 @@ public partial class GameManager : Node
 
     public override void _Ready()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            QueueFree();
-            return;
-        }
+        if (!Singleton.ClaimOrFree(ref _instance, this)) return;
+
         AssertTuning();
         _fsm = new(this);
 

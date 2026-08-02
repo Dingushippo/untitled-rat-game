@@ -6,7 +6,8 @@ public partial class RunClock : Node
     const float DAY_LENGTH_DEFAULT = 420f;
     const int START_TIME_SECONDS = 6 * 60 * 60; // 6:00 AM
     const int END_TIME_SECONDS = 22 * 60 * 60; // 10:00 PM
-    public static RunClock Instance;
+    private static RunClock _instance;
+    public static RunClock Instance => _instance;
     private float _timer = 0;
     private bool _timerActive = false;
     private float _dayLength;
@@ -31,14 +32,7 @@ public partial class RunClock : Node
 
     public override void _EnterTree()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            QueueFree();
-        }
+        if (!Singleton.ClaimOrFree(ref _instance, this)) return;
     }
 
     public override void _Ready()
