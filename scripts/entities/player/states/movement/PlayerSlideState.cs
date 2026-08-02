@@ -29,6 +29,7 @@ public class PlayerSlideState : PlayerState
     public override void Enter(State previous = null)
     {
         _currentSlideVelocity = _player.Velocity * SLIDE_VELOCITY_BOOST;
+        _player.CrouchComponent.Crouch();
         _player.CrouchComponent.Enabled = false;
     }
     public override void Exit()

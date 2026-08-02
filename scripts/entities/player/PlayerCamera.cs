@@ -25,8 +25,9 @@ public partial class PlayerCamera : Camera3D
     [Export] public float MinImpactScale = 0.3f;
     [Export(PropertyHint.Range, "0,0.5")] public float ImpactAttackRatio = 0.18f;
 
-    public Node3D lookingAtObject;
-    public Vector3? lookingAtCollisionPosition;
+    public Node3D LookingAtObject;
+    public Vector3? LookingAtCollisionPosition;
+    public float YOffset = 0f;
 
     private float _yawDeg = 0f;
     private float _pitchRad = 0f;
@@ -89,7 +90,7 @@ public partial class PlayerCamera : Camera3D
         rotation.Z = _baseRotation.Z + _kickRoll;
         Rotation = rotation;
 
-        Position = _basePosition + new Vector3(0f, 0f, _kickZ);
+        Position = _basePosition + new Vector3(0f, YOffset, _kickZ);
         Fov = _originalFov + _fovOffset;
     }
 
