@@ -19,13 +19,12 @@ public class RatFollowState : RatState
     {
         if (_navAgent.IsTargetReached())
         {
-            fsm.ChangeState("target_reached", this);
+            fsm.ChangeState("idle", this);
             return;
         }
         Vector3 nextPoint = _navAgent.GetNextPathPosition();
         Vector3 direction = _rat.GlobalPosition.DirectionTo(nextPoint);
-        // direction.Y = 0;
-        if (direction.LengthSquared() < 0.001f)
+        if (direction.LengthSquared() < 0.01f)
         {
             // Feed zero velocity to the agent
             _navAgent.Velocity = Vector3.Zero;
@@ -44,10 +43,9 @@ public class RatFollowState : RatState
         _rat.Velocity = _navigationVelocity;
         _rat.MoveAndSlide();
     }
-
-    public override void Process(float delta) { }
     public override void Enter(State previous = null)
     {
+        _rat.SetNavAgentEnabled(true);
         _navAgent.VelocityComputed += UpdateNavigationVelocity;
         _navAgent.TargetPosition = _rat.NavigationTargetPosition;
         _desiredSpeed = _rat.Speed;
@@ -55,6 +53,7 @@ public class RatFollowState : RatState
     }
     public override void Exit()
     {
+        _rat.SetNavAgentEnabled(false);
         _navAgent.VelocityComputed -= UpdateNavigationVelocity;
         _currentSpeed = 0;
     }

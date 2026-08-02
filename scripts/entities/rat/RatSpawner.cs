@@ -54,9 +54,11 @@ public partial class RatSpawner : Node3D
         for (int i = 0; i < amount; i++)
         {
             Rat rat = RatScene.Instantiate<Rat>();
+            Vector3 SpawnPoint = GetRandomSpawnPoint();
             AddChild(rat);
             rat.RatDef = ratDef;
-            rat.GlobalPosition = GetRandomSpawnPoint();
+            rat.GlobalPosition = SpawnPoint;
+            rat.HomePosition = SpawnPoint;
             _ratCounter++;
         }
     }

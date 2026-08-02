@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 public class RatLandedState : RatState
 {
@@ -18,7 +19,7 @@ public class RatLandedState : RatState
         _landTween.SetParallel(true);
         _landTween.TweenProperty(_rat, "rotation", landingDirection, 0.35f);
         _landTween.Chain();
-        _landTween.TweenCallback(Callable.From(() => fsm.ChangeState("idle", this)));
+        _landTween.TweenCallback(Callable.From(() => SetNextState(previous)));
     }
     public override void Exit()
     {
@@ -26,5 +27,12 @@ public class RatLandedState : RatState
         {
             _landTween.Kill();
         }
+    }
+
+    private void SetNextState(State previous)
+    {
+        GD.Print("Setting to follow");
+        _rat.ResetTargetPosition();
+        fsm.ChangeState("follow", this);
     }
 }

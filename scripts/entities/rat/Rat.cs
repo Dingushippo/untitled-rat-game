@@ -19,12 +19,14 @@ public partial class Rat : CharacterBody3D
         get => _debug;
         set
         {
+            if (_fsm is null) return;
             _debug = value;
             _fsm.Debug = _debug;
         }
     }
     private bool _debug;
     public Inventory Cargo;
+    public Vector3 HomePosition;
     public Vector3 NavigationTargetPosition;
     private Node3D _navigationTarget;
     private Node3D _navigationTargetOriginal;
@@ -55,6 +57,11 @@ public partial class Rat : CharacterBody3D
         _fsm.ChangeState(key);
     }
 
+    public void ForceState(string key)
+    {
+        _fsm.ChangeState(key);
+    }
+
     private void InitStateMachine()
     {
         _fsm = new FiniteStateMachine(this);
@@ -72,5 +79,10 @@ public partial class Rat : CharacterBody3D
     {
         NavAgent.SetProcess(enabled);
         NavAgent.SetPhysicsProcess(enabled);
+    }
+
+    public void ResetTargetPosition()
+    {
+        NavigationTargetPosition = HomePosition;
     }
 }
