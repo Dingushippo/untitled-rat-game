@@ -20,7 +20,7 @@ public class RatSlottedState : RatState
         slotTween.TweenProperty(_rat, "quaternion", LocalSlotRotation(), _rat.FlightTuning.SettleDuration);
         slotTween.TweenProperty(_rat, "global_position", _workSlot.GlobalPosition, _rat.FlightTuning.SettleDuration);
 
-        _rat.SetNavAgentEnabled(false);
+        // _rat.SetNavAgentEnabled(false);
 
         // TODO Play animation associated with facility/slot
 
@@ -28,7 +28,7 @@ public class RatSlottedState : RatState
     }
     public override void Exit()
     {
-        _rat.SetNavAgentEnabled(true);
+        // _rat.SetNavAgentEnabled(true);
 
         if (_workSlot is null) return;
 

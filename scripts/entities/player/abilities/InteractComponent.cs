@@ -14,7 +14,6 @@ public partial class InteractComponent
     /// grab/drop, so the hand states use this to know when to yield the key.
     /// </summary>
     public bool IsLookingAtHandler => ComponentLookedAt is not null && ComponentLookedAt.HasHandler;
-
     public InteractComponent(Player player)
     {
         _player = player;
@@ -27,7 +26,13 @@ public partial class InteractComponent
         Vector3 rayEnd = rayStart + -_player.Camera.GlobalBasis.Z * InteractDistance;
 
         GodotObject newComponent = null;
-        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, InteractAreaComponent.INTERACT_LAYER))
+        if (Utils.Raycast(
+            _player,
+            rayStart,
+            rayEnd, out Dictionary result,
+            PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.INTERACT, PhysicsLayers.FACILITY),
+            accept: o => o is IInteract i && i.IsAvailableTo(_player)
+        ))
         {
             RayResult = result;
             newComponent = result["collider"].As<GodotObject>();
@@ -40,7 +45,6 @@ public partial class InteractComponent
             ComponentLookedAt?.IsLookedAwayFrom();
             ComponentLookedAt = interact;
         }
-        if (interact is not null && !interact.IsAvailableTo(_player)) interact = null;
         if (interact is not null)
         {
             ComponentLookedAt?.IsLookedAt();

@@ -1,7 +1,7 @@
 using Godot;
 using Godot.Collections;
-using System.Collections;
-using System.Runtime.InteropServices;
+using System;
+using System.Linq;
 
 public static partial class Utils
 {
@@ -12,7 +12,43 @@ public static partial class Utils
         out Dictionary result,
         uint collisionMask = 4294967295,
         bool collideWithAreas = true,
-        bool collideWithBodies = true)
+        bool collideWithBodies = true,
+        Func<GodotObject, bool> accept = null,
+        int maxDepth = 5
+    )
+    {
+        if (accept == null)
+        {
+            result = RaycastHelper(node, a, b, collisionMask, collideWithAreas, collideWithBodies);
+            return result.Count != 0;
+        }
+        Array<Rid> excludeRidArray = [];
+        int depth = 0;
+        result = [];
+        while (depth < maxDepth)
+        {
+            result = RaycastHelper(node, a, b, collisionMask, collideWithAreas, collideWithBodies, excludeRidArray);
+            if (result.Count > 0 && !accept(result["collider"].As<GodotObject>()))
+            {
+                excludeRidArray.Add(result["rid"].As<Rid>());
+                depth++;
+                continue;
+            }
+            return result.Count != 0;
+        }
+        result = [];
+        return false;
+    }
+
+    private static Dictionary RaycastHelper(
+        Node3D node,
+        Vector3 a,
+        Vector3 b,
+        uint collisionMask = 4294967295,
+        bool collideWithAreas = true,
+        bool collideWithBodies = true,
+        Array<Rid> excludeRidArray = null
+    )
     {
         PhysicsDirectSpaceState3D state = node.GetWorld3D().DirectSpaceState;
         PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(
@@ -20,11 +56,9 @@ public static partial class Utils
         );
         query.CollideWithAreas = collideWithAreas;
         query.CollideWithBodies = collideWithBodies;
-        result = state.IntersectRay(query);
-
+        query.Exclude = excludeRidArray;
         Profiler.Count("physics.raycast");
-
-        return result.Count != 0;
+        return state.IntersectRay(query);
     }
 
     public static bool ShapeCast(
@@ -46,7 +80,6 @@ public static partial class Utils
         };
 
         result = state.IntersectShape(query);
-        GD.Print(result);
         return result.Count != 0;
     }
 }
