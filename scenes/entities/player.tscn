@@ -1,26 +1,18 @@
 [gd_scene format=3 uid="uid://doppcexk44ncy"]
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/entities/player/Player.cs" id="1_dqkch"]
+[ext_resource type="Script" uid="uid://baucng1irmb5g" path="res://scripts/entities/player/abilities/ThrowPreview.cs" id="3_b6tgf"]
+[ext_resource type="Resource" uid="uid://dxecysjoqqgqs" path="res://resources/tuning/throw_preview_tuning.tres" id="4_73kkf"]
 [ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/entities/player/abilities/ThrowComponent.cs" id="4_dqkch"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
+[ext_resource type="Shader" uid="uid://cm45fdcgrtfgi" path="res://shaders/throw_reticle.gdshader" id="5_73kkf"]
+[ext_resource type="Shader" uid="uid://co3p8kicpdx7n" path="res://shaders/throw_dot.gdshader" id="5_n5sgd"]
 [ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/entities/hand_controller.tscn" id="6_tuyoq"]
 [ext_resource type="PackedScene" uid="uid://bu8fc86onllmh" path="res://scenes/ui/hud.tscn" id="7_ss7kx"]
 [ext_resource type="Resource" uid="uid://ca2tgeh8qeapw" path="res://resources/throws/simple_throw.tres" id="7_throw"]
 [ext_resource type="Resource" uid="uid://b2dawaso2loby" path="res://resources/tuning/throw_tuning.tres" id="8_tuning"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
-
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_qlg0r"]
-transparency = 1
-vertex_color_use_as_albedo = true
-albedo_color = Color(0, 0.654902, 0.654902, 0.60784316)
-emission_enabled = true
-emission = Color(0, 1, 0, 1)
-emission_energy_multiplier = 4.0
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_dqkch"]
-material = SubResource("ORMMaterial3D_qlg0r")
-size = Vector2(0.5, 0.5)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
@@ -46,13 +38,22 @@ DebugAimMarker = true
 [node name="HandController" parent="Camera3D" unique_id=309927190 instance=ExtResource("6_tuyoq")]
 transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0, 0, 0)
 
-[node name="ThrowComponent" type="Node3D" parent="Camera3D" unique_id=1814457487 node_paths=PackedStringArray("Player")]
+[node name="ThrowComponent" type="Node3D" parent="Camera3D" unique_id=1814457487 node_paths=PackedStringArray("Player", "ThrowPreview")]
 transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0.86460876, -0.41891766, -0.86996555)
 script = ExtResource("4_dqkch")
 Player = NodePath("../..")
-ReticleMesh = SubResource("PlaneMesh_dqkch")
+ThrowPreview = NodePath("ThrowPreview")
 ThrowType = ExtResource("7_throw")
 Tuning = ExtResource("8_tuning")
+
+[node name="ThrowPreview" type="Node3D" parent="Camera3D/ThrowComponent" unique_id=1639316380]
+transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1, -0.86460894, 0.41891778, 0.86996555)
+script = ExtResource("3_b6tgf")
+Tuning = ExtResource("4_73kkf")
+LiveTuning = true
+DotShader = ExtResource("5_n5sgd")
+ReticleShader = ExtResource("5_73kkf")
+MaxDots = 500
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

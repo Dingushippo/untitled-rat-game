@@ -103,6 +103,8 @@ public partial class SimpleThrow : ThrowType
             velocity = Deflect(velocity, normal);
             path.Add(position, velocity.Length());
             bounces++;
+            path.CurrentSegment++;
+            path.AddImpact();
 
             if (impactSpeed < MinBounceSpeed)
             {

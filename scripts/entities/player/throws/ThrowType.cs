@@ -48,6 +48,8 @@ public abstract partial class ThrowType : Resource
         Vector3[] samples = new Vector3[BEZIER_RESOLUTION + 1];
         float[] travelled = new float[BEZIER_RESOLUTION + 1];
 
+        path.CurrentSegment++;
+
         for (int i = 0; i <= BEZIER_RESOLUTION; i++)
         {
             samples[i] = p0.BezierInterpolate(p1, p2, p3, (float)i / BEZIER_RESOLUTION);

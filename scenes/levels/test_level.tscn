@@ -60,6 +60,10 @@ environment = SubResource("Environment_fr1um")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=578672033]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_energy = 0.052
+light_indirect_energy = 0.644
+light_volumetric_fog_energy = 12.022
+light_specular = 4.793
 shadow_enabled = true
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1654694968]
@@ -171,3 +175,4 @@ gravity = 2.0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=434092750]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10235596, 7.5375977, -1.5445862)
 shape = SubResource("BoxShape3D_pso3n")
+disabled = true

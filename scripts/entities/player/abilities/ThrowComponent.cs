@@ -6,19 +6,10 @@ using System.Collections.Generic;
 public partial class ThrowComponent : Node3D
 {
     [Export] public Player Player;
-    [Export] public Mesh ReticleMesh;
+    [Export] public ThrowPreview ThrowPreview;
     [Export] public ThrowType ThrowType;
     [Export] public ThrowTuning Tuning;
 
-    [ExportGroup("Path colours")]
-    [Export] public Color FreeThrowColor = Colors.Red;
-    [Export] public Color SlotThrowColor = Colors.Green;
-    [Export] public Color IntakeThrowColor = Colors.DeepSkyBlue;
-
-    private MeshInstance3D _pathMeshInstance;
-    private MeshInstance3D _reticleMeshInstance;
-    private ImmediateMesh _immediateMesh;
-    private OrmMaterial3D _material;
     private float _currentForce = 0;
     private Vector3 _gravity;
     private ThrowPath _currentPath;
@@ -30,25 +21,6 @@ public partial class ThrowComponent : Node3D
 
         _gravity = Player.GetGravity();
         _currentForce = Tuning.ThrowForce;
-
-        _pathMeshInstance = new();
-        AddChild(_pathMeshInstance);
-
-        _reticleMeshInstance = new();
-        AddChild(_reticleMeshInstance);
-        _reticleMeshInstance.Mesh = ReticleMesh;
-        _reticleMeshInstance.Hide();
-
-        // Init mesh
-        _immediateMesh = new ImmediateMesh();
-        _pathMeshInstance.Mesh = _immediateMesh;
-
-        _material = new OrmMaterial3D
-        {
-            ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
-            AlbedoColor = Colors.Red
-
-        };
     }
 
 
@@ -60,15 +32,11 @@ public partial class ThrowComponent : Node3D
             {
                 _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
             }
-
-            _material.AlbedoColor = PathColor(_currentPath);
-
-            using (Profiler.Sample("throw.mesh"))
-            {
-                GenerateMesh();
-            }
-
-            SetReticle();
+            ThrowPreview.ShowPreview(_currentPath);
+        }
+        else
+        {
+            ThrowPreview.HidePreview();
         }
     }
 
@@ -87,12 +55,6 @@ public partial class ThrowComponent : Node3D
         Tuning.MaxPoints
     );
 
-    /// <summary>Blue means the throw feeds the facility, green means it staffs a slot.</summary>
-    private Color PathColor(ThrowPath path)
-    {
-        if (path.ThrowTarget.IsIntake) return IntakeThrowColor;
-        return path.Homing ? SlotThrowColor : FreeThrowColor;
-    }
 
     private Tween _chargeTween;
     public async void StartDelayedCharge()
@@ -147,48 +109,14 @@ public partial class ThrowComponent : Node3D
         EventBus.Publish(Event.CameraImpact, chargeAmount, 0.35f);
     }
 
-    private void GenerateMesh()
-    {
-        _immediateMesh.ClearSurfaces();
-        _immediateMesh.SurfaceBegin(Mesh.PrimitiveType.LineStrip, _material);
-
-        foreach (Vector3 v in _currentPath.Points)
-        {
-            _immediateMesh.SurfaceAddVertex(ToLocal(v));
-        }
-
-        _immediateMesh.SurfaceEnd();
-
-    }
-
-    private void SetReticle()
-    {
-        Vector3 reticlePos = _currentPath.End + Vector3.Up * 0.01f;
-        Vector3 targetRaycastPos = reticlePos + Vector3.Down;
-        if (Utils.Raycast(this, reticlePos, targetRaycastPos, out Dictionary result, 1))
-        {
-            Vector3 hitNormal = result["normal"].AsVector3();
-            Vector3 hitPosition = result["position"].AsVector3();
-            Vector3 rotation = _reticleMeshInstance.GlobalRotation;
-            rotation.Z = hitNormal.Z;
-            rotation.X = hitNormal.X;
-            _reticleMeshInstance.GlobalRotation = rotation;
-            _reticleMeshInstance.GlobalPosition = hitPosition + Vector3.Up * 0.01f;
-        }
-
-    }
-
     public void Enable()
     {
         _preview = true;
-        _reticleMeshInstance.Show();
     }
 
     public void Reset()
     {
         _preview = false;
-        _immediateMesh.ClearSurfaces();
-        _reticleMeshInstance.Hide();
         ResetCharge();
     }
 }

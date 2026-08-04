@@ -6,6 +6,7 @@
 script = ExtResource("1_throw")
 Restitution = 0.81
 SurfaceFriction = 0.35
+MinBounceSpeed = 5.0
 MaxBounces = 10
 ArrivalDistance = 0.05
 ApproachHeight = 0.1

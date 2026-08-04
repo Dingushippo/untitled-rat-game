@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ThrowPreviewTuning" format=3 uid="uid://dxecysjoqqgqs"]
+
+[ext_resource type="Script" uid="uid://meai370p1jcr" path="res://scripts/entities/player/throws/ThrowPreviewTuning.cs" id="1_5j7q6"]
+
+[resource]
+script = ExtResource("1_5j7q6")
+DotSpacing = 0.05
+DotSize = 0.037
+FadeStart = 4
+FadeEnd = 40
+MinAlpha = 0.0
+BounceFalloff = 0.25
+ImpactRingSize = 6.0
+FlowSpeed = 2.0
+FlowFrequency = 0.155
+FlowStrength = 1.1
+ReticleSize = 1.495
+ReticlePulseRate = 4.125
+SurfaceOffset = 0.01
+ReticleSpinRate = 1.51
+ReticleChevronSpeed = 6.41
+FreeThrowColor = Color(1.8040243, 0, 0.45827657, 1)
+SlotThrowColor = Color(0, 0.7882353, 0, 1)
+IntakeThrowColor = Color(0.21568628, 0.6431373, 1, 1)
+metadata/_custom_type_script = "uid://meai370p1jcr"
