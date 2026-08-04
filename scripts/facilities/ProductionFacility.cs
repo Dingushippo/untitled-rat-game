@@ -81,7 +81,16 @@ public partial class ProductionFacility : FacilityBase
             return;
         }
 
-        InventoryTransfer.Move(Output, rat.Cargo);
+        EventBus.Publish(
+            Event.StartQTE,
+            "spam_qte", (bool x) =>
+            {
+                if (x)
+                    InventoryTransfer.Move(Output, rat.Cargo);
+                else
+                    GD.Print("You suck");
+            }
+        );
         RefreshOutputPrompt();
     }
 

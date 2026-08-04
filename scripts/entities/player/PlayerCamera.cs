@@ -123,6 +123,11 @@ public partial class PlayerCamera : Camera3D
         }
     }
 
+    public void SetCameraInputEnabled(bool enabled)
+    {
+        _cameraEnabled = enabled;
+    }
+
     private void OnCameraCharge(params object[] args)
     {
         float duration = (float)args[0];

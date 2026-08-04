@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://bu8fc86onllmh" path="res://scenes/ui/hud.tscn" id="7_ss7kx"]
 [ext_resource type="Resource" uid="uid://ca2tgeh8qeapw" path="res://resources/throws/simple_throw.tres" id="7_throw"]
 [ext_resource type="Resource" uid="uid://b2dawaso2loby" path="res://resources/tuning/throw_tuning.tres" id="8_tuning"]
+[ext_resource type="Script" uid="uid://c87dhm675xypo" path="res://scripts/qte/QteManager.cs" id="12_5ki56"]
+[ext_resource type="PackedScene" uid="uid://bda3cwi7p7irq" path="res://scenes/qte/spam_qte.tscn" id="13_saib0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
@@ -66,3 +68,16 @@ target_position = Vector3(0, -1.755, 0)
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
 
 [node name="HUD" parent="CanvasLayer" unique_id=1140804666 instance=ExtResource("7_ss7kx")]
+
+[node name="QteManager" type="Control" parent="CanvasLayer" unique_id=752057569]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("12_5ki56")
+QteScenes = Array[PackedScene]([ExtResource("13_saib0")])
+metadata/_custom_type_script = "uid://c87dhm675xypo"

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters;
 using Godot;
 
 public class FiniteStateMachine
@@ -10,9 +11,15 @@ public class FiniteStateMachine
     public string PreviousStateName { get; set; }
     public bool Debug { get; set; } = false;
 
+    private bool _isEnabled = true;
     public FiniteStateMachine(Node owner)
     {
         _owner = owner.Name;
+    }
+
+    public void SetEnabled(bool enabled)
+    {
+        _isEnabled = enabled;
     }
 
     public void Add(string key, State state)
@@ -21,10 +28,26 @@ public class FiniteStateMachine
         state.fsm = this;
     }
 
-    public void StatePhysicsProcess(float delta) => CurrentState.PhysicsProcess(delta);
-    public void StateProcess(float delta) => CurrentState.Process(delta);
-    public void StateInput(InputEvent @event) => CurrentState.HandleInput(@event);
-    public void StateUnhandledInput(InputEvent @event) => CurrentState.HandleUnhandledInput(@event);
+    public void StatePhysicsProcess(float delta)
+    {
+        if (!_isEnabled) return;
+        CurrentState.PhysicsProcess(delta);
+    }
+    public void StateProcess(float delta)
+    {
+        if (!_isEnabled) return;
+        CurrentState.Process(delta);
+    }
+    public void StateInput(InputEvent @event)
+    {
+        if (!_isEnabled) return;
+        CurrentState.HandleInput(@event);
+    }
+    public void StateUnhandledInput(InputEvent @event)
+    {
+        if (!_isEnabled) return;
+        CurrentState.HandleUnhandledInput(@event);
+    }
 
     public void InitState(string newState)
     {
