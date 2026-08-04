@@ -5,6 +5,7 @@ using Godot.Collections;
 [GlobalClass]
 public partial class SimpleThrow : ThrowType
 {
+    const float MIN_STEP_FRACTION = 0.1f;
     [Export] public float CollisionRadius = 0.25f;
 
     [ExportGroup("Bounce")]
@@ -19,22 +20,45 @@ public partial class SimpleThrow : ThrowType
 
     [Export] public int MaxBounces = 1;
 
+
+    private float GravityScale(ThrowContext ctx, Vector3 velocity, int bounces)
+    {
+        if (bounces > 0) return ctx.DescentGravityScale;
+
+        float fall = Mathf.SmoothStep(0f, ctx.DescentBlendSpeed, -velocity.Y);
+        return Mathf.Lerp(ctx.AscentGravityScale, ctx.DescentGravityScale, fall);
+    }
+
+    private Vector3 Retreat(Vector3 hitPosition, Vector3 direction, Vector3 normal, Vector3 previous)
+    {
+        float approach = Mathf.Max(-direction.Dot(normal), 0.2f);
+        float backoff = Mathf.Min(CollisionRadius / approach, CollisionRadius * 1.5f);
+
+        // Prevent path from doubling back on itself
+        backoff = Mathf.Min(backoff, previous.DistanceTo(hitPosition));
+
+        return hitPosition - direction * backoff;
+    }
     public override ThrowPath Simulate(ThrowContext ctx)
     {
         ThrowPathBuilder path = new();
+        uint collisionMask = PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY);
 
         Vector3 position = ctx.Origin;
         Vector3 velocity = ctx.Direction * ctx.Force;
 
         int bounces = 0;
+        float carry = 0f;
+        bool settled = false;
 
-        while (path.Count < ctx.MaxPoints)
+        while (path.Count < ctx.MaxPoints && !settled)
         {
-            velocity += ctx.GravityForce * ctx.Step;
+            float step = carry > ctx.Step * MIN_STEP_FRACTION ? carry : ctx.Step;
+            carry = 0f;
 
-            Vector3 next = position + velocity * ctx.Step;
+            velocity += ctx.Gravity * GravityScale(ctx, velocity, bounces) * step;
+            Vector3 next = position + velocity * step;
 
-            uint collisionMask = PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY);
             if (!Utils.Raycast(ctx.Rat, position, next, out Dictionary hit, collisionMask))
             {
                 position = next;
@@ -42,27 +66,17 @@ public partial class SimpleThrow : ThrowType
                 continue;
             }
 
-            Vector3 hitPosition = hit["position"].AsVector3(); // + hit["normal"].AsVector3() * CollisionRadius;
+            Vector3 hitPosition = hit["position"].AsVector3();
 
             if (hit["collider"].As<GodotObject>() is Area3D area)
             {
-                if (area.GetParent() is FacilityBase facility
-                    && facility.TryGetThrowTarget(hitPosition, ctx.Rat, out ThrowTarget target))
+                if (area.GetParent() is FacilityBase facility && facility.TryGetThrowTarget(hitPosition, ctx.Rat, out ThrowTarget target))
                 {
                     path.Add(hitPosition, velocity.Length());
-                    bool isHoming = HomeTo(
-                        ctx,
-                        path,
-                        hitPosition,
-                        velocity,
-                        target.Position,
-                        ApproachClearance(ctx, hitPosition, target)
-                    );
+                    bool isHoming = HomeTo(ctx, path, hitPosition, velocity, target.Position, ApproachClearance(ctx, hitPosition, target));
                     return path.Build(target, homing: isHoming);
                 }
-
-                // Nothing to aim at here, so pass through the trigger and let the facility's own
-                // body produce the bounce instead of the catch volume.
+                // Nothing to aim at here, so pass through the trigger and let the facility's own body produce the bounce instead of the catch volume
                 if (!Utils.Raycast(ctx.Rat, hitPosition, next, out hit, PhysicsLayers.WORLD, collideWithAreas: false))
                 {
                     position = next;
@@ -70,21 +84,39 @@ public partial class SimpleThrow : ThrowType
                     continue;
                 }
 
-                hitPosition = hit["position"].AsVector3() + hit["normal"].AsVector3() * CollisionRadius;
+                hitPosition = hit["position"].AsVector3();
             }
 
-            position = hitPosition;
+            Vector3 normal = hit["normal"].AsVector3();
+            Vector3 direction = velocity.Normalized();
+
+            // Only part of this step was actually used, the rest carries into the rebound so the bounce isn't given a free full step of gravity and travel
+            float full = position.DistanceTo(next);
+            if (full > 0.0001f) // Arbitrarily small number
+                carry = step * (1f - position.DistanceTo(hitPosition) / full);
+
+            position = Retreat(hitPosition, direction, normal, position);
+
+            // Only the into-surface component decides whether a bounce is worth having.
+            // Testing the full impact speed instead lets a fast horizontal skid bounce forever along a flat floor
+            float impactSpeed = -velocity.Dot(normal);
+            velocity = Deflect(velocity, normal);
             path.Add(position, velocity.Length());
+            bounces++;
 
-            velocity = Deflect(velocity, hit["normal"].AsVector3());
-            path.ExitVelocity = velocity;
-
-            if (++bounces > MaxBounces || velocity.Length() < MinBounceSpeed)
+            if (impactSpeed < MinBounceSpeed)
             {
-                path.ExitVelocity = velocity;
-                break;
+                settled = true;
+                path.ExitVelocity = Vector3.Zero;
+            }
+            else if (bounces > MaxBounces)
+            {
+                settled = true;
             }
         }
+
+        if (!settled)
+            path.ExitVelocity = velocity;
 
         return path.Build();
     }

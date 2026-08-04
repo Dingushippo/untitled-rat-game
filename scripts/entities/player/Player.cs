@@ -19,7 +19,6 @@ public partial class Player : CharacterBody3D
     [Export] public float TurnBrakeMultiplier = 2.5f;
     [Export] public float JumpForce = 10f;
 
-    public Vector3 Gravity;
     public GrabComponent GrabComponent;
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
@@ -31,7 +30,6 @@ public partial class Player : CharacterBody3D
         GrabComponent = new(this);
         CrouchComponent = new(this);
         InteractComponent = new(this);
-        Gravity = GetGravity();
         InitStateMachines();
     }
 

@@ -8,7 +8,7 @@ public class RatFallingState : RatState
             _rat.Collider.Disabled = false;
         }
 
-        _rat.Velocity += _rat.GetGravity() * delta;
+        _rat.Velocity += _rat.GetGravity() * _rat.FlightTuning.DescentGravityScale * delta;
         _rat.MoveAndSlide();
 
         if (_rat.IsOnFloor())
