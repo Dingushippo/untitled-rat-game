@@ -42,8 +42,9 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer" unique_id=521016306]
 layout_mode = 2
-text = "e"
+text = "E"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ProgressBar" type="ProgressBar" parent="CenterContainer/VBoxContainer" unique_id=163996490]
 custom_minimum_size = Vector2(200, 10)

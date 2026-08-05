@@ -1,5 +1,6 @@
 
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 // using GDictionary = Godot.Collections.Dictionary<string, int>;
@@ -13,6 +14,7 @@ public class Inventory : IInventory
     public IReadOnlyDictionary<string, int> Contents => _items;
     public bool IsEmpty => Total == 0;
     public bool IsFull => Total >= Capacity;
+    public Action Changed;
 
     public Inventory(int capacity, IEnumerable<string> filter = null)
     {
@@ -24,13 +26,21 @@ public class Inventory : IInventory
     public int CountOf(string item) => _items.TryGetValue(item, out int count) ? count : 0;
     public int SpaceFor(string item) => Accepts(item) ? Capacity - Total : 0;
 
+    private int SetData(string item, int amount)
+    {
+        _items[item] = amount;
+        Changed?.Invoke();
+        return _items[item];
+    }
+
     public int Add(string item, int amount)
     {
         int moved = Mathf.Min(amount, SpaceFor(item));
         if (moved <= 0) return 0;
         // Godot dictionaries throw on a missing key, so seed the entry through CountOf.
-        _items[item] = CountOf(item) + moved;
+        SetData(item, CountOf(item) + moved);
         Total += moved;
+
         return moved;
     }
 
@@ -91,7 +101,7 @@ public class Inventory : IInventory
     {
         int removed = Mathf.Min(amount, CountOf(item));
         if (removed <= 0) return 0;
-        if ((_items[item] -= removed) == 0) _items.Remove(item);
+        if (SetData(item, CountOf(item) - removed) == 0) _items.Remove(item);
         Total -= removed;
         return removed;
     }
@@ -118,6 +128,24 @@ public class Inventory : IInventory
         _items.Count == 0
             ? "empty"
             : string.Join(", ", _items.Select(kv => $"{kv.Key} x{kv.Value}"));
+}
+
+public static class IntventoryPrint
+{
+    public static string PrintContent(IInventory inventory)
+    {
+        string output = "";
+        int tithes = 0;
+        foreach (var (key, value) in inventory.Contents)
+        {
+            ItemDef item = ItemDatabase.Get(key);
+            int titheValue = item.BaseValue * value;
+            output += $"{item.DisplayName} - {value}x - tithes: {titheValue}\n";
+            tithes += titheValue;
+        }
+        output += $"\nTotal tithe value: {tithes}";
+        return output;
+    }
 }
 
 public static class InventoryTransfer
