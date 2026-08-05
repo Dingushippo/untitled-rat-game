@@ -100,6 +100,7 @@ toggle_debug_console={
 3d_physics/layer_3="interact"
 3d_physics/layer_4="entity"
 3d_physics/layer_5="facility"
+3d_physics/layer_6="catch_area"
 
 [physics]
 

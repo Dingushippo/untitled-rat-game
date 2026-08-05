@@ -40,9 +40,11 @@ shape = SubResource("BoxShape3D_e2xv0")
 [node name="IntakeMarker" type="Marker3D" parent="." unique_id=772348730]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.71353585, 0)
 
-[node name="Area3D" type="Area3D" parent="." unique_id=1504029940]
+[node name="CatchArea" type="Area3D" parent="." unique_id=1504029940]
+collision_layer = 32
+collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=612204829]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CatchArea" unique_id=612204829]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3734219, 0)
 shape = SubResource("SphereShape3D_pso3n")
 

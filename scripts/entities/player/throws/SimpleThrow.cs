@@ -42,7 +42,7 @@ public partial class SimpleThrow : ThrowType
     public override ThrowPath Simulate(ThrowContext ctx)
     {
         ThrowPathBuilder path = new();
-        uint collisionMask = PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY);
+        uint collisionMask = PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY, PhysicsLayers.CATCH_AREA);
 
         Vector3 position = ctx.Origin;
         Vector3 velocity = ctx.Direction * ctx.Force;
@@ -70,7 +70,7 @@ public partial class SimpleThrow : ThrowType
 
             if (hit["collider"].As<GodotObject>() is Area3D area)
             {
-                if (area.GetParent() is FacilityBase facility && facility.TryGetThrowTarget(hitPosition, ctx.Rat, out ThrowTarget target))
+                if (area.GetParent() is ICatchArea facility && facility.TryGetThrowTarget(hitPosition, ctx.Rat, out ThrowTarget target))
                 {
                     path.Add(hitPosition, velocity.Length());
                     bool isHoming = HomeTo(ctx, path, hitPosition, velocity, target.Position, ApproachClearance(ctx, hitPosition, target));
@@ -147,7 +147,7 @@ public partial class SimpleThrow : ThrowType
         Vector3 approach = target.Position + Vector3.Up * ApproachHeight;
 
         return Utils.Raycast(ctx.Rat, from, approach, out _, PhysicsLayers.WORLD, collideWithAreas: false)
-            ? target.Facility.ColliderTopY
+            ? target.ColliderTopY
             : float.NegativeInfinity;
     }
 }

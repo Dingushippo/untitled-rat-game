@@ -2,7 +2,7 @@ using Godot;
 using System.Linq;
 
 
-public abstract partial class FacilityBase : StaticBody3D
+public abstract partial class FacilityBase : StaticBody3D, ICatchArea
 {
 
     [Export] public Marker3D IntakeMarker;
@@ -13,7 +13,7 @@ public abstract partial class FacilityBase : StaticBody3D
     /// World Y of the top of this facility's collision shapes. Homing throws lift their approach
     /// above this so the curve arcs over the structure instead of clipping through it.
     /// </summary>
-    public float ColliderTopY { get; private set; }
+    public float ColliderTopY { get; set; }
 
     public override void _Ready()
     {
@@ -38,7 +38,7 @@ public abstract partial class FacilityBase : StaticBody3D
 
         if (IntakeMarker is not null && WantsCargo(rat))
         {
-            target = ThrowTarget.Intake(this, IntakeMarker);
+            target = ThrowTarget.Intake(IntakeMarker, this);
             return true;
         }
         return false;

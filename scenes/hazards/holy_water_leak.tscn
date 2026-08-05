@@ -1,0 +1,94 @@
+[gd_scene format=3 uid="uid://c4n2hxg1wxdbv"]
+
+[ext_resource type="Script" uid="uid://bslu88v16tbxx" path="res://scenes/hazards/HolyWaterLeak.cs" id="1_tyjkl"]
+[ext_resource type="Script" uid="uid://dadi1gcc2viyk" path="res://scripts/facilities/WorkSlot.cs" id="2_j4w8e"]
+
+[sub_resource type="Curve" id="Curve_1dtup"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.6966293), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_nhnd8"]
+curve = SubResource("Curve_1dtup")
+
+[sub_resource type="Gradient" id="Gradient_gywfm"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0vfkk"]
+gradient = SubResource("Gradient_gywfm")
+
+[sub_resource type="Gradient" id="Gradient_tyjkl"]
+colors = PackedColorArray(0, 0.5529412, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xrxw6"]
+gradient = SubResource("Gradient_tyjkl")
+
+[sub_resource type="Curve" id="Curve_j4w8e"]
+_data = [Vector2(0.013888888, 0.32584274), 0.0, 0.0, 0, 0, Vector2(0.16666666, 0.97752815), 0.0, 0.0, 0, 0, Vector2(0.9953703, 0.22471917), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_0xnsr"]
+curve = SubResource("Curve_j4w8e")
+
+[sub_resource type="Curve" id="Curve_v6v8u"]
+_limits = [0.0, 56.179794, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.2685185, 0), 0.0, 0.0, 0, 0, Vector2(0.3472222, 6.312332), 0.0, 0.0, 0, 0, Vector2(0.3935185, 0), 0.0, 0.0, 0, 0, Vector2(0.39814812, 0), 0.0, 0.0, 0, 0, Vector2(0.6990741, 0), 0.0, 0.0, 0, 0]
+point_count = 6
+
+[sub_resource type="CurveTexture" id="CurveTexture_7binl"]
+curve = SubResource("Curve_v6v8u")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pso3n"]
+emission_shape = 1
+emission_sphere_radius = 0.35
+use_rotation_3d = true
+rotation_3d_min = Vector3(0, 1.53, 0)
+rotation_3d_max = Vector3(300, 7.34, 16.13)
+direction = Vector3(0, 1, 0)
+spread = 5.672
+initial_velocity_min = 2.0
+initial_velocity_max = 10.0
+tangential_accel_min = -4.0400023
+tangential_accel_max = 2.0199978
+tangential_accel_curve = SubResource("CurveTexture_7binl")
+damping_max = 1.575
+scale_curve = SubResource("CurveTexture_0xnsr")
+color = Color(0.09803922, 0.7607843, 0.96862745, 1)
+color_ramp = SubResource("GradientTexture1D_xrxw6")
+color_initial_ramp = SubResource("GradientTexture1D_0vfkk")
+alpha_curve = SubResource("CurveTexture_nhnd8")
+turbulence_noise_strength = 16.2
+turbulence_noise_scale = 2.84
+turbulence_noise_speed = Vector3(0, 1, 0)
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_k74lb"]
+transparency = 1
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_7a26n"]
+material = SubResource("ORMMaterial3D_k74lb")
+radius = 0.15
+height = 0.3
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pso3n"]
+radius = 1.0
+
+[node name="HolyWaterLeak" type="Node3D" unique_id=2019861423 node_paths=PackedStringArray("Slot", "Particles")]
+script = ExtResource("1_tyjkl")
+Slot = NodePath("WorkSlot")
+Particles = NodePath("GPUParticles3D")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=561234463]
+amount = 300
+process_material = SubResource("ParticleProcessMaterial_pso3n")
+draw_pass_1 = SubResource("SphereMesh_7a26n")
+
+[node name="CatchArea" type="Area3D" parent="." unique_id=1147710214]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CatchArea" unique_id=1460221062]
+shape = SubResource("SphereShape3D_pso3n")
+
+[node name="WorkSlot" type="Marker3D" parent="." unique_id=1693696104]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+script = ExtResource("2_j4w8e")
+metadata/_custom_type_script = "uid://dadi1gcc2viyk"

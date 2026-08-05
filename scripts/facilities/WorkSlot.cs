@@ -6,13 +6,16 @@ public partial class WorkSlot : Marker3D
 {
     public Rat Occupant;
     public bool IsOccupied;
+    public bool IsEntered;
     public FacilityBase Facility;
+    public Action Entered;
+    public Action Exited;
 
     public override void _Ready()
     {
-        Facility = GetOwner<FacilityBase>();
+        if (GetOwner() is FacilityBase facility)
+            Facility = facility;
     }
-
 
     public bool TryReserve(Rat rat)
     {
@@ -24,10 +27,18 @@ public partial class WorkSlot : Marker3D
         return true;
     }
 
+    public void HasEntered()
+    {
+        IsEntered = true;
+        Entered?.Invoke();
+    }
+
     public void Release()
     {
         Occupant = null;
+        IsEntered = false;
         IsOccupied = false;
+        Exited?.Invoke();
     }
 
 }

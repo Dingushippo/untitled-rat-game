@@ -32,7 +32,7 @@ public partial class ProductionFacility : FacilityBase
             GD.PushWarning($"{Name}: {ProdFacility.Id} needs inputs but has no IntakeMarker, so it can never be fed");
         }
 
-        _production = new ProductionComponent(_workSlots);
+        _production = new ProductionComponent(this, _workSlots);
 
         // A null/empty filter set means the ProdFacility accepts nothing by throw, which is
         // correct for a raw producer - only recipes with inputs have an intake.
@@ -118,13 +118,13 @@ public partial class ProductionFacility : FacilityBase
 
         if (IntakeMarker is not null && rat.Cargo.HasAnythingFor(Input))
         {
-            target = ThrowTarget.Intake(this, IntakeMarker);
+            target = ThrowTarget.Intake(IntakeMarker, this);
             return true;
         }
 
         if (TryGetClosestWorkSlot(from, out WorkSlot slot))
         {
-            target = ThrowTarget.Slot(this, slot);
+            target = ThrowTarget.Slot(slot, this);
             return true;
         }
         return false;

@@ -25,5 +25,7 @@ public enum Event
     QteStarted,
     QteCompleted,
     RatPickedUp,
-    RatReleased
+    RatReleased,
+    HazardDisruption,
+    SetDisruptProductionInRange
 }

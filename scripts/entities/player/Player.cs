@@ -92,7 +92,7 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add("vault", new PlayerVaultState(this));
         _movementFsm.Add("slide", new PlayerSlideState(this));
         _movementFsm.InitState("idle");
-        _movementFsm.Debug = true;
+        _movementFsm.Debug = false;
 
         _handFsm = new(this);
         _handFsm.Add("empty", new HandEmptyState(this));

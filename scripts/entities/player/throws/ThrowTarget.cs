@@ -1,42 +1,49 @@
 using Godot;
-public enum ThrowTargetKind {Slot, Intake}
+public enum ThrowTargetKind { Slot, Intake, Other }
 
 public readonly struct ThrowTarget
 {
     public readonly ThrowTargetKind Kind;
     public readonly FacilityBase Facility;
+    public readonly float ColliderTopY;
+    // public readonly Vector3 OverrideRotation;
     public readonly Node3D Anchor;
-    public readonly WorkSlot WorkSlot;
     public Vector3 Position => Anchor.GlobalPosition;
+    public WorkSlot WorkSlot => Anchor as WorkSlot;
 
-    /// <summary>A default ThrowTarget means "no target"; a real one always has a facility.</summary>
-    public bool IsValid => Facility != null && Anchor != null;
+    public bool IsValid => Anchor != null;
     public bool IsSlot => IsValid && Kind == ThrowTargetKind.Slot;
     public bool IsIntake => IsValid && Kind == ThrowTargetKind.Intake;
+    public bool IsOther => IsValid && Kind == ThrowTargetKind.Other;
 
     private ThrowTarget(
         ThrowTargetKind kind,
         FacilityBase facility,
         Node3D anchor,
-        WorkSlot slot)
+        float colliderTopY = 0
+    // Vector3 overrideRotation = new Vector3()
+    )
     {
         Kind = kind;
         Facility = facility;
         Anchor = anchor;
-        WorkSlot = slot;
+        ColliderTopY = colliderTopY;
+        // OverrideRotation = overrideRotation;
     }
 
-    public static ThrowTarget Intake(FacilityBase facility, Node3D anchor)
+    public static ThrowTarget Intake(Node3D anchor, FacilityBase facility)
         => new(
             ThrowTargetKind.Intake,
             facility,
             anchor,
-            null);
+            facility.ColliderTopY
+        );
 
-    public static ThrowTarget Slot(FacilityBase facility, WorkSlot slot)
+    public static ThrowTarget Slot(WorkSlot slot, FacilityBase facility = null)
         => new(
             ThrowTargetKind.Slot,
             facility,
             slot,
-            slot);
+            facility != null ? facility.ColliderTopY : 0f
+        );
 }

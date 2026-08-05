@@ -13,6 +13,7 @@ public class RatSlottedState : RatState
         if (previous is RatCurveState state)
         {
             _workSlot = state.WorkSlot;
+            _workSlot.HasEntered();
         }
 
         Tween slotTween = _rat.CreateTween();

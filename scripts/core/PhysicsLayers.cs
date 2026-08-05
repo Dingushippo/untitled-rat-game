@@ -9,6 +9,7 @@ public static class PhysicsLayers
     public static uint INTERACT = 4;
     public static uint ENTITY = 8;
     public static uint FACILITY = 16;
+    public static uint CATCH_AREA = 32;
 
     public static uint GetOrMask(params uint[] layers)
     {

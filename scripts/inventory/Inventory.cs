@@ -110,6 +110,7 @@ public class Inventory : IInventory
     {
         Godot.Collections.Dictionary<string, int> removed = new(_items);
         _items.Clear();
+        Changed?.Invoke();
         return removed;
     }
 
