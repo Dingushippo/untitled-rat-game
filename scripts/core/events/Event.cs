@@ -21,7 +21,7 @@ public enum Event
     LevelLoaded,
     QuotaUpdated,
     ClockTick,
-    StartQTE,
-    QTEStarted,
-    QTECompleted
+    StartQte,
+    QteStarted,
+    QteCompleted
 }

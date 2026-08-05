@@ -9,6 +9,10 @@ public partial class QteManager : Control
 
     private readonly Dictionary<string, PackedScene> _qtes = new();
 
+    private QteBase _activeQte = null;
+
+    public bool QteActive => _activeQte != null;
+
     public override void _EnterTree()
     {
         foreach (PackedScene scene in QteScenes)
@@ -16,17 +20,19 @@ public partial class QteManager : Control
             string fileName = scene.ResourcePath.Split("/")[^1].TrimSuffix(".tscn");
             _qtes[fileName] = scene;
         }
-        EventBus.Subscribe(Event.StartQTE, OnQteStart);
-
+        EventBus.Subscribe(Event.StartQte, OnQteStart);
+        EventBus.Subscribe(Event.QteCompleted, OnQteCompleted);
     }
 
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.StartQTE, OnQteStart);
+        EventBus.Unsubscribe(Event.StartQte, OnQteStart);
     }
 
     private void OnQteStart(object[] obj)
     {
+        if (QteActive) return;
+
         string @event = (string)obj[0];
         if (!_qtes.TryGetValue(@event, out PackedScene scene))
             GD.PushError($"Invalid QTE: {@event}");
@@ -35,5 +41,12 @@ public partial class QteManager : Control
         QteBase qte = scene.Instantiate<QteBase>();
         qte.Completed = onCompleted;
         AddChild(qte);
+
+        _activeQte = qte;
+    }
+
+    private void OnQteCompleted(object[] obj)
+    {
+        _activeQte = null;
     }
 }

@@ -1,31 +1,34 @@
 using Godot;
-using System;
-using System.ComponentModel;
+using Godot.Collections;
+using System.Collections.Generic;
 
 
-[GlobalClass, Tool]
+[GlobalClass]
 public partial class SpamQte : QteBase
 {
     // Called when the node enters the scene tree for the first time.
     [Export] bool Active = false;
-    [Export(PropertyHint.InputName)] string InputAction;
-    [Export] float ReductionSpeed = 0.1f;
+    [Export] float ReductionSpeed = 100f;
+    [Export] float ButtonPressIncrease = 10f;
+    [Export] float StartTimer = 1f;
     [Export] Color EndColor = Colors.Green;
     [Export] Color StartColor = Colors.Red;
-    [Export] float ButtonPressIncrease = 0.1f;
+
+    [ExportGroup("Inputs used")]
+    [Export(PropertyHint.InputName)] string InputAction;
 
     [ExportGroup("UI nodes")]
     [Export] public ProgressBar Progress;
     [Export] public Label LabelNode;
     [Export] public PanelContainer ActionPanel;
 
-
     public override void _Ready()
     {
         base._Ready();
         SetProgressBarColor();
+        InputAction = InputAction != null ? InputAction : QteActions.GetRandomAction();
         LabelNode.Text = InputMap.ActionGetEvents(InputAction)[0].AsText().Replace("- Physical", "").StripEdges();
-        GetTree().CreateTimer(1f).Timeout += () => Active = true;
+        GetTree().CreateTimer(StartTimer).Timeout += () => Active = true;
     }
     public override void _Process(double delta)
     {
@@ -63,6 +66,7 @@ public partial class SpamQte : QteBase
             tween.TweenProperty(Progress, "value", Progress.Value + ButtonPressIncrease, .1);
             tween.TweenProperty(ActionPanel, "offset_transform_scale", Vector2.One * 1.25f, .05);
             tween.TweenProperty(ActionPanel, "offset_transform_scale", Vector2.One, .3);
+            EventBus.Publish(Event.CameraImpact, 1f, .5f);
         }
     }
 

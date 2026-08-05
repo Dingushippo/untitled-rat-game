@@ -33,14 +33,14 @@ public partial class Player : CharacterBody3D
         InteractComponent = new(this);
         InitStateMachines();
 
-        EventBus.Subscribe(Event.QTEStarted, SetFrozen);
-        EventBus.Subscribe(Event.QTECompleted, SetUnfrozen);
+        EventBus.Subscribe(Event.QteStarted, SetFrozen);
+        EventBus.Subscribe(Event.QteCompleted, SetUnfrozen);
     }
 
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.QTEStarted, SetFrozen);
-        EventBus.Unsubscribe(Event.QTECompleted, SetUnfrozen);
+        EventBus.Unsubscribe(Event.QteStarted, SetFrozen);
+        EventBus.Unsubscribe(Event.QteCompleted, SetUnfrozen);
     }
 
     private void SetFrozen(object[] _)

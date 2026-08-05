@@ -82,7 +82,7 @@ public partial class ProductionFacility : FacilityBase
         }
 
         EventBus.Publish(
-            Event.StartQTE,
+            Event.StartQte,
             "spam_qte", (bool x) =>
             {
                 if (x)
