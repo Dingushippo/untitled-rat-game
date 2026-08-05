@@ -11,6 +11,7 @@
 [ext_resource type="Animation" uid="uid://cgy2hujuwtkbu" path="res://assets/animations/struggle.res" id="8_kc3ue"]
 [ext_resource type="Animation" uid="uid://cyem0o0fvldsf" path="res://assets/animations/walk.res" id="9_ucpu4"]
 [ext_resource type="Resource" uid="uid://cxbl4uyax4f4t" path="res://resources/tuning/rat_flight_tuning.tres" id="10_flight"]
+[ext_resource type="Texture2D" uid="uid://bmwu1vugnijb5" path="res://assets/icons/inventory_icon.aseprite" id="12_ywisg"]
 
 [sub_resource type="Resource" id="Resource_5f0dk"]
 script = ExtResource("2_0g0h3")
@@ -296,7 +297,16 @@ bind/45/name = &"DEF-spine.011"
 bind/45/bone = -1
 bind/45/pose = Transform3D(-1, 6.6888697e-07, -1.659172e-07, -8.1755275e-08, -0.35419527, -0.9351718, -6.842912e-07, -0.9351718, 0.3541949, -1.5659032e-07, -0.14429185, 0.21892913)
 
-[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("NavAgent", "Collider", "InteractArea", "Mesh")]
+[sub_resource type="QuadMesh" id="QuadMesh_pso3n"]
+size = Vector2(0.265, 0.285)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_83vmk"]
+transparency = 1
+albedo_texture = ExtResource("12_ywisg")
+texture_filter = 0
+billboard_mode = 1
+
+[node name="Rat" type="CharacterBody3D" unique_id=656995802 node_paths=PackedStringArray("NavAgent", "Collider", "InteractArea", "Mesh", "StatusMesh")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 collision_layer = 8
 collision_mask = 9
@@ -307,6 +317,7 @@ InteractArea = NodePath("InteractComponent")
 Mesh = NodePath("control/Skeleton3D/Rat")
 RatDef = SubResource("Resource_5f0dk")
 FlightTuning = ExtResource("10_flight")
+StatusMesh = NodePath("StatusMesh")
 Speed = 5.0
 Debug = true
 
@@ -670,3 +681,9 @@ material_overlay = SubResource("ShaderMaterial_kbgi8")
 mesh = SubResource("ArrayMesh_hf05y")
 skin = SubResource("Skin_3aldu")
 skeleton = NodePath("..")
+
+[node name="StatusMesh" type="MeshInstance3D" parent="." unique_id=1517376548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2289793, 0)
+visible = false
+mesh = SubResource("QuadMesh_pso3n")
+surface_material_override/0 = SubResource("StandardMaterial3D_83vmk")

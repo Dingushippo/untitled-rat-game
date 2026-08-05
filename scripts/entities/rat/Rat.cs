@@ -10,6 +10,7 @@ public partial class Rat : CharacterBody3D
     [Export] public MeshInstance3D Mesh;
     [Export] public RatDef RatDef;
     [Export] public RatFlightTuning FlightTuning;
+    [Export] public MeshInstance3D StatusMesh;
     [Export] public float Speed = 10f;
     [Export] public float Acceleration = 10f;
     [Export] public Vector3 GrabOrientation { get; set; }
@@ -42,11 +43,27 @@ public partial class Rat : CharacterBody3D
             GD.PrintErr("Rat requires a NavigationAgent3D to function.");
         }
         Cargo = new Inventory(RatDef.MaxCapacity);
+        Cargo.Changed += CheckInventory;
         InitStateMachine();
 
         InteractArea.OnInteract = OnInteract;
         InteractArea.OnLookedAt = OnLookedAt;
         InteractArea.OnLookedAwayFrom = OnLookedAwayFrom;
+    }
+
+    private void CheckInventory()
+    {
+        GD.Print("Inventory changed");
+        if (Cargo.IsEmpty)
+        {
+            GD.Print("Hiding");
+            StatusMesh.Hide();
+        }
+        else
+        {
+            GD.Print("Showing");
+            StatusMesh.Show();
+        }
     }
 
     private void OnInteract(Node3D interactor)
