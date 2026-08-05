@@ -17,15 +17,19 @@ config/icon="uid://bvu18xnn2piki"
 
 [autoload]
 
-ProfilerOverlay="*res://scripts/debug/ProfilerOverlay.cs"
+GameManager="*uid://dddbcjta73bx1"
 ItemDatabase="*uid://cj3y3fmq12pmv"
 EconomyService="*uid://x4awkh8khuuc"
 RunClock="*uid://egepafhmj6k8"
-GameManager="*uid://cpht2iorftx77"
+ProfilerOverlay="*res://scripts/debug/ProfilerOverlay.cs"
 
 [dotnet]
 
 project/assembly_name="Untitled rat game"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/AsepriteWizard/plugin.cfg")
 
 [global_group]
 

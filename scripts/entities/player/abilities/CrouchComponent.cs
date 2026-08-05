@@ -1,18 +1,21 @@
 using Godot;
+using Godot.Collections;
 using System.IO;
 
 public partial class CrouchComponent
 {
     // [Export] public Player _player;
-    const float STANDING_HEIGHT = 1.5f;
-    const float CROUCHING_HEIGHT = 1f;
-    const float CROUCH_ANIM_DURATION = 0.15f;
+    public const float CROUCH_OFFSET = -0.5f;
+    public const float CROUCH_ANIM_DURATION = 0.15f;
 
     public bool IsCrouching { get; private set; }
     public bool Enabled = true;
     public bool ToggleCrouch = true;
     private bool _crouchToggled = false;
+    private bool _canStand = true;
     private readonly Player _player;
+
+    private Tween _crouchTween;
 
 
     public CrouchComponent(Player player)
@@ -27,6 +30,7 @@ public partial class CrouchComponent
             UpdateToggleMode();
         else
             UpdateHoldMode();
+        CheckCeilingBlocked();
     }
 
     private void UpdateToggleMode()
@@ -48,13 +52,13 @@ public partial class CrouchComponent
             TryStand();
     }
 
-    private void Crouch()
+    public void Crouch()
     {
         if (IsCrouching)
             return;
 
         IsCrouching = true;
-        TweenCrouchPos(CROUCHING_HEIGHT);
+        TweenCrouchOffset(CROUCH_OFFSET);
     }
 
     public void TryStand()
@@ -62,24 +66,33 @@ public partial class CrouchComponent
         if (!IsCrouching)
             return;
 
-        if (CeilingBlocked())
+        if (!_canStand)
             return;
-
 
         _crouchToggled = false;
         IsCrouching = false;
-        TweenCrouchPos(STANDING_HEIGHT);
+        TweenCrouchOffset(0f);
     }
 
-    private bool CeilingBlocked()
+    private void CheckCeilingBlocked()
     {
-        // ShapeCast3D or PhysicsShapeQuery
-        return false;
+        if (!IsCrouching) return;
+
+        if (Utils.Raycast(_player, _player.GlobalPosition, Vector3.Up * CROUCH_OFFSET, out _))
+        {
+            _canStand = false;
+        }
+        _canStand = true;
+
     }
 
-    private void TweenCrouchPos(float height)
+    private void TweenCrouchOffset(float height)
     {
-        Tween crouchTween = _player.CreateTween();
-        crouchTween.TweenProperty(_player.Camera, "position:y", height, CROUCH_ANIM_DURATION);
+        if (_crouchTween is not null)
+        {
+            _crouchTween.Kill();
+        }
+        _crouchTween = _player.CreateTween();
+        _crouchTween.TweenProperty(_player.Camera, "YOffset", height, CROUCH_ANIM_DURATION);
     }
 }

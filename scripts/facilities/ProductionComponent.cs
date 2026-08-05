@@ -18,9 +18,9 @@ public class ProductionComponent
         _cycleTimeScale = EconomyService.Instance.CycleTimeScale;
     }
 
-    public void Process(FacilityBase @base, float delta)
+    public void Process(ProductionFacility @base, float delta)
     {
-        FacilityDef def = @base.Facility;
+        ProductionDef def = @base.ProdFacility;
 
         StaffedSlots = _workSlots.Count(slot => slot.IsOccupied);
         if (StaffedSlots == 0)
@@ -59,25 +59,18 @@ public class ProductionComponent
         _cycleTimeScale = EconomyService.Instance.CycleTimeScale;
 
         @base.Input.TryRemove(def.Inputs);
-        if (def.SellsOutput)
-        {
-            foreach (var (item, amount) in def.Outputs)
-                EventBus.Publish(Event.ItemSold, item, amount);
-        }
-        else
-        {
-            @base.Output.TryAdd(def.Outputs);
-            EventBus.Publish(Event.ProductionCompleted, @base, def.Outputs);
-        }
+        @base.Output.TryAdd(def.Outputs);
+        EventBus.Publish(Event.ProductionCompleted, @base, def.Outputs);
+
         _timer = 0f;
         IsStalled = false;
     }
 
     /// <summary>0-1 progress through the current cycle, for debug readouts and UI.</summary>
-    public float GetProgress(FacilityDef facility) =>
+    public float GetProgress(ProductionDef facility) =>
         facility.CycleSeconds <= 0f ? 1f : Mathf.Clamp(_timer / facility.CycleSeconds, 0f, 1f);
 
-    private void SetStalled(FacilityBase @base, Event reason, Godot.Collections.Dictionary<string, int> items)
+    private void SetStalled(ProductionFacility @base, Event reason, Godot.Collections.Dictionary<string, int> items)
     {
         if (IsStalled) return; // edge-trigger, otherwise this fires every frame
         IsStalled = true;

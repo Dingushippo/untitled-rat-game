@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://bda3cwi7p7irq"]
+
+[ext_resource type="Theme" uid="uid://cabfrql7ktso7" path="res://resources/themes/main_theme.tres" id="1_7lqr1"]
+[ext_resource type="Script" uid="uid://dcd23blcgc28p" path="res://scripts/qte/SpamQte.cs" id="2_oouco"]
+
+[node name="SpamQte" type="Control" unique_id=185922815 node_paths=PackedStringArray("Progress", "LabelNode", "ActionPanel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_7lqr1")
+script = ExtResource("2_oouco")
+Progress = NodePath("CenterContainer/VBoxContainer/ProgressBar")
+LabelNode = NodePath("CenterContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer/Label")
+ActionPanel = NodePath("CenterContainer/VBoxContainer/MarginContainer/PanelContainer")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=169507473]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=1100452524]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer" unique_id=802017968]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer/VBoxContainer/MarginContainer" unique_id=1260698390]
+custom_minimum_size = Vector2(43.095, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+offset_transform_enabled = true
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer/MarginContainer/PanelContainer" unique_id=785436276]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/PanelContainer/MarginContainer" unique_id=521016306]
+layout_mode = 2
+text = "E"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="CenterContainer/VBoxContainer" unique_id=163996490]
+custom_minimum_size = Vector2(200, 10)
+layout_mode = 2
+value = 50.0
+allow_greater = true
+show_percentage = false

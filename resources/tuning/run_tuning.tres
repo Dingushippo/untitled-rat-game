@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="RunTuning" format=3 uid="uid://3622oqnhffm8"]
+
+[ext_resource type="Script" uid="uid://c58yhqvn28p07" path="res://scripts/game/RunTuning.cs" id="1_i43dx"]
+
+[resource]
+script = ExtResource("1_i43dx")
+Quotas = PackedInt32Array(40, 60, 100)
+metadata/_custom_type_script = "uid://c58yhqvn28p07"

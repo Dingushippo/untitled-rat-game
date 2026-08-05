@@ -18,7 +18,6 @@ public partial class RatSpawner : Node3D
 
     public override void _EnterTree()
     {
-        GD.Print("Entered tree");
         EventBus.Subscribe(Event.SpawnRat, OnSpawnRat);
     }
     public override void _ExitTree()
@@ -54,12 +53,13 @@ public partial class RatSpawner : Node3D
         for (int i = 0; i < amount; i++)
         {
             Rat rat = RatScene.Instantiate<Rat>();
+            Vector3 SpawnPoint = GetRandomSpawnPoint();
             AddChild(rat);
             rat.RatDef = ratDef;
-            rat.GlobalPosition = GetRandomSpawnPoint();
+            rat.GlobalPosition = SpawnPoint;
+            rat.HomePosition = SpawnPoint;
             _ratCounter++;
         }
-        GD.Print($"Spawn rats x{amount}, total: {_ratCounter}");
     }
 
     private Vector3 GetRandomSpawnPoint()
@@ -91,7 +91,7 @@ public partial class RatSpawner : Node3D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.Z)
+        if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.Z && GameManager.Instance.Tuning.DebugKeys)
         {
             OnSpawnRat();
         }

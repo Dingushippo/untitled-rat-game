@@ -1,0 +1,91 @@
+shader_type canvas_item;
+
+uniform vec4 reticle_color : source_color;
+uniform int glyph_mode = 0; // 0 free, 1 slot, 2 intake
+uniform float pulse_rate = 0;
+uniform float spin_rate = 0;
+uniform float chevron_speed = 0;
+
+float fill(float d) {
+	float aa = fwidth(d);
+	return 1.0 - smoothstep(-aa, aa, d);
+}
+
+float stroke(float d, float half_width) {
+	return fill(abs(d) - half_width);
+}
+
+float sd_circle(vec2 p, float r) {
+	return length(p) - r;
+}
+
+float sd_box(vec2 p, vec2 half_size) {
+	vec2 q = abs(p) - half_size;
+	return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0);
+}
+
+vec2 rotate(vec2 p, float a) {
+	float s = sin(a);
+	float c = cos(a);
+	return mat2(vec2(c, s), vec2(-s, c)) * p;
+}
+
+// 0: a thin ring plus four ticks. Neutral, "just a point on the ground".
+float glyph_free(vec2 p) {
+    float ring = stroke(sd_circle(p, 0.30), 0.012);
+
+    vec2 q = abs(p);                                  // fold into one quadrant
+    float tick = max(
+        fill(sd_box(q - vec2(0.0, 0.40), vec2(0.010, 0.060))),
+        fill(sd_box(q.yx - vec2(0.0, 0.40), vec2(0.010, 0.060))));
+
+    return max(ring, tick);
+}
+
+// 1: four corner brackets, slowly rotating. Reads as a lock-on.
+float glyph_slot(vec2 p) {
+    p = rotate(p, TIME * spin_rate);
+
+    float frame = stroke(sd_box(p, vec2(0.34)), 0.018);
+    // Keep only where BOTH axes are far from centre - i.e. the corners.
+    float corners = fill(0.20 - min(abs(p.x), abs(p.y)));
+
+    return frame * corners;
+}
+
+// 2: nested chevrons marching inward. Reads as "feed it in here".
+float glyph_intake(vec2 p) {
+    float flow = fract(TIME * chevron_speed);
+    float m = 0.0;
+
+    for (int i = 0; i < 3; i++) {
+        float k = 0.34 - (float(i) + flow) * 0.14;
+
+        // A V pointing down is the line y = |x| - k.
+        // The 0.7071 rescales it into something close to a real distance:
+        // a 45-degree line measured this way reads sqrt(2) too far.
+        float d = abs(p.y - abs(p.x) + k) * 0.7071;
+
+        float chevron = fill(d - 0.014) * fill(abs(p.x) - 0.30);
+        m = max(m, chevron * smoothstep(0.0, 0.10, k));   // fade out at the centre
+    }
+    return m;
+}
+
+void fragment() {
+    vec2 p = UV - vec2(0.5);
+
+    float m;
+    if      (glyph_mode == 1) m = glyph_slot(p);
+    else if (glyph_mode == 2) m = glyph_intake(p);
+    else                      m = glyph_free(p);
+
+    if (m < 0.003) discard;
+
+    float pulse = 0.85 + 0.15 * sin(TIME * pulse_rate);
+
+	COLOR = vec4(reticle_color.rgb, m * pulse);
+    //ALBEDO   = reticle_color.rgb;
+    //EMISSION = reticle_color.rgb * pulse;
+    //ALPHA    = m * reticle_color.a * pulse;
+}

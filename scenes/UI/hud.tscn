@@ -3,19 +3,23 @@
 [ext_resource type="Theme" uid="uid://cabfrql7ktso7" path="res://resources/themes/main_theme.tres" id="1_0mwgc"]
 [ext_resource type="Script" uid="uid://bwrmmabylpydm" path="res://scripts/ui/Hud.cs" id="1_hqnrr"]
 
-[node name="HUD" type="Control" unique_id=1140804666 node_paths=PackedStringArray("TitheLabel", "DayLabel", "QuotaLabel", "DayProgressBar", "FervorProgressBar")]
+[node name="HUD" type="Control" unique_id=1140804666 node_paths=PackedStringArray("TitheLabel", "DayLabel", "QuotaLabel", "ClockLabel", "DayProgressBar", "FervorProgressBar", "InventoryContainer", "InventoryLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_0mwgc")
 script = ExtResource("1_hqnrr")
 TitheLabel = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/TitheLabel")
-DayLabel = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/DayNumberLabel")
+DayLabel = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/DayNumberLabel")
 QuotaLabel = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/QuotaLabel")
-DayProgressBar = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/DayProgressBar")
+ClockLabel = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ClockLabel")
+DayProgressBar = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/DayProgressBar")
 FervorProgressBar = NodePath("MarginContainer2/FervorProgressBar")
+InventoryContainer = NodePath("InventoryContainer")
+InventoryLabel = NodePath("InventoryContainer/MarginContainer/VBoxContainer/InventoryLabel")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=2075943524]
 layout_mode = 0
@@ -39,16 +43,6 @@ layout_mode = 2
 theme = ExtResource("1_0mwgc")
 text = "Tithes: 0"
 
-[node name="DayNumberLabel" type="Label" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=733973617]
-layout_mode = 2
-theme = ExtResource("1_0mwgc")
-text = "Day 1 "
-
-[node name="DayProgressBar" type="ProgressBar" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1977668040]
-layout_mode = 2
-theme = ExtResource("1_0mwgc")
-max_value = 1.0
-
 [node name="QuotaLabel" type="Label" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=390945538]
 layout_mode = 2
 theme = ExtResource("1_0mwgc")
@@ -71,3 +65,77 @@ layout_mode = 2
 size_flags_vertical = 1
 theme = ExtResource("1_0mwgc")
 step = 1.0
+
+[node name="MarginContainer3" type="MarginContainer" parent="." unique_id=1632511484]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme = ExtResource("1_0mwgc")
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer3" unique_id=1484624478]
+layout_mode = 2
+theme = ExtResource("1_0mwgc")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer3/PanelContainer" unique_id=236861993]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer" unique_id=31844377]
+layout_mode = 2
+theme = ExtResource("1_0mwgc")
+
+[node name="DayNumberLabel" type="Label" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=1069035245]
+layout_mode = 2
+theme = ExtResource("1_0mwgc")
+text = "Day 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ClockLabel" type="Label" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=2002647858]
+layout_mode = 2
+theme = ExtResource("1_0mwgc")
+text = "08:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DayProgressBar" type="ProgressBar" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=254501064]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("1_0mwgc")
+max_value = 1.0
+
+[node name="InventoryContainer" type="PanelContainer" parent="." unique_id=1263327825]
+visible = false
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -67.5
+offset_right = 124.0
+offset_bottom = 67.5
+grow_vertical = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(25, 0)
+
+[node name="MarginContainer" type="MarginContainer" parent="InventoryContainer" unique_id=1706673214]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InventoryContainer/MarginContainer" unique_id=1311707212]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="InventoryContainer/MarginContainer/VBoxContainer" unique_id=1294613951]
+layout_mode = 2
+text = "Inventory:"
+
+[node name="InventoryLabel" type="RichTextLabel" parent="InventoryContainer/MarginContainer/VBoxContainer" unique_id=1943826424]
+layout_mode = 2
+text = "Test test test
+testtest test
+testt test test
+
+test test"
+fit_content = true
+autowrap_mode = 0

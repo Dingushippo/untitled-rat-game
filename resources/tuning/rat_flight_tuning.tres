@@ -4,8 +4,7 @@
 
 [resource]
 script = ExtResource("1_flight")
-SpeedScale = 1.0
-MinSpeed = 2.0
+MinSpeed = 0.5
 LookAheadDistance = 1.0
 MaxPitchDegrees = 30.0
 SettleDuration = 0.4

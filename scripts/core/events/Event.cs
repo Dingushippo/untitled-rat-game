@@ -20,4 +20,10 @@ public enum Event
     SpawnRat,
     LevelLoaded,
     QuotaUpdated,
+    ClockTick,
+    StartQte,
+    QteStarted,
+    QteCompleted,
+    RatPickedUp,
+    RatReleased
 }

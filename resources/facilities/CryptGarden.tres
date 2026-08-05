@@ -1,15 +1,14 @@
-[gd_resource type="Resource" script_class="FacilityDef" format=3 uid="uid://c46gibkbxlvm"]
+[gd_resource type="Resource" script_class="ProductionDef" format=3 uid="uid://c46gibkbxlvm"]
 
-[ext_resource type="Script" uid="uid://tbwlcju5hrln" path="res://scripts/facilities/FacilityDef.cs" id="1_jx4dq"]
+[ext_resource type="Script" uid="uid://b7t6koatxhirw" path="res://scripts/facilities/ProductionDef.cs" id="1_jx4dq"]
 
 [resource]
 script = ExtResource("1_jx4dq")
-Id = "crypt_garden"
-DisplayName = "Crypt garden"
 SlotCount = 3
 Inputs = {}
 Outputs = Dictionary[String, int]({
 "ichor_root": 1
 })
-CycleSeconds = 6.0
-metadata/_custom_type_script = "uid://tbwlcju5hrln"
+Id = "crypt_garden"
+DisplayName = "Crypt garden"
+metadata/_custom_type_script = "uid://b7t6koatxhirw"

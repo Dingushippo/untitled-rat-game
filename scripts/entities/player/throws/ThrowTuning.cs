@@ -4,8 +4,8 @@ using Godot;
 public partial class ThrowTuning : Resource
 {
     [ExportGroup("Force")]
-    [Export(PropertyHint.Range, "1,50,0.1")] public float ThrowForce = 7f;
-    [Export(PropertyHint.Range, "1,50,0.1")] public float MaxThrowForce = 12f;
+    [Export(PropertyHint.Range, "1,100,0.1")] public float ThrowForce = 7f;
+    [Export(PropertyHint.Range, "1,100,0.1")] public float MaxThrowForce = 12f;
 
     [ExportGroup("Charge")]
     [Export(PropertyHint.Range, "0.05,5,0.05")] public float ChargeDuration = 1.5f;
@@ -17,4 +17,12 @@ public partial class ThrowTuning : Resource
     [ExportGroup("Path Simulation")]
     [Export(PropertyHint.Range, "0.005,0.1,0.005")] public float Step = 0.02f;
     [Export(PropertyHint.Range, "50,2000,1")] public int MaxPoints = 250;
+
+    [ExportGroup("Arc")]
+    [Export(PropertyHint.Range, "0.1,10,0.1")] public float AscentGravityScale = 1.5f;
+    [Export(PropertyHint.Range, "0.1,20,0.1")] public float DescentGravityScale = 4f;
+
+    /// <summary>Downward speed at which gravity reaches its full descent scale.</summary>
+    [Export(PropertyHint.Range, "0.1,20,0.1")] public float DescentBlendSpeed = 4f;
+
 }

@@ -19,20 +19,44 @@ public partial class Player : CharacterBody3D
     [Export] public float TurnBrakeMultiplier = 2.5f;
     [Export] public float JumpForce = 10f;
 
-    public Vector3 Gravity;
     public GrabComponent GrabComponent;
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
     private FiniteStateMachine _movementFsm;
     private FiniteStateMachine _handFsm;
 
+    private bool _isFrozen = false;
     public override void _Ready()
     {
         GrabComponent = new(this);
         CrouchComponent = new(this);
         InteractComponent = new(this);
-        Gravity = GetGravity();
         InitStateMachines();
+
+        EventBus.Subscribe(Event.QteStarted, SetFrozen);
+        EventBus.Subscribe(Event.QteCompleted, SetUnfrozen);
+    }
+
+    public override void _ExitTree()
+    {
+        EventBus.Unsubscribe(Event.QteStarted, SetFrozen);
+        EventBus.Unsubscribe(Event.QteCompleted, SetUnfrozen);
+    }
+
+    private void SetFrozen(object[] _)
+    {
+        GD.Print("Set frozen");
+        _movementFsm.SetEnabled(false);
+        _handFsm.SetEnabled(false);
+        Camera.SetCameraInputEnabled(false);
+    }
+
+    private void SetUnfrozen(object[] _)
+    {
+        GD.Print("Set unfrozen");
+        _movementFsm.SetEnabled(true);
+        _handFsm.SetEnabled(true);
+        Camera.SetCameraInputEnabled(true);
     }
 
     public override void _Process(double delta)
@@ -68,7 +92,7 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add("vault", new PlayerVaultState(this));
         _movementFsm.Add("slide", new PlayerSlideState(this));
         _movementFsm.InitState("idle");
-        _movementFsm.Debug = false;
+        _movementFsm.Debug = true;
 
         _handFsm = new(this);
         _handFsm.Add("empty", new HandEmptyState(this));

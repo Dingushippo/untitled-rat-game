@@ -9,12 +9,14 @@ public class RatCurveState : RatState
     private readonly float[] _speeds;
     private readonly float[] _distanceToEnd;
     private readonly RatFlightTuning _tuning;
+    private readonly Vector3 _exitVelocity;
     private int _currentIndex = 0;
 
     public RatCurveState(Rat owner, ThrowPath path) : base(owner)
     {
         _pathArray = path.Points;
         _speeds = path.Speeds;
+        _exitVelocity = path.ExitVelocity;
         Target = path.ThrowTarget;
         _tuning = owner.FlightTuning;
 
@@ -32,16 +34,21 @@ public class RatCurveState : RatState
             string nextState;
             if (Target.IsSlot) nextState = "slotted";
             else if (Target.IsIntake) nextState = "intake";
-            else if (!_rat.IsOnFloor()) nextState = "falling";
+            else if (!IsGrounded()) nextState = "falling";
             else nextState = "landed";
 
             // Hand the flight's momentum over so the rat keeps arcing instead of stopping dead in
             // mid-air and dropping straight down when the simulated path runs out.
             if (nextState == "falling")
-                _rat.Velocity = ExitVelocity();
+                _rat.Velocity = _exitVelocity;
 
             fsm.ChangeState(nextState, this);
             return;
+        }
+
+        if (_rat.Collider.Disabled && Utils.ShapeCast(_rat, _rat.Collider, out _, PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY), false))
+        {
+            _rat.Collider.Disabled = false;
         }
 
         Advance(delta);
@@ -95,18 +102,6 @@ public class RatCurveState : RatState
         return Mathf.Max(simulated * _tuning.SpeedScale, _tuning.MinSpeed);
     }
 
-    /// <summary>Direction and speed of the path's final segment, for a seamless handoff to free fall.</summary>
-    private Vector3 ExitVelocity()
-    {
-        if (_pathArray.Length < 2)
-            return Vector3.Zero;
-
-        Vector3 last = _pathArray[^1] - _pathArray[^2];
-        return last.LengthSquared() < 0.0001f
-            ? Vector3.Zero
-            : last.Normalized() * SpeedAt(_pathArray.Length - 1);
-    }
-
     private void UpdateRotation(float delta)
     {
         Vector3 direction = LookAheadPoint(_tuning.LookAheadDistance) - _rat.GlobalPosition;
@@ -155,6 +150,17 @@ public class RatCurveState : RatState
         }
 
         return _pathArray[^1];
+    }
+
+    private bool IsGrounded()
+    {
+        float probeLength = _rat.FlightTuning.GroundProbeDistance;
+        uint collisionMask = PhysicsLayers.WORLD;
+        if (Utils.Raycast(_rat, _rat.GlobalPosition, _rat.GlobalPosition + Vector3.Down * probeLength, out _, collisionMask, collideWithAreas: false))
+        {
+            return true;
+        }
+        return false;
     }
 
     public override void Exit()

@@ -15,7 +15,7 @@ public class PlayerFallingState : PlayerState
         _timer += delta;
         HandleAirMovement(delta);
 
-        _player.Velocity += _player.Gravity * delta;
+        _player.Velocity += _player.GetGravity() * delta;
 
         _player.MoveAndSlide();
 

@@ -9,33 +9,67 @@ public partial class Hud : Control
     [Export] public Label TitheLabel;
     [Export] public Label DayLabel;
     [Export] public Label QuotaLabel;
+    [Export] public Label ClockLabel;
     [Export] public ProgressBar DayProgressBar;
     [Export] public ProgressBar FervorProgressBar;
-    public override void _Ready()
-    {
-        SetDayLabel();
-    }
-
-    private void SetDayLabel() => DayLabel.Text = $"Day {RunClock.Instance.Day}";
+    [Export] public PanelContainer InventoryContainer;
+    [Export] public RichTextLabel InventoryLabel;
 
     public override void _EnterTree()
     {
         EventBus.Subscribe(Event.ResourceChanged, OnResourceChanged);
+        EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
+        EventBus.Subscribe(Event.RatReleased, OnRatReleased);
         EventBus.Subscribe(Event.QuotaUpdated, OnQuotaUpdated);
-        EventBus.Subscribe(Event.Sundown, OnSundown);
+        EventBus.Subscribe(Event.DayStarted, OnDayStarted);
+        EventBus.Subscribe(Event.ClockTick, OnClockTick);
     }
-
     public override void _ExitTree()
     {
         EventBus.Unsubscribe(Event.ResourceChanged, OnResourceChanged);
+        EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
+        EventBus.Subscribe(Event.RatReleased, OnRatReleased);
         EventBus.Unsubscribe(Event.QuotaUpdated, OnQuotaUpdated);
-        EventBus.Unsubscribe(Event.Sundown, OnSundown);
+        EventBus.Unsubscribe(Event.DayStarted, OnDayStarted);
+        EventBus.Unsubscribe(Event.ClockTick, OnClockTick);
     }
 
-
-    public override void _Process(double delta)
+    private Inventory _currentHeldInventory;
+    private void UpdateInventory()
     {
-        DayProgressBar.Value = RunClock.Instance.DayProgress;
+        InventoryLabel.Text = IntventoryPrint.PrintContent(_currentHeldInventory);
+    }
+    private void OnRatReleased(object[] obj)
+    {
+        InventoryLabel.Text = "";
+        _currentHeldInventory.Changed -= UpdateInventory;
+        _currentHeldInventory = null;
+        InventoryContainer.Hide();
+    }
+
+    private void OnRatPickedUp(object[] obj)
+    {
+        if (obj[0] is Rat rat)
+        {
+            _currentHeldInventory = rat.Cargo;
+            InventoryContainer.Show();
+            _currentHeldInventory.Changed += UpdateInventory;
+            UpdateInventory();
+        }
+    }
+
+    private void OnClockTick(object[] obj)
+    {
+        string timeText = (string)obj[0];
+        float dayProgress = (float)obj[1];
+        DayProgressBar.Value = dayProgress;
+        ClockLabel.Text = timeText;
+    }
+
+    private void OnDayStarted(object[] obj)
+    {
+        int day = (int)obj[0];
+        DayLabel.Text = $"Day {day}";
     }
 
     private void OnQuotaUpdated(object[] args)
@@ -60,11 +94,4 @@ public partial class Hud : Control
             }
         }
     }
-
-    private void OnSundown(object[] args)
-    {
-        SetDayLabel();
-    }
-
-
 }

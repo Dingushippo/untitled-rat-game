@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public partial class ObjectManager : Node
 {
-    public static ObjectManager Instance { get; private set; }
+    private static ObjectManager _instance;
+    public static ObjectManager Instance => _instance;
 
     [Export] public PackedScene objectScene;
     private ObjectPoolComponent _pool;
@@ -12,11 +13,10 @@ public partial class ObjectManager : Node
 
     public override void _EnterTree()
     {
-        if (Instance == null) Instance = this;
-        else Instance.QueueFree();
+        if (!Singleton.ClaimOrFree(ref _instance, this)) return;
     }
     public override void _Ready()
-    {        
+    {
         EventBus.Subscribe(Event.NavigationRegionReady, OnNavigationRegionReady);
     }
 

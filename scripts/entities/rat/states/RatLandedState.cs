@@ -1,4 +1,6 @@
 using Godot;
+using Godot.Collections;
+using System.Collections.Generic;
 
 public class RatLandedState : RatState
 {
@@ -10,21 +12,36 @@ public class RatLandedState : RatState
     {
         Vector3 landingDirection = new Vector3(0, _rat.GlobalRotation.Y, 0);
 
-        // TODO change to use raycast
-        Vector3 landingPosition = _rat.GlobalPosition;
-        landingPosition.Y = 0;
+        if (Utils.Raycast(
+            _rat,
+            _rat.GlobalPosition,
+            _rat.GlobalPosition + Vector3.Down * 0.25f,
+            out Dictionary result,
+            PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY),
+            collideWithAreas: false
+        ))
+        {
+            _rat.GlobalPosition = result["position"].AsVector3();
+        }
+        else
+        {
+            fsm.ChangeState("falling");
+        }
 
         _landTween = _rat.CreateTween();
         _landTween.SetParallel(true);
         _landTween.TweenProperty(_rat, "rotation", landingDirection, 0.35f);
         _landTween.Chain();
-        _landTween.TweenCallback(Callable.From(() => fsm.ChangeState("idle", this)));
+        _landTween.TweenCallback(Callable.From(() => SetNextState(previous)));
     }
     public override void Exit()
     {
-        if (_landTween.IsRunning())
-        {
-            _landTween.Kill();
-        }
+        _landTween?.Kill();
+    }
+
+    private void SetNextState(State previous)
+    {
+        _rat.ResetTargetPosition();
+        fsm.ChangeState("follow", this);
     }
 }

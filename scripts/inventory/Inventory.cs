@@ -1,18 +1,22 @@
 
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using GDictionary = Godot.Collections.Dictionary<string, int>;
+// using GDictionary = Godot.Collections.Dictionary<string, int>;
 
 public class Inventory : IInventory
 {
-    private GDictionary _items = new();
+    private Godot.Collections.Dictionary<string, int> _items = new();
     private readonly HashSet<string> _filter; // null means anything goes
     public int Capacity { get; }
-    public int Total { get; private set; }
     public IReadOnlyDictionary<string, int> Contents => _items;
+
+    // public int Total { get; private set; }
+    public int Total => _items.Values.Sum();
     public bool IsEmpty => Total == 0;
     public bool IsFull => Total >= Capacity;
+    public Action Changed;
 
     public Inventory(int capacity, IEnumerable<string> filter = null)
     {
@@ -24,18 +28,25 @@ public class Inventory : IInventory
     public int CountOf(string item) => _items.TryGetValue(item, out int count) ? count : 0;
     public int SpaceFor(string item) => Accepts(item) ? Capacity - Total : 0;
 
+    private int SetData(string item, int amount)
+    {
+        _items[item] = amount;
+        Changed?.Invoke();
+        return _items[item];
+    }
+
     public int Add(string item, int amount)
     {
         int moved = Mathf.Min(amount, SpaceFor(item));
         if (moved <= 0) return 0;
         // Godot dictionaries throw on a missing key, so seed the entry through CountOf.
-        _items[item] = CountOf(item) + moved;
-        Total += moved;
+        SetData(item, CountOf(item) + moved);
+
         return moved;
     }
 
     /// <summary>True when every entry fits, filter and capacity included.</summary>
-    public bool CanAdd(GDictionary items)
+    public bool CanAdd(Godot.Collections.Dictionary<string, int> items)
     {
         if (items is null) return true;
 
@@ -49,7 +60,7 @@ public class Inventory : IInventory
     }
 
     /// <summary>All-or-nothing add, so a recipe never leaves a half-written batch behind.</summary>
-    public bool TryAdd(GDictionary items)
+    public bool TryAdd(Godot.Collections.Dictionary<string, int> items)
     {
         if (!CanAdd(items)) return false;
         if (items is null) return true;
@@ -63,7 +74,7 @@ public class Inventory : IInventory
 
     public bool CanRemove(string item, int amount) => CountOf(item) >= amount;
 
-    public bool Has(GDictionary items)
+    public bool Has(Godot.Collections.Dictionary<string, int> items)
     {
         if (items is null) return true;
 
@@ -75,7 +86,7 @@ public class Inventory : IInventory
     }
 
     /// <summary>All-or-nothing removal, so a cycle never eats half a recipe.</summary>
-    public bool TryRemove(GDictionary items)
+    public bool TryRemove(Godot.Collections.Dictionary<string, int> items)
     {
         if (!Has(items)) return false;
         if (items is null) return true;
@@ -91,8 +102,14 @@ public class Inventory : IInventory
     {
         int removed = Mathf.Min(amount, CountOf(item));
         if (removed <= 0) return 0;
-        if ((_items[item] -= removed) == 0) _items.Remove(item);
-        Total -= removed;
+        if (SetData(item, CountOf(item) - removed) == 0) _items.Remove(item);
+        return removed;
+    }
+
+    public Godot.Collections.Dictionary<string, int> RemoveAll()
+    {
+        Godot.Collections.Dictionary<string, int> removed = new(_items);
+        _items.Clear();
         return removed;
     }
 
@@ -112,12 +129,30 @@ public class Inventory : IInventory
             : string.Join(", ", _items.Select(kv => $"{kv.Key} x{kv.Value}"));
 }
 
+public static class IntventoryPrint
+{
+    public static string PrintContent(IInventory inventory)
+    {
+        string output = "";
+        int tithes = 0;
+        foreach (var (key, value) in inventory.Contents)
+        {
+            ItemDef item = ItemDatabase.Get(key);
+            int titheValue = item.BaseValue * value;
+            output += $"{item.DisplayName} - {value}x - tithes: {titheValue}\n";
+            tithes += titheValue;
+        }
+        output += $"\nTotal tithe value: {tithes}";
+        return output;
+    }
+}
+
 public static class InventoryTransfer
 {
     /// <summary>Moves whatever the destination will take, up to <paramref name="max"/> items in total.</summary>
-    public static GDictionary Move(IInventory from, IInventory to, int max = int.MaxValue)
+    public static Godot.Collections.Dictionary<string, int> Move(IInventory from, IInventory to, int max = int.MaxValue)
     {
-        GDictionary moved = new();
+        Godot.Collections.Dictionary<string, int> moved = new();
 
         // Snapshot: Remove mutates the source dictionary we would otherwise be iterating.
         string[] items = from.Contents.Keys.ToArray();

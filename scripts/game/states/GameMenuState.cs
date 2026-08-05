@@ -4,7 +4,7 @@ using System.Buffers;
 
 public class GameMenuState : GameState
 {
-    private const string MAIN_MENU_PATH = "res://scenes/UI/main_menu.tscn";
+    private const string MAIN_MENU_PATH = "res://scenes/ui/main_menu.tscn";
     public GameMenuState(GameManager owner) : base(owner) { }
     public override void Enter(State previous = null)
     {
