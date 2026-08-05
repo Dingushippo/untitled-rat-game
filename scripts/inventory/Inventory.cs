@@ -10,8 +10,10 @@ public class Inventory : IInventory
     private Godot.Collections.Dictionary<string, int> _items = new();
     private readonly HashSet<string> _filter; // null means anything goes
     public int Capacity { get; }
-    public int Total { get; private set; }
     public IReadOnlyDictionary<string, int> Contents => _items;
+
+    // public int Total { get; private set; }
+    public int Total => _items.Values.Sum();
     public bool IsEmpty => Total == 0;
     public bool IsFull => Total >= Capacity;
     public Action Changed;
@@ -39,7 +41,6 @@ public class Inventory : IInventory
         if (moved <= 0) return 0;
         // Godot dictionaries throw on a missing key, so seed the entry through CountOf.
         SetData(item, CountOf(item) + moved);
-        Total += moved;
 
         return moved;
     }
@@ -102,7 +103,6 @@ public class Inventory : IInventory
         int removed = Mathf.Min(amount, CountOf(item));
         if (removed <= 0) return 0;
         if (SetData(item, CountOf(item) - removed) == 0) _items.Remove(item);
-        Total -= removed;
         return removed;
     }
 
@@ -110,7 +110,6 @@ public class Inventory : IInventory
     {
         Godot.Collections.Dictionary<string, int> removed = new(_items);
         _items.Clear();
-        Total = 0;
         return removed;
     }
 
