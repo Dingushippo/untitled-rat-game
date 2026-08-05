@@ -27,6 +27,10 @@ ProfilerOverlay="*res://scripts/debug/ProfilerOverlay.cs"
 
 project/assembly_name="Untitled rat game"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/AsepriteWizard/plugin.cfg")
+
 [global_group]
 
 player=""
