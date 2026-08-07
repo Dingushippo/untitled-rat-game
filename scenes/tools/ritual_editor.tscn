@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://bgka5splctq5n"]
+
+[ext_resource type="Theme" uid="uid://cabfrql7ktso7" path="res://resources/themes/main_theme.tres" id="1_xsa33"]
+[ext_resource type="Script" uid="uid://c07lir0g456jk" path="res://scripts/rituals/RitualEditor.cs" id="2_7y0kx"]
+[ext_resource type="Script" uid="uid://bbhv2dylcx5dh" path="res://scripts/rituals/RitualRenderer.cs" id="2_8xp8r"]
+[ext_resource type="Script" uid="uid://bodq1inth5eml" path="res://scripts/rituals/RitualCircleResource.cs" id="3_7y0kx"]
+[ext_resource type="Script" uid="uid://bc6smh4xnjgue" path="res://scripts/rituals/RitualEditorViewport.cs" id="3_kpryi"]
+[ext_resource type="Script" uid="uid://whyovkcpxiai" path="res://scripts/rituals/RitualResource.cs" id="4_kpryi"]
+
+[sub_resource type="Resource" id="Resource_x2ak3"]
+script = ExtResource("3_7y0kx")
+Radius = 100.0
+AngleOffset = 1.2217305
+NumElements = 3
+ElementRadius = 27.67
+metadata/_custom_type_script = "uid://bodq1inth5eml"
+
+[sub_resource type="Resource" id="Resource_4nads"]
+script = ExtResource("4_kpryi")
+ritualCircles = Array[Object]([SubResource("Resource_x2ak3")])
+metadata/_custom_type_script = "uid://whyovkcpxiai"
+
+[node name="RitualEditor" type="Control" unique_id=1270465179]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_xsa33")
+script = ExtResource("2_7y0kx")
+
+[node name="Toolbar" type="HBoxContainer" parent="." unique_id=129512060]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=589321692]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+split_offsets = PackedInt32Array(908)
+split_offset = 908
+
+[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer" unique_id=560066088]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="HSplitContainer/MarginContainer" unique_id=666274144]
+layout_mode = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HSplitContainer/MarginContainer/CenterContainer" unique_id=1547291631 node_paths=PackedStringArray("RitualCanvas", "Viewport")]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+script = ExtResource("3_kpryi")
+RitualCanvas = NodePath("RitualEditorViewport/Canvas")
+Viewport = NodePath("RitualEditorViewport")
+
+[node name="RitualEditorViewport" type="SubViewport" parent="HSplitContainer/MarginContainer/CenterContainer/SubViewportContainer" unique_id=48054433]
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(900, 550)
+render_target_update_mode = 4
+
+[node name="Canvas" type="Node2D" parent="HSplitContainer/MarginContainer/CenterContainer/SubViewportContainer/RitualEditorViewport" unique_id=361626581]
+texture_filter = 2
+position = Vector2(256, 256)
+scale = Vector2(1.7, 1.7)
+
+[node name="Renderer" type="Node2D" parent="HSplitContainer/MarginContainer/CenterContainer/SubViewportContainer/RitualEditorViewport/Canvas" unique_id=379785242]
+texture_filter = 1
+script = ExtResource("2_8xp8r")
+RitualResource = SubResource("Resource_4nads")
+LineThickness = 2.0
+
+[node name="MarginContainer2" type="MarginContainer" parent="HSplitContainer" unique_id=201660337]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/MarginContainer2" unique_id=912423728]
+layout_mode = 2

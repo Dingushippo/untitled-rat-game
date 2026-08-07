@@ -1,9 +1,9 @@
 using Godot;
+using System.Linq;
 
 public partial class GameManager : Node
 {
     [Export] public RunTuning Tuning;
-    [Export] public bool Disabled;
     private static GameManager _instance;
     public static GameManager Instance => _instance;
     private FiniteStateMachine _fsm;
@@ -17,17 +17,23 @@ public partial class GameManager : Node
     {
         if (!Singleton.ClaimOrFree(ref _instance, this)) return;
 
-        AssertTuning();
-        _fsm = new(this);
-
-        if (Disabled)
+        // Check if current scene is a tool script, queue free and return in that casen
+        string[] excludes = ["scenes/tools/", "scenes/debug/"];
+        string currentScenePath = GetTree().CurrentScene.SceneFilePath;
+        GD.Print($"Current scene: {currentScenePath}");
+        if (excludes.Any(x => currentScenePath.Contains(x)))
         {
+            // Just disabling to prevent error messages
             SetProcess(false);
             SetPhysicsProcess(false);
             SetProcessInput(false);
             SetProcessUnhandledInput(false);
+            QueueFree();
             return;
         }
+
+        AssertTuning();
+        _fsm = new(this);
 
         _fsm.Add("menu", new GameMenuState(this));
         _fsm.Add("run", new GameRunState(this));
