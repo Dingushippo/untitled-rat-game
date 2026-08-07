@@ -6,3 +6,4 @@
 [node name="GameManager" type="Node" unique_id=1600033193]
 script = ExtResource("1_tmdk2")
 Tuning = ExtResource("2_tmdk2")
+Disabled = true

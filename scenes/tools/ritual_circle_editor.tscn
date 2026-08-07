@@ -1,0 +1,125 @@
+[gd_scene format=3 uid="uid://wyoy1nr2huo8"]
+
+[ext_resource type="Script" uid="uid://bfyu0hi7xjemf" path="res://scripts/tools/RitualCircleEditor.cs" id="1_hk0p0"]
+[ext_resource type="Script" uid="uid://3s2lqiyw85fc" path="res://scenes/tools/RitualCanvas.cs" id="2_n1thn"]
+
+[node name="RitualCircleEditor" type="Control" unique_id=1287440841]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hk0p0")
+
+[node name="Toolbar" type="HBoxContainer" parent="." unique_id=1291240634]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="SelectButton" type="Button" parent="Toolbar" unique_id=316742478]
+layout_mode = 2
+text = "Select"
+
+[node name="RingButton2" type="Button" parent="Toolbar" unique_id=1203899460]
+layout_mode = 2
+text = "Add ring"
+
+[node name="PolygonButton" type="Button" parent="Toolbar" unique_id=977621788]
+layout_mode = 2
+text = "Add polygon"
+
+[node name="RuneButton" type="Button" parent="Toolbar" unique_id=958411659]
+layout_mode = 2
+text = "Add rune"
+
+[node name="LineButton" type="Button" parent="Toolbar" unique_id=2009887439]
+layout_mode = 2
+text = "Add line"
+
+[node name="SymbolButton" type="Button" parent="Toolbar" unique_id=51724732]
+layout_mode = 2
+text = "Add symbol"
+
+[node name="Spacer" type="Control" parent="Toolbar" unique_id=1500698224]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="UndoButton" type="Button" parent="Toolbar" unique_id=81031256]
+layout_mode = 2
+text = "Undo"
+
+[node name="RedoButton" type="Button" parent="Toolbar" unique_id=270837629]
+layout_mode = 2
+text = "Redo"
+
+[node name="Spacer2" type="Control" parent="Toolbar" unique_id=1590938698]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="SaveResourceButton" type="Button" parent="Toolbar" unique_id=621944386]
+layout_mode = 2
+text = "Save resource"
+
+[node name="ExportPngButton" type="Button" parent="Toolbar" unique_id=2044227641]
+layout_mode = 2
+text = "Export PNG"
+
+[node name="EditorArea" type="HSplitContainer" parent="." unique_id=1303987606]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+split_offsets = PackedInt32Array(950)
+split_offset = 950
+
+[node name="CenterContainer" type="CenterContainer" parent="EditorArea" unique_id=1147726385]
+layout_mode = 2
+
+[node name="CanvasPanel" type="PanelContainer" parent="EditorArea/CenterContainer" unique_id=55921701]
+layout_mode = 2
+
+[node name="CanvasViewport" type="SubViewportContainer" parent="EditorArea/CenterContainer/CanvasPanel" unique_id=38366767]
+layout_mode = 2
+
+[node name="RitualViewport" type="SubViewport" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport" unique_id=1657660096]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="RitualCanvas" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport" unique_id=268667243]
+script = ExtResource("2_n1thn")
+
+[node name="Background" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport/RitualCanvas" unique_id=2083262215]
+
+[node name="Renderer" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport/RitualCanvas" unique_id=1702443158]
+
+[node name="EditorOverlay" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport/RitualCanvas" unique_id=487908642]
+
+[node name="InspectorPanel" type="PanelContainer" parent="EditorArea" unique_id=165566240]
+layout_mode = 2
+
+[node name="Inspector" type="VBoxContainer" parent="EditorArea/InspectorPanel" unique_id=1629401881]
+layout_mode = 2
+
+[node name="LayersLabel" type="Label" parent="EditorArea/InspectorPanel/Inspector" unique_id=897290262]
+layout_mode = 2
+text = "Layer"
+
+[node name="LayersList" type="ItemList" parent="EditorArea/InspectorPanel/Inspector" unique_id=878469193]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="EditorArea/InspectorPanel/Inspector" unique_id=1125702244]
+layout_mode = 2
+
+[node name="PropertiesLabel" type="Label" parent="EditorArea/InspectorPanel/Inspector" unique_id=635788059]
+layout_mode = 2
+text = "Properties"
+
+[node name="PropertiesList" type="ItemList" parent="EditorArea/InspectorPanel/Inspector" unique_id=66338963]
+layout_mode = 2
