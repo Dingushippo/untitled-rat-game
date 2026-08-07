@@ -1,16 +1,44 @@
 [gd_scene format=3 uid="uid://wyoy1nr2huo8"]
 
-[ext_resource type="Script" uid="uid://bfyu0hi7xjemf" path="res://scripts/tools/RitualCircleEditor.cs" id="1_hk0p0"]
-[ext_resource type="Script" uid="uid://3s2lqiyw85fc" path="res://scenes/tools/RitualCanvas.cs" id="2_n1thn"]
+[ext_resource type="Script" uid="uid://bfyu0hi7xjemf" path="res://scripts/rituals/RitualEditor.cs" id="1_rh2gt"]
+[ext_resource type="Script" uid="uid://dfdr28vlolk1y" path="res://scripts/rituals/RitualViewportController.cs" id="2_p5c3n"]
+[ext_resource type="Script" uid="uid://3s2lqiyw85fc" path="res://scripts/rituals/RitualCanvas.cs" id="3_3vsks"]
+[ext_resource type="Script" uid="uid://b6hvwwmniui1q" path="res://scripts/rituals/RitualRenderer.cs" id="4_yxe2y"]
+[ext_resource type="Script" uid="uid://d01jeln8uvfuw" path="res://scripts/rituals/elements/RitualElement.cs" id="5_hm2pw"]
+[ext_resource type="Script" uid="uid://bbgjc75plcs0w" path="res://scripts/rituals/elements/RingElement.cs" id="6_bwq20"]
+[ext_resource type="Script" uid="uid://do5tr5l8hdwk2" path="res://scripts/rituals/elements/LineElement.cs" id="7_odh5x"]
+[ext_resource type="Script" uid="uid://dmyhfmbgb8dcd" path="res://scripts/rituals/RitualCircleResource.cs" id="8_sbqx7"]
+[ext_resource type="Script" uid="uid://c5vdakc3j40fc" path="res://scripts/rituals/RitualSelection.cs" id="9_jepjs"]
 
-[node name="RitualCircleEditor" type="Control" unique_id=1287440841]
+[sub_resource type="Resource" id="Resource_4ee54"]
+script = ExtResource("6_bwq20")
+Radius = 200.0
+Visible = true
+Position = Vector2(256, 256)
+metadata/_custom_type_script = "uid://bbgjc75plcs0w"
+
+[sub_resource type="Resource" id="Resource_ydyfj"]
+script = ExtResource("7_odh5x")
+EndPosition = Vector2(256, 239.405)
+Visible = true
+metadata/_custom_type_script = "uid://do5tr5l8hdwk2"
+
+[sub_resource type="Resource" id="Resource_fw424"]
+script = ExtResource("8_sbqx7")
+Elements = Array[ExtResource("5_hm2pw")]([SubResource("Resource_4ee54"), SubResource("Resource_ydyfj")])
+metadata/_custom_type_script = "uid://dmyhfmbgb8dcd"
+
+[node name="RitualEditor" type="Control" unique_id=1287440841 node_paths=PackedStringArray("Canvas", "Renderer", "Selection")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_hk0p0")
+script = ExtResource("1_rh2gt")
+Canvas = NodePath("EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport/RitualCanvas")
+Renderer = NodePath("EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport/RitualCanvas/Renderer")
+Selection = NodePath("EditorArea/CenterContainer/CanvasPanel/RitualSelection")
 
 [node name="Toolbar" type="HBoxContainer" parent="." unique_id=1291240634]
 layout_mode = 1
@@ -88,18 +116,26 @@ layout_mode = 2
 [node name="CanvasViewport" type="SubViewportContainer" parent="EditorArea/CenterContainer/CanvasPanel" unique_id=38366767]
 layout_mode = 2
 
-[node name="RitualViewport" type="SubViewport" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport" unique_id=1657660096]
+[node name="RitualViewport" type="SubViewport" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport" unique_id=1657660096 node_paths=PackedStringArray("Canvas")]
 handle_input_locally = false
 render_target_update_mode = 4
+script = ExtResource("2_p5c3n")
+Canvas = NodePath("RitualCanvas")
 
-[node name="RitualCanvas" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport" unique_id=268667243]
-script = ExtResource("2_n1thn")
+[node name="RitualCanvas" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport" unique_id=268667243 node_paths=PackedStringArray("Renderer")]
+script = ExtResource("3_3vsks")
+Renderer = NodePath("Renderer")
 
 [node name="Background" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport/RitualCanvas" unique_id=2083262215]
 
 [node name="Renderer" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport/RitualCanvas" unique_id=1702443158]
+script = ExtResource("4_yxe2y")
+Ritual = SubResource("Resource_fw424")
 
 [node name="EditorOverlay" type="Node2D" parent="EditorArea/CenterContainer/CanvasPanel/CanvasViewport/RitualViewport/RitualCanvas" unique_id=487908642]
+
+[node name="RitualSelection" type="Node" parent="EditorArea/CenterContainer/CanvasPanel" unique_id=968456567]
+script = ExtResource("9_jepjs")
 
 [node name="InspectorPanel" type="PanelContainer" parent="EditorArea" unique_id=165566240]
 layout_mode = 2

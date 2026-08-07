@@ -1,7 +1,8 @@
 using Godot;
 using Godot.Collections;
 
+[GlobalClass, Tool]
 public partial class RitualCircleResource : Resource
 {
-    [Export] Array<RitualElement> Elements = [];
+    [Export] public Array<RitualElement> Elements = [];
 }
