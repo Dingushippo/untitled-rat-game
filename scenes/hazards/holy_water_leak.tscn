@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c4n2hxg1wxdbv"]
 
-[ext_resource type="Script" uid="uid://bslu88v16tbxx" path="res://scenes/hazards/HolyWaterLeak.cs" id="1_tyjkl"]
+[ext_resource type="Script" uid="uid://bslu88v16tbxx" path="res://scripts/hazards/HolyWaterLeak.cs" id="1_tyjkl"]
 [ext_resource type="Script" uid="uid://dadi1gcc2viyk" path="res://scripts/facilities/WorkSlot.cs" id="2_j4w8e"]
 
 [sub_resource type="Curve" id="Curve_1dtup"]

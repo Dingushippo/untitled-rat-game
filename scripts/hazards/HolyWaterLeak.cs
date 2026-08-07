@@ -25,6 +25,10 @@ public partial class HolyWaterLeak : Node3D, ICatchArea
 
     public bool TryGetThrowTarget(Vector3 from, Rat rat, out ThrowTarget target)
     {
+        target = default;
+
+        if (Slot.IsOccupied) return false;
+
         target = ThrowTarget.Slot(Slot);
         return true;
     }
