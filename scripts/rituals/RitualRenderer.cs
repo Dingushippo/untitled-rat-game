@@ -4,8 +4,6 @@ using System;
 [GlobalClass, Tool]
 public partial class RitualRenderer : Node2D
 {
-
-
     [Export] public RitualResource RitualResource;
     [Export] public float LineThickness = 1f;
     [ExportToolButton("Redraw")] public Callable RedrawButton => Callable.From(() => QueueRedraw());
@@ -14,12 +12,14 @@ public partial class RitualRenderer : Node2D
 
     public override void _Ready()
     {
-        RitualResource.Changed += QueueRedraw;
+        if (RitualResource != null)
+            RitualResource.Changed += QueueRedraw;
     }
 
     public override void _Draw()
     {
-        foreach (RitualCircleResource circle in RitualResource.ritualCircles)
+        if (RitualResource == null) return;
+        foreach (RitualCircleResource circle in RitualResource.RitualCircles)
         {
             DrawRitualCircle(circle);
         }
@@ -27,6 +27,11 @@ public partial class RitualRenderer : Node2D
 
     private void DrawRitualCircle(RitualCircleResource circle)
     {
+        if (circle.NumElements <= 0)
+        {
+            DrawCircle(_center, circle.Radius, Colors.White, false, LineThickness);
+            return;
+        }
         float angleChange = Mathf.Tau / circle.NumElements;
         for (int i = 0; i < circle.NumElements; i++)
         {

@@ -5,5 +5,8 @@ using Godot.Collections;
 [GlobalClass, Tool]
 public partial class RitualResource : Resource
 {
-    [Export] public Array<RitualCircleResource> ritualCircles;
+    [Export] public string Id = "new_id";
+    [Export] public string DisplayName = "new_name";
+    [Export] public string Description = "new_description";
+    [Export] public Array<RitualCircleResource> RitualCircles = [];
 }
