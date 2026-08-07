@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://buk1fupp26own" path="res://scripts/entities/rat/RatDef.cs" id="9_2mu0v"]
 [ext_resource type="Script" uid="uid://diyb87lbrqd66" path="res://scripts/world/ReturnArea.cs" id="10_2mu0v"]
 [ext_resource type="PackedScene" uid="uid://c4n2hxg1wxdbv" path="res://scenes/hazards/holy_water_leak.tscn" id="11_jmx14"]
+[ext_resource type="PackedScene" uid="uid://b2h3kmtker20h" path="res://scenes/rituals/ritual_base.tscn" id="12_eaa0b"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jbqir"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -181,3 +182,6 @@ disabled = true
 
 [node name="HolyWaterLeak" parent="." unique_id=2019861423 instance=ExtResource("11_jmx14")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.829039, 0, 6.278946)
+
+[node name="RitualBase" parent="." unique_id=924134646 instance=ExtResource("12_eaa0b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.829, 0.05, 6.279)

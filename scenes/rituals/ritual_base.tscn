@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://b2h3kmtker20h"]
+
+[ext_resource type="Script" uid="uid://dxke235cyh250" path="res://scripts/rituals/RitualBase.cs" id="1_as4cw"]
+[ext_resource type="Script" uid="uid://bbhv2dylcx5dh" path="res://scripts/rituals/RitualRenderer.cs" id="1_jiqhk"]
+[ext_resource type="Script" uid="uid://bodq1inth5eml" path="res://scripts/rituals/RitualCircleResource.cs" id="2_as4cw"]
+[ext_resource type="Script" uid="uid://whyovkcpxiai" path="res://scripts/rituals/RitualResource.cs" id="3_b4c8u"]
+
+[sub_resource type="Resource" id="Resource_a5rnb"]
+script = ExtResource("2_as4cw")
+Radius = 150.0
+AngleOffset = 1.5707964
+ElementRadius = 50.0
+metadata/_custom_type_script = "uid://bodq1inth5eml"
+
+[sub_resource type="Resource" id="Resource_pso3n"]
+script = ExtResource("3_b4c8u")
+DisplayName = "new_names"
+RitualCircles = Array[ExtResource("2_as4cw")]([SubResource("Resource_a5rnb")])
+metadata/_custom_type_script = "uid://whyovkcpxiai"
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_as4cw"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gkoef"]
+resource_local_to_scene = true
+transparency = 1
+albedo_texture = SubResource("ViewportTexture_as4cw")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pso3n"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_gkoef")
+
+[node name="RitualBase" type="Node3D" unique_id=924134646 node_paths=PackedStringArray("Viewport", "Renderer")]
+script = ExtResource("1_as4cw")
+Viewport = NodePath("SubViewport")
+Renderer = NodePath("SubViewport/RitualRenderer")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=5010779]
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="RitualRenderer" type="Node2D" parent="SubViewport" unique_id=691418998]
+position = Vector2(256, 256)
+script = ExtResource("1_jiqhk")
+RitualResource = SubResource("Resource_pso3n")
+LineThickness = 5.0
+metadata/_custom_type_script = "uid://bbhv2dylcx5dh"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1477580003]
+mesh = SubResource("PlaneMesh_pso3n")
