@@ -154,7 +154,7 @@ public partial class RitualEditor : Control
     {
         if (_currentCircle is null) return;
         _currentCircle.Radius = (float)RadiusSlider.Value;
-        _currentCircle.NumElements = (int)ElementSpinbox.Value;
+        // _currentCircle.NumElements = (int)ElementSpinbox.Value;
         _currentCircle.ElementRadius = (float)ElementRadiusSlider.Value;
         _currentCircle.AngleOffset = (float)Mathf.DegToRad(AngleOffsetSlider.Value);
         UpdateCircleValueLabels();

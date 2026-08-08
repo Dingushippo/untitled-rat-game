@@ -50,10 +50,11 @@ public partial class RitualRenderer : Node2D
 
     private void DrawElementCircles(RitualCircleResource circle, int index, float angleChange)
     {
-        Vector2 pos = new Vector2(
-            circle.Radius * Mathf.Cos(angleChange * index + circle.AngleOffset),
-            circle.Radius * Mathf.Sin(angleChange * index + circle.AngleOffset)
-        );
-        DrawCircle(_center + pos, circle.ElementRadius, Colors.White, false, LineThickness);
+        RitualElement element = circle.RitualElements[index];
+        // Vector2 pos = new Vector2(
+        //     circle.Radius * Mathf.Cos(angleChange * index + circle.AngleOffset),
+        //     circle.Radius * Mathf.Sin(angleChange * index + circle.AngleOffset)
+        // );
+        DrawCircle(_center + element.Position, circle.ElementRadius, Colors.White, false, LineThickness);
     }
 }
