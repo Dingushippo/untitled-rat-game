@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RitualResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/rituals/RitualCircleResource.cs" id="1_j2ngk"]
+[ext_resource type="Script" path="res://scripts/rituals/RitualResource.cs" id="2_desyr"]
+
+[sub_resource type="Resource" id="Resource_wga5n"]
+script = ExtResource("1_j2ngk")
+Radius = 120.0
+AngleOffset = 0.5235988
+ElementRadius = 41.0
+
+[resource]
+script = ExtResource("2_desyr")
+Id = "sealing_ritual"
+DisplayName = "Ritual to seal holy water leak"
+RitualCircles = Array[ExtResource("1_j2ngk")]([SubResource("Resource_wga5n")])

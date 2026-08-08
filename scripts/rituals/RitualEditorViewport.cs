@@ -32,7 +32,6 @@ public partial class RitualEditorViewport : SubViewportContainer
     }
     public void SetZoom(float zoom)
     {
-        GD.Print($"Setting zoom to: {zoom}");
         RitualCanvas.Scale = Vector2.One * zoom;
     }
 
