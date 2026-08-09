@@ -1,13 +1,12 @@
 using Godot;
 using Godot.Collections;
 
-[GlobalClass]
-public partial class RitualManager : Node
+public partial class RitualManagerNode : Node
 {
-    private const string RITUAL_BASE_UID = "";
-    private const string ELEMENT_SLOT_UID = "";
-    private RitualManager _instance;
-    public RitualManager Instance => _instance;
+    private const string RITUAL_BASE_UID = "uid://b2h3kmtker20h";
+    private const string ELEMENT_SLOT_UID = "uid://b5buk60oogt6h";
+    private static RitualManagerNode _instance;
+    public static RitualManagerNode Instance => _instance;
     private ObjectPoolComponent _ritualPool;
     private ObjectPoolComponent _elementSlotPool;
 
@@ -15,12 +14,14 @@ public partial class RitualManager : Node
     {
         if (!Singleton.ClaimOrFree(ref _instance, this)) return;
 
+        _elementSlotPool = new(this, GD.Load<PackedScene>(ELEMENT_SLOT_UID), 10);
         _ritualPool = new(this, GD.Load<PackedScene>(RITUAL_BASE_UID), 10);
-        _elementSlotPool = new(this, GD.Load<PackedScene>(ELEMENT_SLOT_UID), 100);
     }
+
     public T PrepareRitual<T>(RitualResource resource, Vector3 position) where T : RitualBase
     {
         T ritual = _ritualPool.SpawnObject<T>(position);
+        Array<RitualElementSlot> slots = new();
         foreach (RitualCircleResource circle in resource.RitualCircles)
         {
             foreach (RitualElement element in circle.RitualElements)
@@ -33,10 +34,12 @@ public partial class RitualManager : Node
                     position.Z + element.Position.Y / 100f
                 );
                 slot.RitualCircle = circle;
+                slot.LookAt(position);
                 slot.SetElement(element);
-                ritual.Slots.Add(slot);
+                slots.Add(slot);
             }
         }
+        ritual.Slots = slots;
         return ritual;
     }
 }

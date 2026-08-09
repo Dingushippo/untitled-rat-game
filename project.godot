@@ -22,6 +22,7 @@ ItemDatabase="*uid://cj3y3fmq12pmv"
 EconomyService="*uid://x4awkh8khuuc"
 RunClock="*uid://egepafhmj6k8"
 ProfilerOverlay="*res://scripts/debug/ProfilerOverlay.cs"
+RitualManagerNode="*uid://duwrvw4veoiwa"
 
 [dotnet]
 
