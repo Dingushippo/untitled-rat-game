@@ -7,12 +7,10 @@ using System.Runtime.CompilerServices;
 public abstract partial class RitualBase : Node3D, IPooledObject
 {
     private const float DRAW_FREQ = 60f;
-    // Called when the node enters the scene tree for the first time.
     [Export] public SubViewport Viewport;
     [Export] public RitualRenderer Renderer;
     [Export] public RitualResource RitualResource;
     [Export] public MeshInstance3D PlaneMesh;
-    [Export] public PackedScene SlotScene;
 
     private float timer = 0;
     public override void _Ready()
