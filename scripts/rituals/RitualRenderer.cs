@@ -56,9 +56,10 @@ public partial class RitualRenderer : Node2D
         DrawSetTransform(element.Position, 0);
         DrawCircle(Vector2.Zero, circle.ElementRadius, Colors.White, false, LineThickness);
 
-        DrawSetTransform(element.Position, element.Rotation, Vector2.One * circle.SymbolScale);
-        DrawTexture(element.Symbol, -new Vector2(32, 32));
-
-        GD.Print($"Drawing circle {index} as pos {_center + element.Position}");
+        if (element.Symbol != null)
+        {
+            DrawSetTransform(element.Position, element.Rotation, Vector2.One * circle.SymbolScale);
+            DrawTexture(element.Symbol, -new Vector2(32, 32));
+        }
     }
 }
