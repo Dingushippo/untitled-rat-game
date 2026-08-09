@@ -11,7 +11,18 @@ public abstract partial class RitualBase : Node3D, IPooledObject
     [Export] public RitualResource RitualResource;
     [Export] public MeshInstance3D PlaneMesh;
 
-    public Array<RitualElementSlot> Slots;
+    private Array<RitualElementSlot> _slots;
+    public Array<RitualElementSlot> Slots
+    {
+        get => _slots;
+        set
+        {
+            _slots = value;
+            foreach (RitualElementSlot slot in Slots)
+                slot.Fulfilled += CheckSlotsFulfilled;
+        }
+    }
+
     private Action Completed;
     private Action Started;
     private Action Interrupted;
@@ -58,5 +69,14 @@ public abstract partial class RitualBase : Node3D, IPooledObject
         Hide();
         SetProcess(false);
         SetPhysicsProcess(false);
+
+        if (Slots == null) return;
+
+        foreach (RitualElementSlot slot in Slots)
+        {
+            slot.Fulfilled -= CheckSlotsFulfilled;
+        }
     }
+
+    protected abstract void CheckSlotsFulfilled();
 }

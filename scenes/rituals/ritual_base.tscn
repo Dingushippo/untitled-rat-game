@@ -22,7 +22,6 @@ script = ExtResource("1_as4cw")
 Viewport = NodePath("SubViewport")
 Renderer = NodePath("SubViewport/RitualRenderer")
 PlaneMesh = NodePath("MeshInstance3D")
-SlotScene = null
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=5010779]
 transparent_bg = true

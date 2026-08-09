@@ -3,12 +3,26 @@ using System;
 
 
 [GlobalClass]
-public partial class RitualElementSlot : Node3D, ICatchArea //, IPooledObject
+public partial class RitualElementSlot : Node3D, ICatchArea, IPooledObject
 {
-    public const float COLLIDER_MARGIN = 1f;
+    public const float COLLIDER_MARGIN = 0.01f;
     [Export] public CollisionShape3D CatchAreaCollider;
     [Export] public WorkSlot WorkSlot;
-    [Export] public RitualCircleResource RitualCircle;
+
+    private RitualCircleResource _ritualCircle;
+    [Export]
+    public RitualCircleResource RitualCircle
+    {
+        get => _ritualCircle;
+        set
+        {
+            _ritualCircle = value;
+            if (CatchAreaCollider.Shape is SphereShape3D shape)
+            {
+                shape.Radius = (RitualCircle.ElementRadius / 100) + COLLIDER_MARGIN;
+            }
+        }
+    }
     [Export] public RitualElement Element;
 
     public Action Fulfilled;
@@ -22,17 +36,11 @@ public partial class RitualElementSlot : Node3D, ICatchArea //, IPooledObject
         {
             _inventory = new(itemElement.Amount, [itemElement.Item.Id]);
         }
-        WorkSlot.LookAt(GetParent<Node3D>().GlobalPosition);
     }
 
     public void OnSpawn()
     {
         CatchAreaCollider.Disabled = false;
-        CatchAreaCollider.Shape = new SphereShape3D()
-        {
-            Radius = RitualCircle.ElementRadius + COLLIDER_MARGIN,
-        };
-
         WorkSlot.Entered += () => Fulfilled?.Invoke();
     }
 

@@ -80,6 +80,13 @@ public partial class Player : CharacterBody3D
     {
         _movementFsm.StateInput(@event);
         _handFsm.StateInput(@event);
+
+        // TEMP DEBUG
+        if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.Key1)
+        {
+            RitualResource res = ResourceLoader.Load<RitualResource>("uid://c1e6c1npwbqxi");
+            RitualManagerNode.Instance.PrepareRitual<SlotsFilledRitual>(res, GlobalPosition + Vector3.Up * 0.1f);
+        }
     }
 
     private void InitStateMachines()

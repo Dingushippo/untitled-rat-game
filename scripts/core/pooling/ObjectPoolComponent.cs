@@ -22,7 +22,6 @@ public partial class ObjectPoolComponent
         for (int i = 0; i < _poolSize; i++)
         {
             Node instance = _scene.Instantiate();
-
             if (instance is IPooledObject pooledObj)
             {
                 _parentNode.AddChild(instance);
@@ -66,5 +65,10 @@ public partial class ObjectPoolComponent
             Active.Remove(obj);
             _pool.Enqueue(obj);
         }
+    }
+
+    public override string ToString()
+    {
+        return $"queue: {_pool.Count}, active: {Active.Count}";
     }
 }

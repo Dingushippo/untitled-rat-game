@@ -13,14 +13,12 @@ public class RatSlottedState : RatState
         if (previous is RatCurveState state)
         {
             _workSlot = state.WorkSlot;
-            _workSlot.HasEntered();
+            Tween slotTween = _rat.CreateTween();
+            slotTween.SetParallel(true);
+            slotTween.TweenProperty(_rat, "quaternion", LocalSlotRotation(), _rat.FlightTuning.SettleDuration);
+            slotTween.TweenProperty(_rat, "global_position", _workSlot.GlobalPosition, _rat.FlightTuning.SettleDuration);
+            slotTween.TweenCallback(Callable.From(() => _workSlot.HasEntered()));
         }
-
-        Tween slotTween = _rat.CreateTween();
-        slotTween.SetParallel(true);
-        slotTween.TweenProperty(_rat, "quaternion", LocalSlotRotation(), _rat.FlightTuning.SettleDuration);
-        slotTween.TweenProperty(_rat, "global_position", _workSlot.GlobalPosition, _rat.FlightTuning.SettleDuration);
-
         // _rat.SetNavAgentEnabled(false);
 
         // TODO Play animation associated with facility/slot
@@ -29,8 +27,6 @@ public class RatSlottedState : RatState
     }
     public override void Exit()
     {
-        // _rat.SetNavAgentEnabled(true);
-
         if (_workSlot is null) return;
 
         FacilityBase facility = _workSlot.Facility;
