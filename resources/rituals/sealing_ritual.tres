@@ -1,16 +1,55 @@
-[gd_resource type="Resource" script_class="RitualResource" format=3]
+[gd_resource type="Resource" script_class="RitualResource" format=3 uid="uid://c1e6c1npwbqxi"]
 
-[ext_resource type="Script" path="res://scripts/rituals/RitualCircleResource.cs" id="1_j2ngk"]
-[ext_resource type="Script" path="res://scripts/rituals/RitualResource.cs" id="2_desyr"]
+[ext_resource type="Script" uid="uid://bodq1inth5eml" path="res://scripts/rituals/RitualCircleResource.cs" id="1_j2ngk"]
+[ext_resource type="Script" uid="uid://whyovkcpxiai" path="res://scripts/rituals/RitualResource.cs" id="2_desyr"]
+[ext_resource type="Script" uid="uid://c3g35denmh52b" path="res://scripts/rituals/elements/RitualElement.cs" id="2_wga5n"]
+[ext_resource type="Texture2D" uid="uid://bo00y57wpglq3" path="res://assets/rituals/elements/test_element.aseprite" id="3_wga5n"]
 
 [sub_resource type="Resource" id="Resource_wga5n"]
+resource_local_to_scene = true
+script = ExtResource("2_wga5n")
+Id = "test_element"
+DisplayName = "Test element"
+Description = "Testing oh yeah"
+Position = Vector2(71.014084, 41)
+Rotation = 6.0213857
+Symbol = ExtResource("3_wga5n")
+metadata/_custom_type_script = "uid://c3g35denmh52b"
+
+[sub_resource type="Resource" id="Resource_x36t3"]
+resource_local_to_scene = true
+script = ExtResource("2_wga5n")
+Id = "test_element"
+DisplayName = "Test element"
+Description = "Testing oh yeah"
+Position = Vector2(-71.014084, 41.000004)
+Rotation = 8.115781
+Symbol = ExtResource("3_wga5n")
+metadata/_custom_type_script = "uid://c3g35denmh52b"
+
+[sub_resource type="Resource" id="Resource_a0rro"]
+resource_local_to_scene = true
+script = ExtResource("2_wga5n")
+Id = "test_element"
+DisplayName = "Test element"
+Description = "Testing oh yeah"
+Position = Vector2(9.778402e-07, -82)
+Rotation = 10.210176
+Symbol = ExtResource("3_wga5n")
+metadata/_custom_type_script = "uid://c3g35denmh52b"
+
+[sub_resource type="Resource" id="Resource_qjche"]
 script = ExtResource("1_j2ngk")
-Radius = 120.0
+Radius = 82.0
 AngleOffset = 0.5235988
-ElementRadius = 41.0
+RitualElements = Array[ExtResource("2_wga5n")]([SubResource("Resource_wga5n"), SubResource("Resource_x36t3"), SubResource("Resource_a0rro")])
+ElementRadius = 31.0
+SymbolScale = 1.1
+SymbolRotation = 5.497787
+metadata/_custom_type_script = "uid://bodq1inth5eml"
 
 [resource]
 script = ExtResource("2_desyr")
 Id = "sealing_ritual"
 DisplayName = "Ritual to seal holy water leak"
-RitualCircles = Array[ExtResource("1_j2ngk")]([SubResource("Resource_wga5n")])
+RitualCircles = Array[ExtResource("1_j2ngk")]([SubResource("Resource_qjche")])

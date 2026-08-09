@@ -8,5 +8,7 @@ public partial class RitualCircleResource : Resource
     [Export(PropertyHint.Range, "0,360,10,radians_as_degrees")] public float AngleOffset = 0;
     [Export] public Array<RitualElement> RitualElements = [];
     [Export] public float ElementRadius = 20f;
+    [Export] public float SymbolScale = 0.5f;
+    [Export] public float SymbolRotation = 0.5f;
     public int NumElements => RitualElements.Count;
 }

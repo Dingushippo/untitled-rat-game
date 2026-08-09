@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://bbhv2dylcx5dh" path="res://scripts/rituals/RitualRenderer.cs" id="2_8xp8r"]
 [ext_resource type="Script" uid="uid://bc6smh4xnjgue" path="res://scripts/rituals/RitualEditorViewport.cs" id="3_kpryi"]
 
-[node name="RitualEditor" type="Control" unique_id=1270465179 node_paths=PackedStringArray("Viewport", "Renderer", "Dialog", "OpenButton", "SaveButton", "AddCircleButton", "UndoButton", "RedoButton", "IDLineEdit", "NameLineEdit", "DescriptionTextEdit", "CircleList", "RadiusSlider", "ElementSpinbox", "ElementRadiusSlider", "AngleOffsetSlider", "RadiusValueLabel", "ElementRadiusValueLabel", "AngleOffsetValueLabel")]
+[node name="RitualEditor" type="Control" unique_id=1270465179 node_paths=PackedStringArray("Viewport", "Renderer", "Dialog", "OpenButton", "SaveButton", "AddCircleButton", "UndoButton", "RedoButton", "IDLineEdit", "NameLineEdit", "DescriptionTextEdit", "CircleList", "RadiusSlider", "ElementSpinbox", "ElementRadiusSlider", "AngleOffsetSlider", "SymbolScaleSlider", "SymbolRotationSlider", "RadiusValueLabel", "ElementRadiusValueLabel", "AngleOffsetValueLabel", "SymbolScaleValueLabel", "SymbolRotationValueLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,9 +30,13 @@ RadiusSlider = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelCo
 ElementSpinbox = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/NumElementsSpinbox")
 ElementRadiusSlider = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3/ElementRadiusSlider")
 AngleOffsetSlider = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer4/AngleOffsetSlider")
+SymbolScaleSlider = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer6/SymbolScaleSlider")
+SymbolRotationSlider = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5/SymbolRotationSlider")
 RadiusValueLabel = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RadiusValueLabel")
 ElementRadiusValueLabel = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3/ElementRadiusValueLabel")
 AngleOffsetValueLabel = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer4/AngleOffsetValueLabel")
+SymbolScaleValueLabel = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer6/SymbolScaleValueLabel")
+SymbolRotationValueLabel = NodePath("HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5/SymbolRotationValueLabel")
 
 [node name="Toolbar" type="HBoxContainer" parent="." unique_id=129512060]
 layout_mode = 1
@@ -40,11 +44,6 @@ anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
 alignment = 1
-
-[node name="NewButton" type="Button" parent="Toolbar" unique_id=1099430982]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-text = "New"
 
 [node name="OpenButton" type="Button" parent="Toolbar" unique_id=1305790962]
 custom_minimum_size = Vector2(80, 0)
@@ -273,6 +272,50 @@ max_value = 360.0
 step = 15.0
 
 [node name="AngleOffsetValueLabel" type="Label" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer4" unique_id=887944699]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=710787055]
+layout_mode = 2
+
+[node name="SymbolScaleLabel" type="Label" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer6" unique_id=1074646927]
+layout_mode = 2
+text = "Symbol scale"
+
+[node name="SymbolScaleSlider" type="HSlider" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer6" unique_id=1788224620]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+min_value = 0.5
+max_value = 4.0
+step = 0.25
+value = 0.5
+
+[node name="SymbolScaleValueLabel" type="Label" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer6" unique_id=1111479910]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=436923868]
+layout_mode = 2
+
+[node name="SymbolRotationLabel" type="Label" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5" unique_id=841303885]
+layout_mode = 2
+text = "Symbol rotation"
+
+[node name="SymbolRotationSlider" type="HSlider" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5" unique_id=1846758756]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+max_value = 360.0
+step = 5.0
+
+[node name="SymbolRotationValueLabel" type="Label" parent="HSplitContainer/VSplitContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5" unique_id=1198779343]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 text = "100"

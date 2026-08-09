@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq.Expressions;
 
 [GlobalClass, Tool]
 public partial class RitualRenderer : Node2D
@@ -36,25 +37,28 @@ public partial class RitualRenderer : Node2D
         for (int i = 0; i < circle.NumElements; i++)
         {
             DrawInterpolatedArcs(circle, i, angleChange);
-            DrawElementCircles(circle, i, angleChange);
+            DrawElementCircle(circle, i);
         }
     }
 
     private void DrawInterpolatedArcs(RitualCircleResource circle, int index, float angleChange, int points = 10)
     {
+        DrawSetTransform(_center, 0);
         float elementAngleOffset = Mathf.Atan2(circle.ElementRadius, circle.Radius);
         float startAngle = index * angleChange + circle.AngleOffset + elementAngleOffset;
         float endAngle = index * angleChange + (angleChange - elementAngleOffset) + circle.AngleOffset;
-        DrawArc(_center, circle.Radius, startAngle, endAngle, points, Colors.White, LineThickness);
+        DrawArc(Vector2.Zero, circle.Radius, startAngle, endAngle, points, Colors.White, LineThickness);
     }
 
-    private void DrawElementCircles(RitualCircleResource circle, int index, float angleChange)
+    private void DrawElementCircle(RitualCircleResource circle, int index)
     {
         RitualElement element = circle.RitualElements[index];
-        // Vector2 pos = new Vector2(
-        //     circle.Radius * Mathf.Cos(angleChange * index + circle.AngleOffset),
-        //     circle.Radius * Mathf.Sin(angleChange * index + circle.AngleOffset)
-        // );
-        DrawCircle(_center + element.Position, circle.ElementRadius, Colors.White, false, LineThickness);
+        DrawSetTransform(element.Position, 0);
+        DrawCircle(Vector2.Zero, circle.ElementRadius, Colors.White, false, LineThickness);
+
+        DrawSetTransform(element.Position, element.Rotation, Vector2.One * circle.SymbolScale);
+        DrawTexture(element.Symbol, -new Vector2(32, 32));
+
+        GD.Print($"Drawing circle {index} as pos {_center + element.Position}");
     }
 }

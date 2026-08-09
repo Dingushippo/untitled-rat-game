@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RitualElement" format=3 uid="uid://b8nwou20u1kd1"]
+
+[ext_resource type="Texture2D" uid="uid://bo00y57wpglq3" path="res://assets/rituals/elements/test_element.aseprite" id="1_iwwb4"]
+[ext_resource type="Script" uid="uid://c3g35denmh52b" path="res://scripts/rituals/elements/RitualElement.cs" id="1_uiob5"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_uiob5")
+Id = "test_element"
+DisplayName = "Test element"
+Description = "Testing oh yeah"
+Symbol = ExtResource("1_iwwb4")
+metadata/_custom_type_script = "uid://c3g35denmh52b"

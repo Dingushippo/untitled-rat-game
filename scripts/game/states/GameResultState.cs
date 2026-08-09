@@ -3,7 +3,7 @@ using Godot;
 
 public class GameResultState : GameState
 {
-    private const string RESULT_SCENE_PATH = "res://scenes/UI/result.tscn";
+    private const string RESULT_SCENE_PATH = "res://scenes/ui/result.tscn";
     private Result _result;
 
     public GameResultState(GameManager owner) : base(owner) { }

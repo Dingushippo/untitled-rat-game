@@ -12,9 +12,9 @@ public partial class RitualEditor : Control
 
     [ExportGroup("UI buttons")]
     [Export] public Button OpenButton;
-    [Export] public Button SaveButton; 
-    [Export] public Button AddCircleButton; 
-    [Export] public Button UndoButton; 
+    [Export] public Button SaveButton;
+    [Export] public Button AddCircleButton;
+    [Export] public Button UndoButton;
     [Export] public Button RedoButton;
 
     [ExportGroup("Ritual metadata edit fields")]
@@ -30,16 +30,21 @@ public partial class RitualEditor : Control
     [Export] public SpinBox ElementSpinbox;
     [Export] public HSlider ElementRadiusSlider;
     [Export] public HSlider AngleOffsetSlider;
+    [Export] public HSlider SymbolScaleSlider;
+    [Export] public HSlider SymbolRotationSlider;
 
     [ExportGroup("Circle editor value labels")]
     [Export] public Label RadiusValueLabel;
     [Export] public Label ElementRadiusValueLabel;
     [Export] public Label AngleOffsetValueLabel;
+    [Export] public Label SymbolScaleValueLabel;
+    [Export] public Label SymbolRotationValueLabel;
 
 
     private RitualResource _currentRitual;
     private string _currentRitualPath;
-    private RitualCircleResource _currentCircle;
+    private RitualCircleResource _currentCircle => _builder.Circle;
+    private RitualCircleBuilder _builder;
 
     public override void _Ready()
     {
@@ -47,7 +52,7 @@ public partial class RitualEditor : Control
         OpenButton.Pressed += OnOpenButtonClick;
         AddCircleButton.Pressed += OnAddCircleClick;
         SaveButton.Pressed += OnSaveButtonClick;
-        
+
         // Circle list
         CircleList.ItemClicked += OnCircleItemClicked;
         CircleList.Clear();
@@ -62,15 +67,20 @@ public partial class RitualEditor : Control
         ElementSpinbox.ValueChanged += UpdateCurrentCircle;
         ElementRadiusSlider.ValueChanged += UpdateCurrentCircle;
         AngleOffsetSlider.ValueChanged += UpdateCurrentCircle;
+        SymbolScaleSlider.ValueChanged += UpdateCurrentCircle;
+        SymbolRotationSlider.ValueChanged += UpdateCurrentCircle;
 
         // File dialog
         Dialog.FileSelected += OnDialogFileSelected;
+
+        // Create builder
+        _builder = new();
     }
 
     private void OnCircleItemClicked(long index, Vector2 atPosition, long mouseButtonIndex)
     {
         RitualCircleResource clicked = (RitualCircleResource)CircleList.GetItemMetadata((int)index);
-        _currentCircle = clicked;
+        _builder.SetCircle(clicked);
         SetCurrentUIElements();
     }
 
@@ -81,23 +91,38 @@ public partial class RitualEditor : Control
 
     private void OnAddCircleClick()
     {
-        _currentCircle = new();
+        _builder.SetCircle(new());
         _currentRitual.RitualCircles.Add(_currentCircle);
-        int index = CircleList.AddItem("circle");
-        CircleList.SetItemMetadata(index, _currentCircle);
+        OnRitualChanged();
+    }
 
+    private void OnRitualChanged()
+    {
+        GD.Print($"Changing ritual: {_currentRitual.RitualCircles.Count}");
+        if (_currentRitual.RitualCircles.Count == 0)
+        {
+            return;
+        }
+        CircleList.Clear();
+        for (int i = 0; i < _currentRitual.RitualCircles.Count; i++)
+        {
+            int index = CircleList.AddItem($"Circle {i + 1}");
+            CircleList.SetItemMetadata(index, _currentCircle);
+        }
         SetCurrentUIElements();
         Renderer.QueueRedraw();
     }
 
     private void OnSaveButtonClick()
     {
-        if (_currentRitual == null) {
+        if (_currentRitual == null)
+        {
             OS.Alert("No ritual resource active");
             return;
-        };
+        }
+        ;
 
-        ResourceSaver.Save(_currentRitual, _currentRitualPath);  
+        ResourceSaver.Save(_currentRitual, _currentRitualPath);
     }
 
     private void OnDialogFileSelected(string filePath)
@@ -107,15 +132,15 @@ public partial class RitualEditor : Control
         if (ResourceLoader.Exists(filePath))
         {
             _currentRitual = ResourceLoader.Load<RitualResource>(filePath);
-        } 
+        }
         else
         {
             string id = filePath.Split("/")[^1].TrimSuffix(".tres");
             _currentRitual = new()
             {
-              Id = id  
+                Id = id
             };
-            ResourceSaver.Save(_currentRitual, filePath);  
+            ResourceSaver.Save(_currentRitual, filePath);
         }
 
         Renderer.RitualResource = _currentRitual;
@@ -128,7 +153,12 @@ public partial class RitualEditor : Control
         NameLineEdit.Text = _currentRitual.DisplayName;
         DescriptionTextEdit.Text = _currentRitual.Description;
 
-        Renderer.QueueRedraw();
+        if (_currentRitual.RitualCircles.Count > 0)
+        {
+            _builder.SetCircle(_currentRitual.RitualCircles[0]);
+        }
+
+        OnRitualChanged();
     }
 
 
@@ -140,6 +170,8 @@ public partial class RitualEditor : Control
         ElementSpinbox.SetValueNoSignal(_currentCircle.NumElements);
         ElementRadiusSlider.SetValueNoSignal(_currentCircle.ElementRadius);
         AngleOffsetSlider.SetValueNoSignal(_currentCircle.AngleOffset);
+        SymbolScaleSlider.SetValueNoSignal(_currentCircle.SymbolScale);
+        SymbolRotationSlider.SetValueNoSignal(_currentCircle.SymbolRotation);
         UpdateCircleValueLabels();
     }
 
@@ -148,15 +180,19 @@ public partial class RitualEditor : Control
         RadiusValueLabel.Text = RadiusSlider.Value.ToString();
         ElementRadiusValueLabel.Text = ElementRadiusSlider.Value.ToString();
         AngleOffsetValueLabel.Text = AngleOffsetSlider.Value.ToString();
+        SymbolScaleValueLabel.Text = SymbolScaleSlider.Value.ToString();
+        SymbolRotationValueLabel.Text = SymbolRotationSlider.Value.ToString();
     }
 
     private void UpdateCurrentCircle(double _)
     {
         if (_currentCircle is null) return;
         _currentCircle.Radius = (float)RadiusSlider.Value;
-        // _currentCircle.NumElements = (int)ElementSpinbox.Value;
         _currentCircle.ElementRadius = (float)ElementRadiusSlider.Value;
         _currentCircle.AngleOffset = (float)Mathf.DegToRad(AngleOffsetSlider.Value);
+        _currentCircle.SymbolScale = (float)SymbolScaleSlider.Value;
+        _currentCircle.SymbolRotation = (float)Mathf.DegToRad(SymbolRotationSlider.Value);
+        _builder.RepositionElements();
         UpdateCircleValueLabels();
         Renderer.QueueRedraw();
     }
