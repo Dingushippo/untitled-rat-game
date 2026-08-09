@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 [GlobalClass]
 public partial class RitualManager : Node
@@ -17,15 +18,10 @@ public partial class RitualManager : Node
         _ritualPool = new(this, GD.Load<PackedScene>(RITUAL_BASE_UID), 10);
         _elementSlotPool = new(this, GD.Load<PackedScene>(ELEMENT_SLOT_UID), 100);
     }
-
-    public RitualElementSlot ProvisionSlot(Vector3 position)
+    public T PrepareRitual<T>(RitualResource resource, Vector3 position) where T : RitualBase
     {
-        return _elementSlotPool.SpawnObject(position, Vector3.Zero) as RitualElementSlot;
-    }
-
-    public void PrepareRitual(RitualResource ritual, Vector3 position)
-    {
-        foreach (RitualCircleResource circle in ritual.RitualCircles)
+        T ritual = _ritualPool.SpawnObject<T>(position);
+        foreach (RitualCircleResource circle in resource.RitualCircles)
         {
             foreach (RitualElement element in circle.RitualElements)
             {
@@ -38,9 +34,9 @@ public partial class RitualManager : Node
                 );
                 slot.RitualCircle = circle;
                 slot.SetElement(element);
+                ritual.Slots.Add(slot);
             }
         }
+        return ritual;
     }
-
-
 }

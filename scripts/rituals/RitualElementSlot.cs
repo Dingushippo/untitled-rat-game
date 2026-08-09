@@ -10,8 +10,8 @@ public partial class RitualElementSlot : Node3D, ICatchArea //, IPooledObject
     [Export] public WorkSlot WorkSlot;
     [Export] public RitualCircleResource RitualCircle;
     [Export] public RitualElement Element;
-    public bool IsActive { get; set; }
 
+    public Action Fulfilled;
     public float ColliderTopY { get; set; } = 0.1f;
     private Inventory _inventory;
 
@@ -32,11 +32,14 @@ public partial class RitualElementSlot : Node3D, ICatchArea //, IPooledObject
         {
             Radius = RitualCircle.ElementRadius + COLLIDER_MARGIN,
         };
+
+        WorkSlot.Entered += () => Fulfilled?.Invoke();
     }
 
     public void OnDespawn()
     {
         CatchAreaCollider.Disabled = true;
+        WorkSlot.Entered -= () => Fulfilled?.Invoke();
     }
 
     public bool TryGetThrowTarget(Vector3 from, Rat rat, out ThrowTarget target)
