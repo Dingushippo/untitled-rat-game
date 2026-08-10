@@ -50,12 +50,12 @@ public partial class HolyWaterLeak : Node3D, ICatchArea, IRitualInteract
 
     public void OnRitualComplete(RitualBase ritual)
     {
-        SetDisruptStatus(false);
-        // To ensure particles are done playing before removing scene
-
         Tween removeTween = CreateTween();
         if (Particles.Emitting)
+        {
+            SetDisruptStatus(false);
             removeTween.TweenInterval(Particles.Lifetime);
+        }
         removeTween.TweenCallback(Callable.From(() => PopOutRat()));
         removeTween.TweenCallback(Callable.From(() => QueueFree()));
     }
