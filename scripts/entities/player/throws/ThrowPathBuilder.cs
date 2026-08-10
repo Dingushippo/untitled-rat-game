@@ -36,14 +36,8 @@ public sealed class ThrowPathBuilder
     }
 
 
-    public ThrowPath Build(ThrowTarget target = default, bool homing = false, Vector3 handOffset = new(), float blendDistance = 0)
+    public ThrowPath Build(ThrowTarget target = default, bool homing = false)
     {
-        // Smoothing pass
-        for (int i = 0; i < _points.Count; i++)
-        {
-            float d = Mathf.InverseLerp(0, _points.Count, i);
-            _points[i] += handOffset * (1f - Mathf.SmoothStep(0f, blendDistance, d));
-        }
         return new(
             _points.ToArray(),
             _speeds.ToArray(),

@@ -4,6 +4,10 @@ public partial class RatThrowTuning : Node3D
 {
     [Export] public Player Player;
     [Export] public Rat rat;
+    [Export] public ThrowTuning throwTuning;
+    [Export] public ThrowPreviewTuning throwPreviewTuning;
+    [Export] public RatFlightTuning ratFlightTuning;
+    [Export] public PlayerCameraTuning playerCameraTuning;
 
     private float _ratFlyCounter = 0;
     private Vector3 _startingPosition;

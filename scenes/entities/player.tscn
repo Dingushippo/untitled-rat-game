@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/entities/player/Player.cs" id="1_dqkch"]
 [ext_resource type="Script" uid="uid://baucng1irmb5g" path="res://scripts/entities/player/abilities/ThrowPreview.cs" id="3_b6tgf"]
+[ext_resource type="Resource" uid="uid://g8o35bffx81c" path="res://resources/tuning/player_camera_tuning.tres" id="3_saib0"]
 [ext_resource type="Resource" uid="uid://dxecysjoqqgqs" path="res://resources/tuning/throw_preview_tuning.tres" id="4_73kkf"]
 [ext_resource type="Script" uid="uid://5vdd32afrq83" path="res://scripts/entities/player/abilities/ThrowComponent.cs" id="4_dqkch"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
@@ -25,7 +26,7 @@ script = ExtResource("1_dqkch")
 Camera = NodePath("Camera3D")
 Collider = NodePath("CollisionShape3D")
 VaultRaycast = NodePath("VaultRaycast")
-ThrowComponent = NodePath("Camera3D/ThrowComponent")
+ThrowComponent = NodePath("Camera3D/hand/ThrowComponent")
 JumpForce = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
@@ -37,17 +38,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 script = ExtResource("4_fjrip")
 RotationTarget = NodePath("..")
 DebugAimMarker = true
+Tuning = ExtResource("3_saib0")
 
-[node name="ThrowComponent" type="Node3D" parent="Camera3D" unique_id=1814457487 node_paths=PackedStringArray("Player", "ThrowPreview", "HandNode")]
-transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0, -0.42, -0.87)
+[node name="hand" parent="Camera3D" unique_id=320221158 instance=ExtResource("10_5ki56")]
+transform = Transform3D(-4.371139e-08, 0, 1, -0.64742446, 0.76212966, -2.8299821e-08, -0.76212966, -0.64742446, -3.3313746e-08, 0.6108414, -0.44165158, -0.8714543)
+
+[node name="ThrowComponent" type="Node3D" parent="Camera3D/hand" unique_id=1814457487 node_paths=PackedStringArray("Player", "ThrowPreview", "HandNode")]
+transform = Transform3D(-4.3711378e-08, -0.6474243, -0.76212966, 0, 0.7621295, -0.64742446, 0.99999976, -2.8299814e-08, -3.3313746e-08, 0, 0, 0)
 script = ExtResource("4_dqkch")
-Player = NodePath("../..")
+Player = NodePath("../../..")
 ThrowPreview = NodePath("ThrowPreview")
-HandNode = NodePath("../hand")
+HandNode = NodePath("..")
 ThrowType = ExtResource("7_throw")
 Tuning = ExtResource("8_tuning")
 
-[node name="ThrowPreview" type="Node3D" parent="Camera3D/ThrowComponent" unique_id=1639316380]
+[node name="ThrowPreview" type="Node3D" parent="Camera3D/hand/ThrowComponent" unique_id=1639316380]
 transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1, -0.86460894, 0.41891778, 0.86996555)
 script = ExtResource("3_b6tgf")
 Tuning = ExtResource("4_73kkf")
@@ -55,9 +60,6 @@ LiveTuning = true
 DotShader = ExtResource("5_n5sgd")
 ReticleShader = ExtResource("5_73kkf")
 MaxDots = 3000
-
-[node name="hand" parent="Camera3D" unique_id=320221158 instance=ExtResource("10_5ki56")]
-transform = Transform3D(-4.371139e-08, 0, 1, -0.64742446, 0.76212966, -2.8299821e-08, -0.76212966, -0.64742446, -3.3313746e-08, 0.6108414, -0.44165158, -0.8714543)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

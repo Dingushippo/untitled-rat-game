@@ -19,8 +19,6 @@ public readonly struct ThrowContext
         Rat rat,
         Vector3 origin,
         Vector3 direction,
-        Vector3 handOffset,
-        float blendDistance,
         float force,
         Vector3 gravity,
         float ascent,
@@ -33,8 +31,6 @@ public readonly struct ThrowContext
         Rat = rat;
         Origin = origin;
         Direction = direction;
-        HandOffset = handOffset;
-        BlendDistance = blendDistance;
         Force = force;
         Gravity = gravity;
         AscentGravityScale = ascent;

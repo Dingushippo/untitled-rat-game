@@ -13,6 +13,9 @@ public partial class ThrowTuning : Resource
 
     [ExportGroup("Aim")]
     [Export(PropertyHint.Range, "-45,45,0.5")] public float AngleAdjust = 0f;
+    [Export(PropertyHint.Range, "0,1,0.1")] public float AimGain = 1f;
+    [Export(PropertyHint.Range, "0,50,1")] public float MaxAimCorrectionDegrees = 10f;
+    [Export(PropertyHint.Range, "0,50,1")] public float MinAimDistance = 2f;
 
     [ExportGroup("Path Simulation")]
     [Export(PropertyHint.Range, "0.005,0.1,0.005")] public float Step = 0.02f;
@@ -24,8 +27,4 @@ public partial class ThrowTuning : Resource
 
     /// <summary>Downward speed at which gravity reaches its full descent scale.</summary>
     [Export(PropertyHint.Range, "0.1,20,0.1")] public float DescentBlendSpeed = 4f;
-
-    [ExportGroup("Visual adjustment")]
-    [Export] public float HandBlendDistance = 3f;
-
 }

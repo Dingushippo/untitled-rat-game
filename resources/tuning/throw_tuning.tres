@@ -4,11 +4,13 @@
 
 [resource]
 script = ExtResource("1_tuning")
-ThrowForce = 40.0
-MaxThrowForce = 75.0
+ThrowForce = 35.4
+MaxThrowForce = 50.1
 ChargeDuration = 0.8
 ChargeStartDelay = 0.2
-AngleAdjust = 10.0
+AngleAdjust = 7.0
+AimGain = 0.5
+MaxAimCorrectionDegrees = 50.0
 Step = 0.049999999999999996
-MaxPoints = 1000
-HandBlendDistance = 1.0
+AscentGravityScale = 0.9
+DescentGravityScale = 2.0

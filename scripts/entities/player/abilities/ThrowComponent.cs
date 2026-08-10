@@ -16,14 +16,20 @@ public partial class ThrowComponent : Node3D
     private ThrowPath _currentPath;
     private bool _preview = false;
     private bool _isCharging = false;
+    private float _aimYaw = 0f;
+
     public override void _Ready()
     {
         Tuning ??= new ThrowTuning();
 
         _gravity = Player.GetGravity();
         _currentForce = Tuning.ThrowForce;
+        Tuning.Changed += () =>
+        {
+            GD.Print("Set force");
+            _currentForce = Tuning.ThrowForce;
+        };
     }
-
 
     public override void _PhysicsProcess(double delta)
     {
@@ -32,6 +38,19 @@ public partial class ThrowComponent : Node3D
             using (Profiler.Sample("throw.simulate"))
             {
                 _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
+                if (!_currentPath.Homing && _currentPath.ThrowTarget.IsValid && _currentPath.Points.Length >= 2)
+                {
+                    Vector3 right = Player.Camera.GlobalBasis.X;
+                    Vector3 toEnd = _currentPath.End - Player.Camera.GlobalPosition;
+                    float lateral = right.Dot(toEnd);
+                    float forward = Mathf.Max(toEnd.Dot(-Player.Camera.GlobalBasis.Z), Tuning.MinAimDistance);
+                    _aimYaw = Mathf.Clamp(
+                        _aimYaw - Tuning.AimGain * Mathf.Atan2(lateral, forward),
+                        -Mathf.DegToRad(Tuning.MaxAimCorrectionDegrees),
+                        -Mathf.DegToRad(Tuning.MaxAimCorrectionDegrees)
+                    );
+                    _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
+                }
             }
             ThrowPreview.ShowPreview(_currentPath);
         }
@@ -45,11 +64,7 @@ public partial class ThrowComponent : Node3D
     public ThrowContext BuildContext(Rat rat) => new(
         rat,
         GlobalPosition,
-        (-Player.Camera.GlobalBasis.Z).Rotated(Vector3.Right, Mathf.DegToRad(Tuning.AngleAdjust)),
-        Player.Camera.GlobalBasis.X * Player.Camera.GlobalBasis.X.Dot(
-            HandNode.GlobalPosition - Player.Camera.GlobalPosition
-        ),
-        Tuning.HandBlendDistance,
+        (-Player.Camera.GlobalBasis.Z).Rotated(Vector3.Right, Mathf.DegToRad(Tuning.AngleAdjust)).Rotated(Vector3.Up, _aimYaw).Normalized(),
         _currentForce / rat.RatDef.Mass,
         _gravity,
         Tuning.AscentGravityScale,
@@ -116,11 +131,13 @@ public partial class ThrowComponent : Node3D
     public void Enable()
     {
         _preview = true;
+        _aimYaw = 0f;
     }
 
     public void Reset()
     {
         _preview = false;
+        _aimYaw = 0f;
         ResetCharge();
     }
 }

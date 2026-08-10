@@ -7,23 +7,8 @@ public partial class PlayerCamera : Camera3D
 {
     [Export] public Node3D RotationTarget;
     [Export] public bool DebugAimMarker = false;
-    [Export] public float Sensitivity = 0.15f; // degrees per pixel
-    [Export] public float MinPitch = -89f;
-    [Export] public float MaxPitch = 89f;
+    [Export] public PlayerCameraTuning Tuning;
 
-    [ExportGroup("Throw Charge")]
-    [Export] public float ChargePitchDegrees = 1.2f;
-    [Export] public float ChargePullDistance = 0.05f;
-    [Export] public float ChargeFovZoom = 6f;
-    [Export] public float ChargeReturnDuration = 0.18f;
-
-    [ExportGroup("Throw Impact")]
-    [Export] public float ImpactPitchDegrees = 2.2f;
-    [Export] public float ImpactRollDegrees = 1.4f;
-    [Export] public float ImpactPunchDistance = 0.07f;
-    [Export] public float ImpactFovPunch = 7f;
-    [Export] public float MinImpactScale = 0.3f;
-    [Export(PropertyHint.Range, "0,0.5")] public float ImpactAttackRatio = 0.18f;
     public float YOffset = 0f;
 
     private float _yawDeg = 0f;
@@ -97,10 +82,10 @@ public partial class PlayerCamera : Camera3D
         {
             if (!_cameraEnabled) return;
 
-            RotationTarget.RotateY(-mm.Relative.X * Sensitivity * 0.01f);
+            RotationTarget.RotateY(-mm.Relative.X * Tuning.Sensitivity * 0.01f);
 
             _pitchRad = Mathf.Clamp(
-                _pitchRad - mm.Relative.Y * Sensitivity * 0.01f,
+                _pitchRad - mm.Relative.Y * Tuning.Sensitivity * 0.01f,
                 Mathf.DegToRad(-80),
                 Mathf.DegToRad(80)
             );
@@ -132,10 +117,10 @@ public partial class PlayerCamera : Camera3D
 
         // Wind-up: pull back, tilt down and narrow the FOV to build tension.
         CamPose target = new(
-            -Mathf.DegToRad(ChargePitchDegrees),
+            -Mathf.DegToRad(Tuning.ChargePitchDegrees),
             0f,
-            ChargePullDistance,
-            -ChargeFovZoom
+            Tuning.ChargePullDistance,
+            -Tuning.ChargeFovZoom
         );
 
         _cameraTween?.Kill();
@@ -153,7 +138,7 @@ public partial class PlayerCamera : Camera3D
         _cameraTween.SetParallel(true);
         _cameraTween.SetEase(Tween.EaseType.Out);
         _cameraTween.SetTrans(Tween.TransitionType.Sine);
-        TweenPose(CurrentPose, RestPose, ChargeReturnDuration);
+        TweenPose(CurrentPose, RestPose, Tuning.ChargeReturnDuration);
     }
 
     private void OnCameraImpact(params object[] args)
@@ -165,17 +150,17 @@ public partial class PlayerCamera : Camera3D
 
     private void PlayImpact(float charge, float duration)
     {
-        float scale = Mathf.Lerp(MinImpactScale, 1f, Mathf.Clamp(charge, 0f, 1f));
+        float scale = Mathf.Lerp(Tuning.MinImpactScale, 1f, Mathf.Clamp(charge, 0f, 1f));
 
         // Release: snap forward and up, roll slightly, widen the FOV.
         CamPose peak = new(
-            Mathf.DegToRad(ImpactPitchDegrees) * scale,
-            -Mathf.DegToRad(ImpactRollDegrees) * scale,
-            -ImpactPunchDistance * scale,
-            ImpactFovPunch * scale
+            Mathf.DegToRad(Tuning.ImpactPitchDegrees) * scale,
+            -Mathf.DegToRad(Tuning.ImpactRollDegrees) * scale,
+            -Tuning.ImpactPunchDistance * scale,
+            Tuning.ImpactFovPunch * scale
         );
 
-        float attack = duration * ImpactAttackRatio;
+        float attack = duration * Tuning.ImpactAttackRatio;
         float recover = Mathf.Max(duration - attack, 0.01f);
 
         _cameraTween?.Kill();

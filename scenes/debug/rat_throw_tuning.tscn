@@ -1,8 +1,12 @@
 [gd_scene format=3 uid="uid://b1v3jifhrbck6"]
 
 [ext_resource type="Script" uid="uid://blgc2rap0yq7x" path="res://scripts/debug/RatThrowTuning.cs" id="1_c6ehr"]
+[ext_resource type="Resource" uid="uid://b2dawaso2loby" path="res://resources/tuning/throw_tuning.tres" id="2_sbcbh"]
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="2_vlfn6"]
 [ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/entities/rat.tscn" id="3_j5j5i"]
+[ext_resource type="Resource" uid="uid://dxecysjoqqgqs" path="res://resources/tuning/throw_preview_tuning.tres" id="3_rbl7j"]
+[ext_resource type="Resource" uid="uid://cxbl4uyax4f4t" path="res://resources/tuning/rat_flight_tuning.tres" id="4_n1ft2"]
+[ext_resource type="Resource" uid="uid://g8o35bffx81c" path="res://resources/tuning/player_camera_tuning.tres" id="5_rbl7j"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c6ehr"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -24,6 +28,10 @@ albedo_color = Color(0.15686275, 0.4117647, 0.3882353, 1)
 script = ExtResource("1_c6ehr")
 Player = NodePath("Player")
 rat = NodePath("Rat")
+throwTuning = ExtResource("2_sbcbh")
+throwPreviewTuning = ExtResource("3_rbl7j")
+ratFlightTuning = ExtResource("4_n1ft2")
+playerCameraTuning = ExtResource("5_rbl7j")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=306537898]
 environment = SubResource("Environment_j5j5i")
