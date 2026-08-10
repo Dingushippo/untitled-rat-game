@@ -7,6 +7,7 @@ public partial class RitualRenderer : Node2D
 {
     [Export] public RitualResource RitualResource;
     [Export] public float LineThickness = 1f;
+    [Export] public Color ColorOverride = Colors.White;
     [ExportToolButton("Redraw")] public Callable RedrawButton => Callable.From(() => QueueRedraw());
 
     private Vector2 _center = Vector2.Zero;
@@ -47,19 +48,19 @@ public partial class RitualRenderer : Node2D
         float elementAngleOffset = Mathf.Atan2(circle.ElementRadius, circle.Radius);
         float startAngle = index * angleChange + circle.AngleOffset + elementAngleOffset;
         float endAngle = index * angleChange + (angleChange - elementAngleOffset) + circle.AngleOffset;
-        DrawArc(Vector2.Zero, circle.Radius, startAngle, endAngle, points, Colors.White, LineThickness);
+        DrawArc(Vector2.Zero, circle.Radius, startAngle, endAngle, points, ColorOverride, LineThickness);
     }
 
     private void DrawElementCircle(RitualCircleResource circle, int index)
     {
         RitualElement element = circle.RitualElements[index];
         DrawSetTransform(element.Position, 0);
-        DrawCircle(Vector2.Zero, circle.ElementRadius, Colors.White, false, LineThickness);
+        DrawCircle(Vector2.Zero, circle.ElementRadius, ColorOverride, false, LineThickness);
 
         if (element.Symbol != null)
         {
             DrawSetTransform(element.Position, element.Rotation, Vector2.One * circle.SymbolScale);
-            DrawTexture(element.Symbol, -new Vector2(32, 32));
+            DrawTexture(element.Symbol, -new Vector2(32, 32), ColorOverride);
         }
     }
 }

@@ -9,6 +9,7 @@ public partial class RitualManagerNode : Node
     public static RitualManagerNode Instance => _instance;
     private ObjectPoolComponent _ritualPool;
     private ObjectPoolComponent _elementSlotPool;
+    private RitualBase _currentHandling;
 
     public override void _Ready()
     {
@@ -18,7 +19,14 @@ public partial class RitualManagerNode : Node
         _ritualPool = new(this, GD.Load<PackedScene>(RITUAL_BASE_UID), 10);
     }
 
-    public T PrepareRitual<T>(RitualResource resource, Vector3 position) where T : RitualBase
+    public T InstanciateRitualPreview<T>(RitualResource resource, Vector3 position) where T : RitualBase
+    {
+        T ritual = _ritualPool.SpawnObject<T>(position);
+        ritual.RitualResource = resource;
+        return ritual;
+    }
+
+    public T PlaceRitual<T>(RitualResource resource, Vector3 position) where T : RitualBase
     {
         T ritual = _ritualPool.SpawnObject<T>(position);
         Array<RitualElementSlot> slots = new();

@@ -1,9 +1,11 @@
 using Godot;
 using Godot.Collections;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 [GlobalClass, Tool]
-public abstract partial class RitualBase : Node3D, IPooledObject
+public partial class RitualBase : Node3D, IPooledObject
 {
     private const float DRAW_FREQ = 60f;
     [Export] public SubViewport Viewport;
@@ -18,8 +20,9 @@ public abstract partial class RitualBase : Node3D, IPooledObject
         set
         {
             _slots = value;
-            foreach (RitualElementSlot slot in Slots)
-                slot.Fulfilled += CheckSlotsFulfilled;
+            // foreach (RitualElementSlot slot in Slots)
+                // slot.Fulfilled += CheckSlotsFulfilled;
+            Renderer.QueueRedraw();
         }
     }
 
@@ -27,6 +30,9 @@ public abstract partial class RitualBase : Node3D, IPooledObject
     private Action Started;
     private Action Interrupted;
     private float timer = 0;
+    private bool _isActive;
+    private readonly List<Tween> _animateTween = new();
+
     public override void _Ready()
     {
         Renderer.Position = Viewport.Size / 2;
@@ -34,11 +40,19 @@ public abstract partial class RitualBase : Node3D, IPooledObject
 
     protected private void IsCompleted()
     {
+        _isActive = false;
         Completed?.Invoke();
+
+        foreach (RitualElementSlot slot in Slots)
+        {
+            slot.WorkSlot.Occupant.ForceState("follow");
+        }
     }
 
     protected private void IsStarted()
     {
+        AnimateRats();
+        _isActive = true;
         Started?.Invoke();
     }
 
@@ -49,12 +63,14 @@ public abstract partial class RitualBase : Node3D, IPooledObject
 
     public override void _Process(double delta)
     {
-        if (timer > DRAW_FREQ)
+        if (!_isActive) return;
+        if (timer > RitualResource.RitualTime)
         {
             timer += (float)delta;
             return;
         }
-        Renderer.QueueRedraw();
+        IsCompleted();
+        // Renderer.QueueRedraw();
     }
 
     public void OnSpawn()
@@ -74,9 +90,25 @@ public abstract partial class RitualBase : Node3D, IPooledObject
 
         foreach (RitualElementSlot slot in Slots)
         {
-            slot.Fulfilled -= CheckSlotsFulfilled;
+            // slot.Fulfilled -= CheckSlotsFulfilled;
         }
     }
 
-    protected abstract void CheckSlotsFulfilled();
+    public void AnimateRats()
+    {
+        float rotation = Mathf.DegToRad(30);
+        foreach (Rat rat in Slots.Select(x => x.WorkSlot.Occupant).ToList())
+        {
+            float startRotation = rat.Rotation.Y;
+            Tween tween = CreateTween();
+            tween.SetLoops();
+            tween.TweenProperty(rat, "rotation:y", startRotation + rotation / 2, 0.2f);
+            tween.TweenProperty(rat, "rotation:y", startRotation - rotation / 2, 0.2f);
+            _animateTween.Add(tween);
+        }
+    }
+
+    public void StopAnimation() => _animateTween.ForEach(x => x.Kill());
+
+    // protected abstract void CheckSlotsFulfilled();
 }
