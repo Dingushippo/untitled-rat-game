@@ -18,5 +18,11 @@ public class HandRitualState : PlayerState
             _player.RitualComponent.BuildAndPlace();
             fsm.ChangeState("empty", this);
         }
+
+        if (@event.IsActionPressed("ritual") && _player.RitualComponent.ValidPosition)
+        {
+            _player.RitualComponent.Cancel();
+            fsm.ChangeState("empty", this);
+        }
     }
 }

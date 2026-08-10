@@ -82,7 +82,7 @@ process_material = SubResource("ParticleProcessMaterial_pso3n")
 draw_pass_1 = SubResource("SphereMesh_7a26n")
 
 [node name="CatchArea" type="Area3D" parent="." unique_id=1147710214]
-collision_layer = 32
+collision_layer = 96
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CatchArea" unique_id=1460221062]

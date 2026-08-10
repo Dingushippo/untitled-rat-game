@@ -1,7 +1,8 @@
 using Godot;
 using System;
+using System.Linq;
 
-public partial class HolyWaterLeak : Node3D, ICatchArea
+public partial class HolyWaterLeak : Node3D, ICatchArea, IRitualInteract
 {
     [Export] public WorkSlot Slot;
     [Export] public GpuParticles3D Particles;
@@ -22,7 +23,6 @@ public partial class HolyWaterLeak : Node3D, ICatchArea
         EventBus.Publish(Event.SetDisruptProductionInRange, GlobalPosition, DisruptionRadius, disrupting);
     }
 
-
     public bool TryGetThrowTarget(Vector3 from, Rat rat, out ThrowTarget target)
     {
         target = default;
@@ -31,5 +31,29 @@ public partial class HolyWaterLeak : Node3D, ICatchArea
 
         target = ThrowTarget.Slot(Slot);
         return true;
+    }
+
+    public bool TryGetRitualPosition(RitualBase ritual, out Vector3 position)
+    {
+        position = default;
+        if (!IsRitualValidFor(ritual.RitualResource.Id))
+            return false;
+        position = GlobalPosition;
+        return true;
+    }
+
+    public bool IsRitualValidFor(string ritualId)
+    {
+        string[] validRituals = ["sealing_ritual"];
+        return validRituals.Contains(ritualId);
+    }
+
+    public void OnRitualComplete(RitualBase ritual)
+    {
+        SetDisruptStatus(false);
+        // To ensure particles are done playing before removing scene
+        Tween removeTween = CreateTween();
+        removeTween.TweenInterval(Particles.Lifetime);
+        removeTween.TweenCallback(Callable.From(() => QueueFree()));
     }
 }

@@ -13,7 +13,7 @@ public class RitualCompletedState : RitualState
             slot.WorkSlot.Occupant.ForceState("follow");
         }
         // Play exit animation, and then despawn the parent
-
+        _ritual.OnComplete?.Invoke(_ritual);
         RitualManagerNode.Instance.DisposeRitual(_ritual);
     }
     public override void Exit() { }

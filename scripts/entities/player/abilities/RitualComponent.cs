@@ -36,9 +36,10 @@ public partial class RitualComponent
         if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, _collisionMask))
         {
             Vector3 position;
-            if ((GodotObject)result["collider"] is IRitualInteract i && i.TryGetRitualPosition(_currentRitual, out position))
+            if ((Node)result["collider"] is Area3D a && a.GetParent() is IRitualInteract i && i.TryGetRitualPosition(_currentRitual, out position))
             {
                 ritualInteract = i;
+                position += Vector3.Up * 0.05f;
             }
             else
             {
@@ -81,6 +82,12 @@ public partial class RitualComponent
                 return false;
         }
         return true;
+    }
+
+    public void Cancel()
+    {
+        RitualManagerNode.Instance.DisposeRitual(_currentRitual);
+        _currentRitual = null;
     }
 
     private void AddTriggers()
