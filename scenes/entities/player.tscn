@@ -7,10 +7,10 @@
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="Shader" uid="uid://cm45fdcgrtfgi" path="res://shaders/throw_reticle.gdshader" id="5_73kkf"]
 [ext_resource type="Shader" uid="uid://co3p8kicpdx7n" path="res://shaders/throw_dot.gdshader" id="5_n5sgd"]
-[ext_resource type="PackedScene" uid="uid://pa2nq11ewd5s" path="res://scenes/entities/hand_controller.tscn" id="6_tuyoq"]
 [ext_resource type="PackedScene" uid="uid://bu8fc86onllmh" path="res://scenes/ui/hud.tscn" id="7_ss7kx"]
 [ext_resource type="Resource" uid="uid://ca2tgeh8qeapw" path="res://resources/throws/simple_throw.tres" id="7_throw"]
 [ext_resource type="Resource" uid="uid://b2dawaso2loby" path="res://resources/tuning/throw_tuning.tres" id="8_tuning"]
+[ext_resource type="PackedScene" uid="uid://dle5hwutaa6jp" path="res://assets/hand.glb" id="10_5ki56"]
 [ext_resource type="Script" uid="uid://c87dhm675xypo" path="res://scripts/qte/QteManager.cs" id="12_5ki56"]
 [ext_resource type="PackedScene" uid="uid://bda3cwi7p7irq" path="res://scenes/qte/spam_qte.tscn" id="13_saib0"]
 
@@ -37,14 +37,12 @@ script = ExtResource("4_fjrip")
 RotationTarget = NodePath("..")
 DebugAimMarker = true
 
-[node name="HandController" parent="Camera3D" unique_id=309927190 instance=ExtResource("6_tuyoq")]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0, 0, 0)
-
-[node name="ThrowComponent" type="Node3D" parent="Camera3D" unique_id=1814457487 node_paths=PackedStringArray("Player", "ThrowPreview")]
-transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0.86460876, -0.41891766, -0.86996555)
+[node name="ThrowComponent" type="Node3D" parent="Camera3D" unique_id=1814457487 node_paths=PackedStringArray("Player", "ThrowPreview", "HandNode")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 1, 0, -0.42, -0.87)
 script = ExtResource("4_dqkch")
 Player = NodePath("../..")
 ThrowPreview = NodePath("ThrowPreview")
+HandNode = NodePath("../hand")
 ThrowType = ExtResource("7_throw")
 Tuning = ExtResource("8_tuning")
 
@@ -56,6 +54,9 @@ LiveTuning = true
 DotShader = ExtResource("5_n5sgd")
 ReticleShader = ExtResource("5_73kkf")
 MaxDots = 500
+
+[node name="hand" parent="Camera3D" unique_id=320221158 instance=ExtResource("10_5ki56")]
+transform = Transform3D(-4.371139e-08, 0, 1, -0.64742446, 0.76212966, -2.8299821e-08, -0.76212966, -0.64742446, -3.3313746e-08, 0.6108414, -0.44165158, -0.8714543)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

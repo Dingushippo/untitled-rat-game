@@ -7,6 +7,7 @@ public partial class ThrowComponent : Node3D
 {
     [Export] public Player Player;
     [Export] public ThrowPreview ThrowPreview;
+    [Export] public Node3D HandNode;
     [Export] public ThrowType ThrowType;
     [Export] public ThrowTuning Tuning;
 
@@ -44,8 +45,11 @@ public partial class ThrowComponent : Node3D
     public ThrowContext BuildContext(Rat rat) => new(
         rat,
         GlobalPosition,
-        -Player.Camera.GlobalBasis.Z + new Vector3(0, Mathf.DegToRad(Tuning.AngleAdjust), 0),
-        // -Player.Camera.GlobalBasis.Z.Rotated(),
+        (-Player.Camera.GlobalBasis.Z).Rotated(Vector3.Up, Mathf.DegToRad(Tuning.AngleAdjust)),
+        Player.Camera.GlobalBasis.X * Player.Camera.GlobalBasis.X.Dot(
+            HandNode.GlobalPosition - Player.Camera.GlobalPosition
+        ),
+        Tuning.HandBlendDistance,
         _currentForce / rat.RatDef.Mass,
         _gravity,
         Tuning.AscentGravityScale,

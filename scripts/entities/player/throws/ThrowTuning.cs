@@ -25,4 +25,7 @@ public partial class ThrowTuning : Resource
     /// <summary>Downward speed at which gravity reaches its full descent scale.</summary>
     [Export(PropertyHint.Range, "0.1,20,0.1")] public float DescentBlendSpeed = 4f;
 
+    [ExportGroup("Visual adjustment")]
+    [Export] public float HandBlendDistance = 3f;
+
 }

@@ -4,7 +4,8 @@
 
 [resource]
 script = ExtResource("1_tuning")
-ThrowForce = 45.0
-MaxThrowForce = 70.0
+ThrowForce = 19.8
+MaxThrowForce = 36.0
 ChargeDuration = 0.8
 ChargeStartDelay = 0.2
+HandBlendDistance = 20.0

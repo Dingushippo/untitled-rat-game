@@ -46,6 +46,7 @@ public partial class SimpleThrow : ThrowType
 
         Vector3 position = ctx.Origin;
         Vector3 velocity = ctx.Direction * ctx.Force;
+        // Vector3 handOffset = 
 
         int bounces = 0;
         float carry = 0f;
@@ -74,7 +75,7 @@ public partial class SimpleThrow : ThrowType
                 {
                     path.Add(hitPosition, velocity.Length());
                     bool isHoming = HomeTo(ctx, path, hitPosition, velocity, target.Position, ApproachClearance(ctx, hitPosition, target));
-                    return path.Build(target, homing: isHoming);
+                    return path.Build(target, homing: isHoming, ctx.HandOffset, ctx.BlendDistance);
                 }
                 // Nothing to aim at here, so pass through the trigger and let the facility's own body produce the bounce instead of the catch volume
                 if (!Utils.Raycast(ctx.Rat, hitPosition, next, out hit, PhysicsLayers.WORLD, collideWithAreas: false))
@@ -120,7 +121,7 @@ public partial class SimpleThrow : ThrowType
         if (!settled)
             path.ExitVelocity = velocity;
 
-        return path.Build();
+        return path.Build(handOffset: ctx.HandOffset, blendDistance: ctx.BlendDistance);
     }
 
     /// <summary>

@@ -10,7 +10,7 @@ public class RatGrabState : RatState
     public override void Enter(State previous = null)
     {
         _prevParent = _rat.GetParent();
-        _rat.GlobalPosition = _player.ThrowComponent.GlobalPosition;
+        _rat.GlobalPosition = _player.ThrowComponent.HandNode.GlobalPosition;
         _rat.Reparent(_player.ThrowComponent);
         _rat.Collider.Disabled = true;
         _rat.InteractArea?.SetActive(false);
