@@ -85,7 +85,10 @@ public partial class Player : CharacterBody3D
         if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.Key1)
         {
             RitualResource res = ResourceLoader.Load<RitualResource>("uid://c1e6c1npwbqxi");
-            RitualManagerNode.Instance.PlaceRitual<SlotsFilledRitual>(res, GlobalPosition + Vector3.Up * 0.1f);
+            RitualBase ritual = RitualManagerNode.Instance.InstanciateRitualPreview(res, GlobalPosition + Vector3.Up * 0.1f);
+            RitualManagerNode.Instance.PlaceRitual(ritual);
+            ritual.Triggers.Add(new SlotsFilledTrigger(ritual.Slots));
+            ritual.SetIdle();
         }
     }
 

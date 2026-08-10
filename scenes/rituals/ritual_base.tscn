@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b2h3kmtker20h"]
 
-[ext_resource type="Script" uid="uid://3uddr2em027f" path="res://scripts/rituals/types/SlotsFilledRitual.cs" id="1_as4cw"]
+[ext_resource type="Script" uid="uid://dxke235cyh250" path="res://scripts/rituals/RitualBase.cs" id="1_as4cw"]
 [ext_resource type="Script" uid="uid://bbhv2dylcx5dh" path="res://scripts/rituals/RitualRenderer.cs" id="1_jiqhk"]
 [ext_resource type="Resource" uid="uid://c1e6c1npwbqxi" path="res://resources/rituals/sealing_ritual.tres" id="3_jiqhk"]
 

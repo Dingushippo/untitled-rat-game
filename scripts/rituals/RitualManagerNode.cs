@@ -19,35 +19,42 @@ public partial class RitualManagerNode : Node
         _ritualPool = new(this, GD.Load<PackedScene>(RITUAL_BASE_UID), 10);
     }
 
-    public T InstanciateRitualPreview<T>(RitualResource resource, Vector3 position) where T : RitualBase
+    public RitualBase InstanciateRitualPreview(RitualResource resource, Vector3 position)
     {
-        T ritual = _ritualPool.SpawnObject<T>(position);
+        RitualBase ritual = _ritualPool.SpawnObject<RitualBase>(position);
         ritual.RitualResource = resource;
         return ritual;
     }
 
-    public T PlaceRitual<T>(RitualResource resource, Vector3 position) where T : RitualBase
+    public void PlaceRitual(RitualBase ritual)
     {
-        T ritual = _ritualPool.SpawnObject<T>(position);
         Array<RitualElementSlot> slots = new();
-        foreach (RitualCircleResource circle in resource.RitualCircles)
+        foreach (RitualCircleResource circle in ritual.RitualResource.RitualCircles)
         {
             foreach (RitualElement element in circle.RitualElements)
             {
-                RitualElementSlot slot = _elementSlotPool.SpawnObject<RitualElementSlot>(position);
+                RitualElementSlot slot = _elementSlotPool.SpawnObject<RitualElementSlot>(ritual.GlobalPosition);
 
                 slot.Position = new Vector3(
-                    position.X + element.Position.X / 100f,
-                    position.Y,
-                    position.Z + element.Position.Y / 100f
+                    ritual.GlobalPosition.X + element.Position.X / 100f,
+                    ritual.GlobalPosition.Y,
+                    ritual.GlobalPosition.Z + element.Position.Y / 100f
                 );
                 slot.RitualCircle = circle;
-                slot.LookAt(position);
+                slot.LookAt(ritual.GlobalPosition);
                 slot.SetElement(element);
                 slots.Add(slot);
             }
         }
         ritual.Slots = slots;
-        return ritual;
+    }
+
+    public void DisposeRitual(RitualBase ritual)
+    {
+        foreach (RitualElementSlot slot in ritual.Slots)
+        {
+            _elementSlotPool.DespawnObject(slot);
+        }
+        _ritualPool.DespawnObject(ritual);
     }
 }

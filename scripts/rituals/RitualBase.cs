@@ -12,8 +12,9 @@ public partial class RitualBase : Node3D, IPooledObject
     [Export] public RitualRenderer Renderer;
     [Export] public RitualResource RitualResource;
     [Export] public MeshInstance3D PlaneMesh;
-    // [Export] public Array<IRitualTrigger> Triggers; // TODO implement
 
+
+    public List<IRitualTrigger> Triggers = new();
     public Array<RitualElementSlot> Slots { get; set; }
 
     private readonly List<Tween> _animateTween = new();
@@ -27,7 +28,16 @@ public partial class RitualBase : Node3D, IPooledObject
         _fsm.Add("active", new RitualActiveState(this));
         _fsm.Add("interrupted", new RitualInterruptedState(this));
         _fsm.Add("completed", new RitualCompletedState(this));
-        _fsm.InitState("idle");
+        _fsm.InitState("preview");
+        _fsm.Debug = true;
+    }
+
+    public override void _Process(double delta) => _fsm.StateProcess((float)delta);
+    public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
+
+    public void SetIdle()
+    {
+        _fsm.ChangeState("idle");
     }
 
     public void OnSpawn()
@@ -40,6 +50,7 @@ public partial class RitualBase : Node3D, IPooledObject
     public void OnDespawn()
     {
         Hide();
+        RitualResource = null;
         SetProcess(false);
         SetPhysicsProcess(false);
     }
