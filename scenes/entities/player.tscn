@@ -54,7 +54,7 @@ Tuning = ExtResource("4_73kkf")
 LiveTuning = true
 DotShader = ExtResource("5_n5sgd")
 ReticleShader = ExtResource("5_73kkf")
-MaxDots = 500
+MaxDots = 3000
 
 [node name="hand" parent="Camera3D" unique_id=320221158 instance=ExtResource("10_5ki56")]
 transform = Transform3D(-4.371139e-08, 0, 1, -0.64742446, 0.76212966, -2.8299821e-08, -0.76212966, -0.64742446, -3.3313746e-08, 0.6108414, -0.44165158, -0.8714543)
