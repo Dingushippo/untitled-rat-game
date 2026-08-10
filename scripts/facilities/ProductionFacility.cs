@@ -65,7 +65,7 @@ public partial class ProductionFacility : FacilityBase
     }
 
     /// <summary>Fills the held rat with finished product. Wired to the output interact area.</summary>
-    private void OnOutputInteract(Node3D interactor)
+    private void OnOutputInteract(Node3D interactor, bool isHeld)
     {
         if (interactor is not Player player) return;
 
@@ -80,17 +80,9 @@ public partial class ProductionFacility : FacilityBase
             GD.Print($"{Name}: {ProdFacility.DisplayName} has nothing to collect");
             return;
         }
+        int amount = isHeld ? int.MaxValue : 1;
+        InventoryTransfer.Move(Output, rat.Cargo, amount);
 
-        EventBus.Publish(
-            Event.StartQte,
-            "spam_qte", (bool x) =>
-            {
-                if (x)
-                    InventoryTransfer.Move(Output, rat.Cargo);
-                else
-                    GD.Print("You suck");
-            }
-        );
         RefreshOutputPrompt();
     }
 

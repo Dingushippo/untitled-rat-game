@@ -13,7 +13,7 @@ public partial class InteractAreaComponent : Area3D, IInteract
     [Export] public Vector3 InteractionTextOffset = new Vector3(0, 2, 0);
     [Export] public bool IsEnabled = true;
     [Export] public HandRequirement RequiredHands = HandRequirement.Any;
-    public Action<Node3D> OnInteract;
+    public Action<Node3D, bool> OnInteract;
     public Action OnLookedAt;
     public Action OnLookedAwayFrom;
 
@@ -69,10 +69,10 @@ public partial class InteractAreaComponent : Area3D, IInteract
         OnLookedAwayFrom?.Invoke();
     }
 
-    public void Interact(Node3D interactor)
+    public void Interact(Node3D interactor, bool isHeld)
     {
         if (!IsEnabled) return;
-        OnInteract?.Invoke(interactor);
+        OnInteract?.Invoke(interactor, isHeld);
     }
 
     public bool IsAvailableTo(Node3D interactor)

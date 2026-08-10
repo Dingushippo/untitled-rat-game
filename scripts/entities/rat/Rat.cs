@@ -66,7 +66,7 @@ public partial class Rat : CharacterBody3D
         }
     }
 
-    private void OnInteract(Node3D interactor)
+    private void OnInteract(Node3D interactor, bool _)
     {
         if (interactor is not Player player) return;
         player.GrabComponent.InjectGrabState(this);

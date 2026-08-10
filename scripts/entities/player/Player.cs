@@ -70,7 +70,7 @@ public partial class Player : CharacterBody3D
     }
     public override void _PhysicsProcess(double delta)
     {
-        InteractComponent.PhysicsUpdate();
+        InteractComponent.PhysicsUpdate((float)delta);
         _movementFsm.StatePhysicsProcess((float)delta);
         _handFsm.StatePhysicsProcess((float)delta);
     }

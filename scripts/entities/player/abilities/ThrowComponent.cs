@@ -76,7 +76,7 @@ public partial class ThrowComponent : Node3D
 
 
     private Tween _chargeTween;
-    public async void StartDelayedCharge()
+    public void StartDelayedCharge()
     {
         _chargeTween = CreateTween();
         _chargeTween.TweenMethod(
