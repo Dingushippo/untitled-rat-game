@@ -53,6 +53,7 @@ public partial class RitualElementSlot : Node3D, ICatchArea, IPooledObject
     public bool TryGetThrowTarget(Vector3 from, Rat rat, out ThrowTarget target)
     {
         target = ThrowTarget.Slot(WorkSlot);
+        if (WorkSlot.IsOccupied) return false;
         if (Element is RitualItemElement && !rat.Cargo.HasAnythingFor(_inventory))
         {
             // TODO Find out if we are removing from inventory here, or at a later stage
