@@ -4,16 +4,16 @@
 
 [resource]
 script = ExtResource("1_5j7q6")
-DotSpacing = 0.05
-DotSize = 0.037
-FadeStart = 4
-FadeEnd = 40
-MinAlpha = 0.0
-BounceFalloff = 0.25
-ImpactRingSize = 6.0
-FlowSpeed = 2.0
+DotSpacing = 0.1
+DotSize = 0.028999999999999998
+NearFarSizeRatio = 1.97
+FadeStart = 5
+FadeEnd = 61
+MinAlpha = 0.5
+BounceFalloff = 1.0
+ImpactRingSize = 3.0
+FlowSpeed = 0.05
 FlowFrequency = 0.155
-FlowStrength = 1.1
 ReticleSize = 1.495
 ReticlePulseRate = 4.125
 SurfaceOffset = 0.01

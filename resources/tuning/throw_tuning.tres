@@ -8,4 +8,7 @@ ThrowForce = 40.0
 MaxThrowForce = 75.0
 ChargeDuration = 0.8
 ChargeStartDelay = 0.2
+AngleAdjust = 10.0
+Step = 0.049999999999999996
+MaxPoints = 1000
 HandBlendDistance = 1.0
