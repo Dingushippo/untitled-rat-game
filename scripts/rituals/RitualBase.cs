@@ -12,6 +12,7 @@ public partial class RitualBase : Node3D, IPooledObject
     [Export] public RitualRenderer Renderer;
     [Export] public RitualResource RitualResource;
     [Export] public MeshInstance3D PlaneMesh;
+    // [Export] public Array<IRitualTrigger> Triggers; // TODO implement
 
 
     public List<IRitualTrigger> Triggers = new();
