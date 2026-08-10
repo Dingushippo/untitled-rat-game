@@ -5,7 +5,7 @@ using System.IO;
 public partial class CrouchComponent
 {
     // [Export] public Player _player;
-    public const float CROUCH_OFFSET = -0.5f;
+    public const float CROUCH_OFFSET = -0.6f;
     public const float CROUCH_ANIM_DURATION = 0.15f;
 
     public bool IsCrouching { get; private set; }
@@ -13,6 +13,8 @@ public partial class CrouchComponent
     public bool ToggleCrouch = true;
     private bool _crouchToggled = false;
     private bool _canStand = true;
+    private float _colliderHeight;
+    private float _colliderYPos;
     private readonly Player _player;
 
     private Tween _crouchTween;
@@ -21,6 +23,8 @@ public partial class CrouchComponent
     public CrouchComponent(Player player)
     {
         _player = player;
+        _colliderHeight = (_player.Collider.Shape as CapsuleShape3D).Height;
+        _colliderYPos = _player.Collider.Position.Y;
     }
 
     public void Update()
@@ -93,6 +97,9 @@ public partial class CrouchComponent
             _crouchTween.Kill();
         }
         _crouchTween = _player.CreateTween();
+        _crouchTween.SetParallel(true);
         _crouchTween.TweenProperty(_player.Camera, "YOffset", height, CROUCH_ANIM_DURATION);
+        _crouchTween.TweenProperty(_player.Collider.Shape as CapsuleShape3D, "height", _colliderHeight + height, CROUCH_ANIM_DURATION);
+        _crouchTween.TweenProperty(_player.Collider, "position:y", _colliderYPos + height / 2, CROUCH_ANIM_DURATION);
     }
 }

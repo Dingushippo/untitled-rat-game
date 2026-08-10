@@ -52,9 +52,6 @@ metadata/_custom_type_script = "uid://buk1fupp26own"
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_pso3n"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_pso3n"]
-size = Vector3(14.075317, 16.075195, 17.948792)
-
 [node name="TestLevel" type="Node3D" unique_id=949261]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=130976187]
@@ -86,6 +83,16 @@ size = Vector3(3, 15, 3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 8, 5)
 use_collision = true
 size = Vector3(3, 15, 3)
+
+[node name="Pillar5" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1065633144]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3.5, 10.665)
+use_collision = true
+size = Vector3(3, 3.0766602, 8.853516)
+
+[node name="Pillar6" type="CSGBox3D" parent="NavigationRegion3D" unique_id=166306033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0379748, 7.971384, 14.332763)
+use_collision = true
+size = Vector3(6.0478516, 3.0766602, 3.6029663)
 
 [node name="Pillar3" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1691168183]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 8, -4)
@@ -140,6 +147,12 @@ use_collision = true
 size = Vector3(50, 15, 0.5)
 material = SubResource("ORMMaterial3D_pso3n")
 
+[node name="Wall_T2" type="CSGBox3D" parent="Walls" unique_id=1953014733]
+transform = Transform3D(0.76451313, 0, 0.64460814, 0, 1, 0, -0.64460814, 0, 0.76451313, -16.651085, 7.5, -7.743847)
+use_collision = true
+size = Vector3(24.031677, 15, 0.5)
+material = SubResource("ORMMaterial3D_pso3n")
+
 [node name="Wall_B" type="CSGBox3D" parent="Walls" unique_id=962808649]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 15)
 use_collision = true
@@ -168,16 +181,6 @@ script = ExtResource("10_2mu0v")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnArea" unique_id=246039262]
 shape = SubResource("WorldBoundaryShape3D_pso3n")
-
-[node name="Area3D" type="Area3D" parent="." unique_id=699881611]
-collision_mask = 255
-gravity_space_override = 2
-gravity = 2.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=434092750]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10235596, 7.5375977, -1.5445862)
-shape = SubResource("BoxShape3D_pso3n")
-disabled = true
 
 [node name="HolyWaterLeak" parent="." unique_id=2019861423 instance=ExtResource("11_jmx14")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.829039, 0, 6.278946)

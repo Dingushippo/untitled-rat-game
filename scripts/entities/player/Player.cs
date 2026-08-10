@@ -4,6 +4,7 @@ using System;
 public partial class Player : CharacterBody3D
 {
     [Export] public PlayerCamera Camera;
+    [Export] public CollisionShape3D Collider;
     [Export] public RayCast3D VaultRaycast;
     [Export] public ThrowComponent ThrowComponent;
     [Export] public float Speed = 10f;
