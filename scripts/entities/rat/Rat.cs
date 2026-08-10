@@ -53,15 +53,12 @@ public partial class Rat : CharacterBody3D
 
     private void CheckInventory()
     {
-        GD.Print("Inventory changed");
         if (Cargo.IsEmpty)
         {
-            GD.Print("Hiding");
             StatusMesh.Hide();
         }
         else
         {
-            GD.Print("Showing");
             StatusMesh.Show();
         }
     }

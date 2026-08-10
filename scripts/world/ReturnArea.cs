@@ -11,7 +11,6 @@ public partial class ReturnArea : Area3D
 
     private void ReturnToHome(Node3D obj)
     {
-        GD.Print($"ObjectEntered: {obj}");
         if (obj is Rat rat)
         {
             rat.ForceState("falling");

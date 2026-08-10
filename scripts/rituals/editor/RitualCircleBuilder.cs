@@ -12,7 +12,6 @@ public class RitualCircleBuilder
 
     public void SetCircle(RitualCircleResource circle)
     {
-        GD.Print("Set circle");
         Circle = circle;
         RepositionElements();
     }
@@ -29,7 +28,6 @@ public class RitualCircleBuilder
         float angleChange = Mathf.Tau / Circle.NumElements;
         float angleOffset = Circle.AngleOffset;
         float radius = Circle.Radius;
-        GD.Print($"Attempting reposition of {Circle.NumElements} elements:\nAngleChange: {angleChange}\nAngleOffset: {angleOffset}\nRadius: {radius}");
         for (int i = 0; i < Circle.NumElements; i++)
         {
             RitualElement current = Circle.RitualElements[i];
@@ -38,7 +36,6 @@ public class RitualCircleBuilder
                 radius * Mathf.Sin(angleChange * i + angleOffset)
             );
             current.Rotation = i * angleChange + angleOffset + Circle.SymbolRotation;
-            GD.Print($"Set position: {current.Position}, rotation: {current.Rotation}");
         }
     }
 }

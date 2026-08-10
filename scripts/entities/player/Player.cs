@@ -48,7 +48,6 @@ public partial class Player : CharacterBody3D
 
     private void SetFrozen(object[] _)
     {
-        GD.Print("Set frozen");
         _movementFsm.SetEnabled(false);
         _handFsm.SetEnabled(false);
         Camera.SetCameraInputEnabled(false);
@@ -56,7 +55,6 @@ public partial class Player : CharacterBody3D
 
     private void SetUnfrozen(object[] _)
     {
-        GD.Print("Set unfrozen");
         _movementFsm.SetEnabled(true);
         _handFsm.SetEnabled(true);
         Camera.SetCameraInputEnabled(true);

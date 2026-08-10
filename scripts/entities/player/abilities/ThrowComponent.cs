@@ -24,11 +24,6 @@ public partial class ThrowComponent : Node3D
 
         _gravity = Player.GetGravity();
         _currentForce = Tuning.ThrowForce;
-        Tuning.Changed += () =>
-        {
-            GD.Print("Set force");
-            _currentForce = Tuning.ThrowForce;
-        };
     }
 
     public override void _PhysicsProcess(double delta)

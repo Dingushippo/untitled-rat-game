@@ -32,7 +32,6 @@ public partial class ObjectManager : Node
         _mainNavigationRegion = (NavigationRegion3D)args[0];
         Node poolTarget = _mainNavigationRegion.GetNode("Objects");
         _pool = new ObjectPoolComponent(poolTarget, objectScene, 10);
-        GD.Print($"NavigationRegion: {_mainNavigationRegion}");
     }
 
 }
