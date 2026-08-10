@@ -17,6 +17,7 @@ public class RatSlottedState : RatState
             slotTween.SetParallel(true);
             slotTween.TweenProperty(_rat, "quaternion", LocalSlotRotation(), _rat.FlightTuning.SettleDuration);
             slotTween.TweenProperty(_rat, "global_position", _workSlot.GlobalPosition, _rat.FlightTuning.SettleDuration);
+            slotTween.Chain();
             slotTween.TweenCallback(Callable.From(() => _workSlot.HasEntered()));
         }
         // _rat.SetNavAgentEnabled(false);

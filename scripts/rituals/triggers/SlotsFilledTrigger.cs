@@ -16,7 +16,7 @@ public class SlotsFilledTrigger : IRitualTrigger
         _slots = slots;
         foreach (RitualElementSlot slot in slots)
         {
-            slot.Fulfilled += CheckSlots;
+            slot.WorkSlot.Entered += CheckSlots;
         }
     }
 
