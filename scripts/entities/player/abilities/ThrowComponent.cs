@@ -45,7 +45,7 @@ public partial class ThrowComponent : Node3D
     public ThrowContext BuildContext(Rat rat) => new(
         rat,
         GlobalPosition,
-        (-Player.Camera.GlobalBasis.Z).Rotated(Vector3.Up, Mathf.DegToRad(Tuning.AngleAdjust)),
+        (-Player.Camera.GlobalBasis.Z).Rotated(Vector3.Right, Mathf.DegToRad(Tuning.AngleAdjust)),
         Player.Camera.GlobalBasis.X * Player.Camera.GlobalBasis.X.Dot(
             HandNode.GlobalPosition - Player.Camera.GlobalPosition
         ),
