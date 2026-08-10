@@ -12,65 +12,22 @@ public partial class RitualBase : Node3D, IPooledObject
     [Export] public RitualRenderer Renderer;
     [Export] public RitualResource RitualResource;
     [Export] public MeshInstance3D PlaneMesh;
+    // [Export] public Array<IRitualTrigger> Triggers; // TODO implement
 
-    private Array<RitualElementSlot> _slots;
-    public Array<RitualElementSlot> Slots
-    {
-        get => _slots;
-        set
-        {
-            _slots = value;
-            // foreach (RitualElementSlot slot in Slots)
-                // slot.Fulfilled += CheckSlotsFulfilled;
-            Renderer.QueueRedraw();
-        }
-    }
+    public Array<RitualElementSlot> Slots { get; set; }
 
-    private Action Completed;
-    private Action Started;
-    private Action Interrupted;
-    private float timer = 0;
-    private bool _isActive;
     private readonly List<Tween> _animateTween = new();
-
+    private FiniteStateMachine _fsm;
     public override void _Ready()
     {
         Renderer.Position = Viewport.Size / 2;
-    }
-
-    protected private void IsCompleted()
-    {
-        _isActive = false;
-        Completed?.Invoke();
-
-        foreach (RitualElementSlot slot in Slots)
-        {
-            slot.WorkSlot.Occupant.ForceState("follow");
-        }
-    }
-
-    protected private void IsStarted()
-    {
-        AnimateRats();
-        _isActive = true;
-        Started?.Invoke();
-    }
-
-    protected private void IsInterrupted()
-    {
-        Interrupted?.Invoke();
-    }
-
-    public override void _Process(double delta)
-    {
-        if (!_isActive) return;
-        if (timer > RitualResource.RitualTime)
-        {
-            timer += (float)delta;
-            return;
-        }
-        IsCompleted();
-        // Renderer.QueueRedraw();
+        _fsm = new(this);
+        _fsm.Add("preview", new RitualPreviewState(this));
+        _fsm.Add("idle", new RitualIdleState(this));
+        _fsm.Add("active", new RitualActiveState(this));
+        _fsm.Add("interrupted", new RitualInterruptedState(this));
+        _fsm.Add("completed", new RitualCompletedState(this));
+        _fsm.InitState("idle");
     }
 
     public void OnSpawn()
@@ -85,13 +42,6 @@ public partial class RitualBase : Node3D, IPooledObject
         Hide();
         SetProcess(false);
         SetPhysicsProcess(false);
-
-        if (Slots == null) return;
-
-        foreach (RitualElementSlot slot in Slots)
-        {
-            // slot.Fulfilled -= CheckSlotsFulfilled;
-        }
     }
 
     public void AnimateRats()
@@ -109,6 +59,4 @@ public partial class RitualBase : Node3D, IPooledObject
     }
 
     public void StopAnimation() => _animateTween.ForEach(x => x.Kill());
-
-    // protected abstract void CheckSlotsFulfilled();
 }
