@@ -4,8 +4,8 @@ using System;
 public partial class RunClock : Node
 {
     const float DAY_LENGTH_DEFAULT = 420f;
-    const int START_TIME_SECONDS = 6 * 60 * 60; // 6:00 AM
-    const int END_TIME_SECONDS = 22 * 60 * 60; // 10:00 PM
+    const int START_TIME_SECONDS = 7 * 60 * 60; // 7:00 AM
+    const int END_TIME_SECONDS = 24 * 60 * 60; // 12:00 AM
     private static RunClock _instance;
     public static RunClock Instance => _instance;
     private float _timer = 0;
