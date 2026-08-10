@@ -39,17 +39,19 @@ public partial class RitualComponent
             Vector3 position;
             ValidPosition = IsValidPosition();
             if (
-                (Node)result["collider"] is Area3D a && 
-                a.GetParent() is IRitualInteract i && 
-                i.TryGetRitualPosition(_currentRitual, out position) &&
+                (Node)result["collider"] is Area3D a &&
+                a.GetParent() is IRitualInteract interact &&
+                interact.TryGetRitualPosition(_currentRitual, out position) &&
                 ValidPosition
             )
             {
-                ritualInteract = i;
+                ritualInteract = interact;
                 position += Vector3.Up * 0.05f;
             }
             else
             {
+                if (_currentRitual.RitualResource.RequiresInteract)
+                    ValidPosition = false;
                 Vector3 normal = result["normal"].AsVector3();
                 position = result["position"].AsVector3() + normal * 0.05f;
                 ritualInteract = null;
@@ -62,7 +64,7 @@ public partial class RitualComponent
             }
             else
                 _currentRitual.GlobalPosition = _currentRitual.GlobalPosition.MoveToward(position, delta * 30f);
-            
+
             Color currentColor = ValidPosition ? _previewColor : _errorColor;
             if (currentColor != _prevColor)
             {

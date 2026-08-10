@@ -52,4 +52,5 @@ metadata/_custom_type_script = "uid://bodq1inth5eml"
 script = ExtResource("2_desyr")
 Id = "sealing_ritual"
 DisplayName = "Ritual to seal holy water leak"
+RequiresInteract = true
 RitualCircles = Array[ExtResource("1_j2ngk")]([SubResource("Resource_qjche")])
