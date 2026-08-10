@@ -5,7 +5,7 @@ using System;
 [GlobalClass]
 public partial class RitualElementSlot : Node3D, ICatchArea, IPooledObject
 {
-    public const float COLLIDER_MARGIN = 0.01f;
+    public const float COLLIDER_MARGIN = 0.1f;
     [Export] public CollisionShape3D CatchAreaCollider;
     [Export] public WorkSlot WorkSlot;
 
