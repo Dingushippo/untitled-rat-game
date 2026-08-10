@@ -18,11 +18,14 @@ public partial class RitualComponent
     private Color _errorColor = Colors.Red;
     private Color _placedColor = Colors.White;
     private Color _prevColor;
+    private uint _collisionMask;
+    private IRitualInteract ritualInteract;
 
 
     public RitualComponent(Player player)
     {
         _player = player;
+        _collisionMask = PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.RITUAL_INTERACT);
     }
     public void PhysicsProcess(float delta)
     {
@@ -30,13 +33,21 @@ public partial class RitualComponent
 
         Vector3 rayStart = _camera.GlobalPosition;
         Vector3 rayEnd = rayStart + -_camera.GlobalBasis.Z * MAX_DISTANCE;
-        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, PhysicsLayers.WORLD, false))
+        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, _collisionMask))
         {
-            Vector3 normal = result["normal"].AsVector3();
-            Vector3 position = result["position"].AsVector3() + normal * 0.05f;
-            _currentRitual.GlobalPosition = _currentRitual.GlobalPosition.MoveToward(position, delta * 80f);
-            // _currentRitual.LookAt(_player.GlobalPosition);
+            Vector3 position;
+            if ((GodotObject)result["collider"] is IRitualInteract i && i.TryGetRitualPosition(_currentRitual, out position))
+            {
+                ritualInteract = i;
+            }
+            else
+            {
+                Vector3 normal = result["normal"].AsVector3();
+                position = result["position"].AsVector3() + normal * 0.05f;
+                ritualInteract = null;
+            }
 
+            _currentRitual.GlobalPosition = _currentRitual.GlobalPosition.MoveToward(position, delta * 80f);
             ValidPosition = IsValidPosition();
             Color currentColor = ValidPosition ? _previewColor : _errorColor;
             if (currentColor != _prevColor)
@@ -83,6 +94,12 @@ public partial class RitualComponent
         AddTriggers();
         _currentRitual.SetIdle();
         _currentRitual.Renderer.ColorOverride = _placedColor;
+
+        if (ritualInteract != null)
+        {
+            _currentRitual.OnComplete += ritualInteract.OnRitualComplete;
+        }
+
         _currentRitual = null;
     }
 }

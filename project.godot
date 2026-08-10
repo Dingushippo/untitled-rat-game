@@ -107,6 +107,7 @@ ritual={
 3d_physics/layer_4="entity"
 3d_physics/layer_5="facility"
 3d_physics/layer_6="catch_area"
+3d_physics/layer_7="ritual_interact"
 
 [physics]
 
