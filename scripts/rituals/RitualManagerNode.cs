@@ -51,10 +51,11 @@ public partial class RitualManagerNode : Node
 
     public void DisposeRitual(RitualBase ritual)
     {
-        foreach (RitualElementSlot slot in ritual.Slots)
-        {
-            _elementSlotPool.DespawnObject(slot);
-        }
+        if(ritual.Slots != null)
+            foreach (RitualElementSlot slot in ritual.Slots)
+            {
+                _elementSlotPool.DespawnObject(slot);
+            }
         _ritualPool.DespawnObject(ritual);
     }
 }

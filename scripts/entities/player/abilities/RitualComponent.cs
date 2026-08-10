@@ -20,6 +20,7 @@ public partial class RitualComponent
     private Color _prevColor;
     private uint _collisionMask;
     private IRitualInteract ritualInteract;
+    private bool _initialSnap = true;
 
 
     public RitualComponent(Player player)
@@ -36,7 +37,13 @@ public partial class RitualComponent
         if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, _collisionMask))
         {
             Vector3 position;
-            if ((Node)result["collider"] is Area3D a && a.GetParent() is IRitualInteract i && i.TryGetRitualPosition(_currentRitual, out position))
+            ValidPosition = IsValidPosition();
+            if (
+                (Node)result["collider"] is Area3D a && 
+                a.GetParent() is IRitualInteract i && 
+                i.TryGetRitualPosition(_currentRitual, out position) &&
+                ValidPosition
+            )
             {
                 ritualInteract = i;
                 position += Vector3.Up * 0.05f;
@@ -48,8 +55,14 @@ public partial class RitualComponent
                 ritualInteract = null;
             }
 
-            _currentRitual.GlobalPosition = _currentRitual.GlobalPosition.MoveToward(position, delta * 80f);
-            ValidPosition = IsValidPosition();
+            if (_initialSnap)
+            {
+                _currentRitual.GlobalPosition = position;
+                _initialSnap = false;
+            }
+            else
+                _currentRitual.GlobalPosition = _currentRitual.GlobalPosition.MoveToward(position, delta * 30f);
+            
             Color currentColor = ValidPosition ? _previewColor : _errorColor;
             if (currentColor != _prevColor)
             {
@@ -60,6 +73,7 @@ public partial class RitualComponent
     }
     public void StartRitualPreview()
     {
+        _initialSnap = true;
         RitualResource res = ResourceLoader.Load<RitualResource>("uid://c1e6c1npwbqxi");
         _currentRitual = RitualManagerNode.Instance.InstanciateRitualPreview(res, _player.GlobalPosition);
         _maxRadiusToCheckCollision = (_currentRitual.RitualResource.RitualCircles.Max(x => x.Radius) / 100) + COLLISION_CHECK_MARGIN;

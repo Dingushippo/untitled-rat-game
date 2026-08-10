@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-[GlobalClass, Tool]
+[GlobalClass]
 public partial class RitualBase : Node3D, IPooledObject
 {
     private const float DRAW_FREQ = 60f;
