@@ -12,4 +12,12 @@ public class HandEmptyState : PlayerState
             fsm.ChangeState("grab");
         }
     }
+
+    public override void HandleInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("ritual"))
+        {
+            fsm.ChangeState("ritual");
+        }
+    }
 }

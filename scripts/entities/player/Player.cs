@@ -22,6 +22,7 @@ public partial class Player : CharacterBody3D
     public GrabComponent GrabComponent;
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
+    public RitualComponent RitualComponent;
     private FiniteStateMachine _movementFsm;
     private FiniteStateMachine _handFsm;
 
@@ -31,6 +32,7 @@ public partial class Player : CharacterBody3D
         GrabComponent = new(this);
         CrouchComponent = new(this);
         InteractComponent = new(this);
+        RitualComponent = new(this);
         InitStateMachines();
 
         EventBus.Subscribe(Event.QteStarted, SetFrozen);
@@ -86,7 +88,7 @@ public partial class Player : CharacterBody3D
         {
             RitualResource res = ResourceLoader.Load<RitualResource>("uid://c1e6c1npwbqxi");
             RitualBase ritual = RitualManagerNode.Instance.InstanciateRitualPreview(res, GlobalPosition + Vector3.Up * 0.1f);
-            RitualManagerNode.Instance.PlaceRitual(ritual);
+            RitualManagerNode.Instance.BuildElements(ritual);
             ritual.Triggers.Add(new SlotsFilledTrigger(ritual.Slots));
             ritual.SetIdle();
         }
@@ -107,6 +109,7 @@ public partial class Player : CharacterBody3D
         _handFsm = new(this);
         _handFsm.Add("empty", new HandEmptyState(this));
         _handFsm.Add("grab", new HandGrabState(this));
+        _handFsm.Add("ritual", new HandRitualState(this));
         _handFsm.InitState("empty");
         _handFsm.Debug = false;
     }

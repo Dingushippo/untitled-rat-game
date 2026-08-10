@@ -26,7 +26,7 @@ public partial class RitualManagerNode : Node
         return ritual;
     }
 
-    public void PlaceRitual(RitualBase ritual)
+    public void BuildElements(RitualBase ritual)
     {
         Array<RitualElementSlot> slots = new();
         foreach (RitualCircleResource circle in ritual.RitualResource.RitualCircles)

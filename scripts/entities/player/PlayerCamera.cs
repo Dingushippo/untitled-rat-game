@@ -24,9 +24,6 @@ public partial class PlayerCamera : Camera3D
     [Export] public float ImpactFovPunch = 7f;
     [Export] public float MinImpactScale = 0.3f;
     [Export(PropertyHint.Range, "0,0.5")] public float ImpactAttackRatio = 0.18f;
-
-    public Node3D LookingAtObject;
-    public Vector3? LookingAtCollisionPosition;
     public float YOffset = 0f;
 
     private float _yawDeg = 0f;

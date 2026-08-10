@@ -5,18 +5,43 @@ using System.Linq.Expressions;
 [GlobalClass, Tool]
 public partial class RitualRenderer : Node2D
 {
-    [Export] public RitualResource RitualResource;
-    [Export] public float LineThickness = 1f;
-    [Export] public Color ColorOverride = Colors.White;
-    [ExportToolButton("Redraw")] public Callable RedrawButton => Callable.From(() => QueueRedraw());
+    private RitualResource _ritualResource;
+    [Export]
+    public RitualResource RitualResource
+    {
+        get => _ritualResource;
+        set
+        {
+            _ritualResource = value;
+            QueueRedraw();
+        }
+    }
+
+    public float _lineThickness = 1f;
+    [Export]
+    public float LineThickness
+    {
+        get => _lineThickness;
+        set
+        {
+            _lineThickness = value;
+            QueueRedraw();
+        }
+    }
+
+    private Color _colorOverride = Colors.White;
+    [Export]
+    public Color ColorOverride
+    {
+        get => _colorOverride;
+        set
+        {
+            _colorOverride = value;
+            QueueRedraw();
+        }
+    }
 
     private Vector2 _center = Vector2.Zero;
-
-    public override void _Ready()
-    {
-        if (RitualResource != null)
-            RitualResource.Changed += QueueRedraw;
-    }
 
     public override void _Draw()
     {
