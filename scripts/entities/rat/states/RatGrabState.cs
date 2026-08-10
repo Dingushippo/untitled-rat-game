@@ -11,7 +11,7 @@ public class RatGrabState : RatState
     {
         _prevParent = _rat.GetParent();
         _rat.GlobalPosition = _player.ThrowComponent.HandNode.GlobalPosition;
-        _rat.Reparent(_player.ThrowComponent);
+        _rat.Reparent(_player.ThrowComponent.HandNode);
         _rat.Collider.Disabled = true;
         _rat.InteractArea?.SetActive(false);
         EventBus.Publish(Event.RatPickedUp, _rat);
