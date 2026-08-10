@@ -52,8 +52,20 @@ public partial class HolyWaterLeak : Node3D, ICatchArea, IRitualInteract
     {
         SetDisruptStatus(false);
         // To ensure particles are done playing before removing scene
+
         Tween removeTween = CreateTween();
-        removeTween.TweenInterval(Particles.Lifetime);
+        if (Particles.Emitting)
+            removeTween.TweenInterval(Particles.Lifetime);
+        removeTween.TweenCallback(Callable.From(() => PopOutRat()));
         removeTween.TweenCallback(Callable.From(() => QueueFree()));
+    }
+
+    private void PopOutRat()
+    {
+        if (!Slot.IsOccupied) return;
+
+        Rat rat = Slot.Occupant;
+        rat.ForceState("idle");
+        rat.Velocity += Vector3.Up * 10f;
     }
 }
