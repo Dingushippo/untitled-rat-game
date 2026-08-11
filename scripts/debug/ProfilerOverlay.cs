@@ -36,13 +36,19 @@ public partial class ProfilerOverlay : CanvasLayer
 
         _label = new Label
         {
-            Position = new Vector2(12, 12),
+            // Position = new Vector2(815f, 271.5f),
+            GrowHorizontal = Control.GrowDirection.Begin,
             Visible = false,
         };
         _label.AddThemeColorOverride("font_color", Colors.White);
+        _label.AddThemeFontSizeOverride("font_size", 12);
         _label.AddThemeColorOverride("font_outline_color", Colors.Black);
-        _label.AddThemeConstantOverride("outline_size", 4);
+        _label.AddThemeConstantOverride("outline_size", 8);
+        _label.AddThemeConstantOverride("line_spacing", -6);
         AddChild(_label);
+        // _label.SetAnchorsPreset(Control.LayoutPreset.CenterRight);
+        _label.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterRight);
+
 
         _printOnExit = HasFlag("--profile");
         _benchActive = HasFlag("--bench-throw");
