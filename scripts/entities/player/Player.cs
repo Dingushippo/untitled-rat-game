@@ -154,8 +154,6 @@ public partial class Player : CharacterBody3D
         velocity.X = horizontal.X;
         velocity.Z = horizontal.Z;
 
-        GD.Print($"velocity: {velocity}");
-
         return velocity;
     }
 }
