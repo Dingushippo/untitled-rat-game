@@ -55,7 +55,7 @@ public partial class HazardManager : Node
         switch (hazard.SpawnType)
         {
             case HazardSpawnType.NearFacility:
-                marker = GetNearFacilitySpawn(hazard); break;
+                marker = GetNearFacilitySpawn(); break;
             case HazardSpawnType.OnFloor:
                 marker = GetOnFloorSpawn(); break;
             case HazardSpawnType.OnWall:
@@ -65,7 +65,7 @@ public partial class HazardManager : Node
         }
         return marker != null;
     }
-    private Marker3D GetNearFacilitySpawn(HazardResource hazard)
+    private Marker3D GetNearFacilitySpawn()
     {
         Marker3D marker = _spawnPositions.PickRandom();
         return marker;

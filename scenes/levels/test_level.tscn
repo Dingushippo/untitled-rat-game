@@ -141,35 +141,30 @@ material = SubResource("StandardMaterial3D_eaa0b")
 
 [node name="Wall_L" type="CSGBox3D" parent="Walls" unique_id=816793663]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.25, 7.5, 0)
-visible = false
 use_collision = true
 size = Vector3(0.5, 15, 30)
 material = SubResource("ORMMaterial3D_pso3n")
 
 [node name="Wall_R" type="CSGBox3D" parent="Walls" unique_id=1128220066]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.25, 7.5, 0)
-visible = false
 use_collision = true
 size = Vector3(0.5, 15, 30)
 material = SubResource("ORMMaterial3D_pso3n")
 
 [node name="Wall_T" type="CSGBox3D" parent="Walls" unique_id=265736164]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, -15)
-visible = false
 use_collision = true
 size = Vector3(50, 15, 0.5)
 material = SubResource("ORMMaterial3D_pso3n")
 
 [node name="Wall_T2" type="CSGBox3D" parent="Walls" unique_id=1953014733]
 transform = Transform3D(0.76451313, 0, 0.64460814, 0, 1, 0, -0.64460814, 0, 0.76451313, -16.651085, 7.5, -7.743847)
-visible = false
 use_collision = true
 size = Vector3(24.031677, 15, 0.5)
 material = SubResource("ORMMaterial3D_pso3n")
 
 [node name="Wall_B" type="CSGBox3D" parent="Walls" unique_id=962808649]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 15)
-visible = false
 use_collision = true
 size = Vector3(50, 15, 0.5)
 material = SubResource("ORMMaterial3D_pso3n")
@@ -197,10 +192,9 @@ script = ExtResource("10_2mu0v")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnArea" unique_id=246039262]
 shape = SubResource("WorldBoundaryShape3D_pso3n")
 
-[node name="HazardManager" type="Node" parent="." unique_id=1374385243 node_paths=PackedStringArray("Level", "FacilityManager")]
+[node name="HazardManager" type="Node" parent="." unique_id=1374385243 node_paths=PackedStringArray("FacilityManager")]
 script = ExtResource("12_a5rnb")
 HazardResources = Array[Object]([ExtResource("13_fqldq")])
-Level = NodePath("..")
 FacilityManager = NodePath("../NavigationRegion3D/FacilityManager")
 metadata/_custom_type_script = "uid://bqplh1abiuxrl"
 

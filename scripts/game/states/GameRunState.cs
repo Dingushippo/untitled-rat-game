@@ -1,6 +1,7 @@
 using Godot;
+using Godot.Collections;
 using System;
-using System.Reflection.Metadata.Ecma335;
+using System.Linq;
 
 
 public class GameRunState : GameState
@@ -20,22 +21,25 @@ public class GameRunState : GameState
     }
     private int _stewsDeliveredToday = 0;
     private Node3D _level;
-    public override void PhysicsProcess(float delta) { }
-    public override void Process(float delta) { }
+    private Dictionary<int, TimelineResource> _timelineDict;
     public override void Enter(State previous = null)
     {
         ResetRunState();
+
+        _timelineDict = new Dictionary<int, TimelineResource>(_manager.Timeline.ToDictionary(x => x.Day));
 
         GD.Seed(_manager.Tuning.FixedSeed ? _manager.Tuning.Seed : (ulong)DateTime.Now.Ticks);
 
         EventBus.Subscribe(Event.ItemSold, OnItemSold);
         EventBus.Subscribe(Event.Sundown, OnSundown);
+        EventBus.Subscribe(Event.ClockTick, HandleClockTick);
         EconomyService.Instance.ResetForRun();
         RunClock.Instance.ResetFull();
 
         PackedScene levelScene = GD.Load(GAME_SCENE_PATH) as PackedScene;
         _level = levelScene.Instantiate<Node3D>();
         _level.Ready += OnLevelLoaded;
+
 
         _manager.GetTree().ChangeSceneToNode(_level);
     }
@@ -55,10 +59,33 @@ public class GameRunState : GameState
     {
         EventBus.Unsubscribe(Event.ItemSold, OnItemSold);
         EventBus.Unsubscribe(Event.Sundown, OnSundown);
+        EventBus.Unsubscribe(Event.ClockTick, HandleClockTick);
         _level.Ready -= OnLevelLoaded;
     }
 
     private int GetCurrentQuota() => _manager.Tuning.Quotas[RunClock.Instance.Day - 1];
+
+    private void HandleClockTick(object[] args)
+    {
+        string tick = (string)args[0];
+        int day = RunClock.Instance.Day;
+
+        TimelineEvent[] currentEvents = _timelineDict[day].Events.Where(x => x.TimeStamp == tick).ToArray();
+
+        if (currentEvents.Length == 0) return;
+
+        foreach (TimelineEvent @event in currentEvents)
+        {
+            switch (@event.Type)
+            {
+                case TimelineEventType.Hazard:
+                    string hazardId = (string)@event.Data["hazardId"];
+                    EventBus.Publish(Event.SpawnHazard, hazardId);
+                    break;
+            }
+        }
+    }
+
     private void OnItemSold(object[] obj)
     {
         string item = (string)obj[0];
@@ -76,14 +103,12 @@ public class GameRunState : GameState
         GD.Print($"Stews delivered: {StewsDeliveredToday}/{quotaToMeet}, day {clock.Day}");
         if (StewsDeliveredToday < quotaToMeet)
         {
-            GD.Print("Run success");
             fsm.ChangeState("result", this);
             return;
         }
         if (clock.Day == _manager.Tuning.Quotas.Length)
         {
             RunSuccess = true;
-            GD.Print("Run success");
             fsm.ChangeState("result", this);
             return;
         }

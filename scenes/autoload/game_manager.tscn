@@ -2,7 +2,34 @@
 
 [ext_resource type="Script" uid="uid://cpht2iorftx77" path="res://scripts/game/GameManager.cs" id="1_tmdk2"]
 [ext_resource type="Resource" uid="uid://3622oqnhffm8" path="res://resources/tuning/run_tuning.tres" id="2_tmdk2"]
+[ext_resource type="Script" uid="uid://d1jjhj8ouekbn" path="res://scripts/game/TimelineEvent.cs" id="3_2rbs1"]
+[ext_resource type="Script" uid="uid://cphiqs3b056kw" path="res://scripts/game/TimelineResource.cs" id="3_iet3w"]
+
+[sub_resource type="Resource" id="Resource_oexaw"]
+script = ExtResource("3_2rbs1")
+TimeStamp = "08:10"
+Data = Dictionary[String, String]({
+"hazardId": "holy_water_leak"
+})
+metadata/_custom_type_script = "uid://d1jjhj8ouekbn"
+
+[sub_resource type="Resource" id="Resource_a5rnb"]
+script = ExtResource("3_iet3w")
+Day = 1
+Events = Array[ExtResource("3_2rbs1")]([SubResource("Resource_oexaw")])
+metadata/_custom_type_script = "uid://cphiqs3b056kw"
+
+[sub_resource type="Resource" id="Resource_fqldq"]
+script = ExtResource("3_iet3w")
+Day = 2
+metadata/_custom_type_script = "uid://cphiqs3b056kw"
+
+[sub_resource type="Resource" id="Resource_3ay3b"]
+script = ExtResource("3_iet3w")
+Day = 3
+metadata/_custom_type_script = "uid://cphiqs3b056kw"
 
 [node name="GameManager" type="Node" unique_id=1600033193]
 script = ExtResource("1_tmdk2")
 Tuning = ExtResource("2_tmdk2")
+Timeline = Array[Object]([SubResource("Resource_a5rnb"), SubResource("Resource_fqldq"), SubResource("Resource_3ay3b")])

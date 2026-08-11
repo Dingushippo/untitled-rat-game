@@ -1,9 +1,11 @@
 using Godot;
+using Godot.Collections;
 using System.Linq;
 
 public partial class GameManager : Node
 {
     [Export] public RunTuning Tuning;
+    [Export] public Array<TimelineResource> Timeline;
     private static GameManager _instance;
     public static GameManager Instance => _instance;
     private FiniteStateMachine _fsm;
