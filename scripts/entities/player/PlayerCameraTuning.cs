@@ -20,4 +20,22 @@ public partial class PlayerCameraTuning : Resource
     [Export] public float ImpactFovPunch = 7f;
     [Export] public float MinImpactScale = 0.3f;
     [Export(PropertyHint.Range, "0,0.5")] public float ImpactAttackRatio = 0.18f;
+
+    [ExportGroup("Head bob")]
+    [Export] public float BobStrength = 0.5f;
+    [Export] public float BobStrengthSprint = 0.5f;
+    [Export] public float BobSpeed = 10f;
+    [Export] public float BobSpeedSprint = 15f;
+
+    [ExportGroup("Movement FOV")]
+    [Export] public float WalkFovOffset = 2f;
+    [Export] public float RunFovOffset = 10f;
+    [Export] public float SlideFovOffset = 10f;
+
+
+    [ExportGroup("Cam pose testing")]
+    [Export] public float Pitch = 0f;
+    [Export] public float Roll = 0f;
+    [Export] public float Z = 0f;
+    [Export] public float Fov = 0f;
 }

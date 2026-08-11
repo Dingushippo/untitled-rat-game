@@ -1,9 +1,14 @@
 [gd_scene format=3 uid="uid://dddbcjta73bx1"]
 
 [ext_resource type="Script" uid="uid://cpht2iorftx77" path="res://scripts/game/GameManager.cs" id="1_tmdk2"]
-[ext_resource type="Resource" uid="uid://3622oqnhffm8" path="res://resources/tuning/run_tuning.tres" id="2_tmdk2"]
+[ext_resource type="Script" uid="uid://c58yhqvn28p07" path="res://scripts/game/RunTuning.cs" id="2_2rbs1"]
 [ext_resource type="Script" uid="uid://d1jjhj8ouekbn" path="res://scripts/game/TimelineEvent.cs" id="3_2rbs1"]
 [ext_resource type="Script" uid="uid://cphiqs3b056kw" path="res://scripts/game/TimelineResource.cs" id="3_iet3w"]
+
+[sub_resource type="Resource" id="Resource_tytqk"]
+script = ExtResource("2_2rbs1")
+DayLength = 10000.0
+metadata/_custom_type_script = "uid://c58yhqvn28p07"
 
 [sub_resource type="Resource" id="Resource_oexaw"]
 script = ExtResource("3_2rbs1")
@@ -31,5 +36,5 @@ metadata/_custom_type_script = "uid://cphiqs3b056kw"
 
 [node name="GameManager" type="Node" unique_id=1600033193]
 script = ExtResource("1_tmdk2")
-Tuning = ExtResource("2_tmdk2")
+Tuning = SubResource("Resource_tytqk")
 Timeline = Array[Object]([SubResource("Resource_a5rnb"), SubResource("Resource_fqldq"), SubResource("Resource_3ay3b")])

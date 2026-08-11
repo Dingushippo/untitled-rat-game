@@ -26,15 +26,6 @@ public partial class HazardManager : Node
         EventBus.Subscribe(Event.SpawnHazard, OnSpawnHazard);
     }
 
-
-    public override void _Input(InputEvent @event)
-    {
-        if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.Key1)
-        {
-            OnSpawnHazard(["holy_water_leak"]);
-        }
-    }
-
     private void OnSpawnHazard(object[] args)
     {
         string hazardId = (string)args[0];

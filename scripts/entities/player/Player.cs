@@ -113,6 +113,7 @@ public partial class Player : CharacterBody3D
         );
     }
 
+    public float CurrentSpeed;
     public Vector3 GetMovementInputVelocity(float acceleration, float deceleration, float delta, float speedOverride = 0)
     {
         Vector2 input = GetInputVector();
@@ -121,6 +122,8 @@ public partial class Player : CharacterBody3D
         if (speedOverride != 0) speed = speedOverride;
         else if (Input.IsActionPressed("sprint")) speed = SprintSpeed;
         else speed = Speed;
+
+        CurrentSpeed = speed;
 
         float yaw = Rotation.Y;
 
