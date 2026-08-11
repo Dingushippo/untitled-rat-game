@@ -45,7 +45,7 @@ HeadNode = NodePath("..")
 HandNode = NodePath("../Hand")
 
 [node name="Hand" parent="Head" unique_id=320221158 instance=ExtResource("10_5ki56")]
-transform = Transform3D(-1.7569697e-08, -4.0024883e-08, 1, -0.9156626, 0.40194783, 0, -0.40194783, -0.9156626, -4.371139e-08, 0.7, -0.4, -0.8)
+transform = Transform3D(-0.095506296, 0.12760992, 0.98721534, -0.9067514, 0.3980361, -0.1391731, -0.4107072, -0.90845084, 0.077695526, 0.7, -0.4, -0.8)
 
 [node name="ThrowComponent" type="Node3D" parent="Head/Hand" unique_id=1814457487 node_paths=PackedStringArray("Player", "ThrowPreview", "HandNode")]
 transform = Transform3D(-4.3711378e-08, -0.6474243, -0.76212966, 0, 0.7621295, -0.64742446, 0.99999976, -2.8299814e-08, -3.3313746e-08, 0, 0, 0)
@@ -67,7 +67,6 @@ MaxDots = 3000
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-visible = false
 mesh = SubResource("CapsuleMesh_pso3n")
 
 [node name="VaultRaycast" type="RayCast3D" parent="." unique_id=2043323760]
