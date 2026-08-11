@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="HazardResource" format=3 uid="uid://dvhtea1cjy1kx"]
+
+[ext_resource type="Script" uid="uid://dbk1hl8wxnxqd" path="res://scripts/hazards/HazardResource.cs" id="1_8ce05"]
+[ext_resource type="PackedScene" uid="uid://c4n2hxg1wxdbv" path="res://scenes/hazards/holy_water_leak.tscn" id="1_kp4dg"]
+
+[resource]
+script = ExtResource("1_8ce05")
+Id = "holy_water_leak"
+DisplayName = "Holy water leak"
+Description = "Pipe burst on the floor, disables nearby facilities"
+SpawnMargin = 2.0
+HazardSpawnRadiusVarianceMin = 1.0
+HazardSpawnRadiusVarianceMax = 8.0
+Scene = ExtResource("1_kp4dg")
+metadata/_custom_type_script = "uid://dbk1hl8wxnxqd"

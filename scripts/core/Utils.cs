@@ -56,6 +56,7 @@ public static partial class RaycastUtils
         );
         query.CollideWithAreas = collideWithAreas;
         query.CollideWithBodies = collideWithBodies;
+        query.HitFromInside = true;
         query.Exclude = excludeRidArray;
         Profiler.Count("physics.raycast");
         return state.IntersectRay(query);
@@ -80,6 +81,38 @@ public static partial class RaycastUtils
         };
 
         result = state.IntersectShape(query);
+        return result.Count != 0;
+    }
+
+    public static bool CircleShape(
+        Node3D node,
+        Vector3 position,
+        float radius,
+        out Array<Dictionary> result,
+        uint collisionMask = 4294967295,
+        bool collideWithAreas = true,
+        bool collideWithBodies = true
+    )
+    {
+        PhysicsDirectSpaceState3D state = node.GetWorld3D().DirectSpaceState;
+
+        Rid shapeRid = PhysicsServer3D.CylinderShapeCreate();
+        Dictionary<string, float> shapeData = new();
+        shapeData["height"] = 0.2f;
+        shapeData["radius"] = radius;
+        PhysicsServer3D.ShapeSetData(shapeRid, shapeData);
+
+        PhysicsShapeQueryParameters3D query = new()
+        {
+            ShapeRid = shapeRid,
+            CollisionMask = collisionMask,
+            CollideWithAreas = collideWithAreas,
+            CollideWithBodies = collideWithBodies,
+            Transform = new Transform3D(Basis.Identity, position + Vector3.Up * 0.4f)
+        };
+
+        result = state.IntersectShape(query);
+        PhysicsServer3D.FreeRid(shapeRid);
         return result.Count != 0;
     }
 
