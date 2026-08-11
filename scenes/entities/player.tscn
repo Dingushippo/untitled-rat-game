@@ -27,6 +27,7 @@ Camera = NodePath("Head/Camera3D")
 Collider = NodePath("CollisionShape3D")
 VaultRaycast = NodePath("VaultRaycast")
 ThrowComponent = NodePath("Head/Hand/ThrowComponent")
+WallrunGravityScale = 5.0
 JumpForce = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]

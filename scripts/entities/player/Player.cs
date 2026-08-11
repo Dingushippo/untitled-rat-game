@@ -10,6 +10,8 @@ public partial class Player : CharacterBody3D
     [Export] public float Speed = 10f;
     [Export] public float SprintSpeed = 15f;
     [Export] public float CrouchSpeed = 5f;
+    [Export] public float WallrunSpeed = 12f;
+    [Export] public float WallrunGravityScale = 0.9f;
     [Export] public float Acceleration = 55f;
     [Export] public float Deceleration = 90f;
     [Export] public float AirAcceleration = 25f;
@@ -19,7 +21,8 @@ public partial class Player : CharacterBody3D
     // 1 = no extra bite on turns, higher = snappier direction changes.
     [Export] public float TurnBrakeMultiplier = 2.5f;
     [Export] public float JumpForce = 10f;
-
+    [Export] public float WallJumpForce = 8f;
+    [Export] public float WallrunCheckDistance = 1f;
     public GrabComponent GrabComponent;
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
@@ -92,8 +95,9 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add("falling", new PlayerFallingState(this));
         _movementFsm.Add("vault", new PlayerVaultState(this));
         _movementFsm.Add("slide", new PlayerSlideState(this));
+        _movementFsm.Add("wallrun", new PlayerWallrunState(this));
         _movementFsm.InitState("idle");
-        _movementFsm.Debug = false;
+        _movementFsm.Debug = true;
 
         _handFsm = new(this);
         _handFsm.Add("empty", new HandEmptyState(this));

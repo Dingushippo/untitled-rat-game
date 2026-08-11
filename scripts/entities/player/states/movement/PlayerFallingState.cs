@@ -7,9 +7,8 @@ public class PlayerFallingState : PlayerState
 {
     const float COYOTY_TIMER_LENGTH = 0.2f;
     public PlayerFallingState(Player owner) : base(owner) { }
-
-
     private float _timer = 99f;
+    private bool _fromWallrun = false;
     public override void PhysicsProcess(float delta)
     {
         _timer += delta;
@@ -23,7 +22,11 @@ public class PlayerFallingState : PlayerState
         {
             fsm.ChangeState("move", this);
         }
-        if (_player.VaultRaycast.IsColliding() && Input.IsActionPressed("jump") && CanVault())
+        else if (CanWallrun())
+        {
+            fsm.ChangeState("wallrun", this);
+        }
+        else if (_player.VaultRaycast.IsColliding() && Input.IsActionPressed("jump") && CanVault())
         {
             fsm.ChangeState("vault", this);
         }
@@ -31,13 +34,13 @@ public class PlayerFallingState : PlayerState
         {
             fsm.ChangeState("jump", this);
         }
-
-
     }
     public override void Enter(State previous = null)
     {
         if (previous is not PlayerJumpState) _timer = 0;
         _player.CrouchComponent.Enabled = false;
+
+        _fromWallrun = previous is PlayerWallrunState;
     }
     public override void Exit()
     {
@@ -60,5 +63,31 @@ public class PlayerFallingState : PlayerState
             return false;
         }
         return true;
+    }
+
+
+    public Side Side;
+    private bool CanWallrun()
+    {
+        if (_fromWallrun || _player.GetRealVelocity().Y <= 0)
+            return false;
+
+        Vector3 position = _player.Camera.GlobalPosition;
+        Vector3 leftOfPlayer = (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, -Mathf.Pi / 2)) * _player.WallrunCheckDistance;
+        Vector3 rightOfPlayer = (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, Mathf.Pi / 2)) * _player.WallrunCheckDistance;
+
+        // Check left side
+        if (RaycastUtils.Ray(_player, position, leftOfPlayer, out _, PhysicsLayers.WORLD))
+        {
+            Side = Side.Left;
+            return true;
+        }
+        // Check right side
+        else if (RaycastUtils.Ray(_player, position, rightOfPlayer, out _, PhysicsLayers.WORLD))
+        {
+            Side = Side.Right;
+            return true;
+        }
+        return false;
     }
 }

@@ -8,7 +8,14 @@ public class PlayerJumpState : PlayerState
     public override void Enter(State previous = null)
     {
         Vector3 velocity = _player.Velocity;
-        velocity.Y = _player.JumpForce;
+        if (previous is PlayerWallrunState wallrun)
+        {
+            velocity = (wallrun.WallNormal + Vector3.Up) * _player.WallJumpForce;
+
+            GD.Print($"JumpVelocity: {velocity}");
+        }
+        else
+            velocity.Y = _player.JumpForce;
         if (previous is PlayerSlideState)
         {
             velocity.Y *= SLIDE_BOOST;
