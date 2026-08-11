@@ -55,7 +55,7 @@ public class PlayerFallingState : PlayerState
     private bool CanVault()
     {
         Vector3 collisionPoint = _player.VaultRaycast.GetCollisionPoint();
-        if (Utils.Raycast(_player, collisionPoint, collisionPoint + Vector3.Up * 2f, out _, _player.CollisionMask))
+        if (RaycastUtils.Ray(_player, collisionPoint, collisionPoint + Vector3.Up * 2f, out _, _player.CollisionMask))
         {
             return false;
         }

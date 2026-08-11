@@ -60,7 +60,7 @@ public partial class SimpleThrow : ThrowType
             velocity += ctx.Gravity * GravityScale(ctx, velocity, bounces) * step;
             Vector3 next = position + velocity * step;
 
-            if (!Utils.Raycast(ctx.Rat, position, next, out Dictionary hit, collisionMask))
+            if (!RaycastUtils.Ray(ctx.Rat, position, next, out Dictionary hit, collisionMask))
             {
                 position = next;
                 path.Add(position, velocity.Length());
@@ -78,7 +78,7 @@ public partial class SimpleThrow : ThrowType
                     return path.Build(target, homing: isHoming);
                 }
                 // Nothing to aim at here, so pass through the trigger and let the facility's own body produce the bounce instead of the catch volume
-                if (!Utils.Raycast(ctx.Rat, hitPosition, next, out hit, PhysicsLayers.WORLD, collideWithAreas: false))
+                if (!RaycastUtils.Ray(ctx.Rat, hitPosition, next, out hit, PhysicsLayers.WORLD, collideWithAreas: false))
                 {
                     position = next;
                     path.Add(position, velocity.Length());
@@ -147,7 +147,7 @@ public partial class SimpleThrow : ThrowType
     {
         Vector3 approach = target.Position + Vector3.Up * ApproachHeight;
 
-        return Utils.Raycast(ctx.Rat, from, approach, out _, PhysicsLayers.WORLD, collideWithAreas: false)
+        return RaycastUtils.Ray(ctx.Rat, from, approach, out _, PhysicsLayers.WORLD, collideWithAreas: false)
             ? target.ColliderTopY
             : float.NegativeInfinity;
     }

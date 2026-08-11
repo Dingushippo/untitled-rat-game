@@ -230,7 +230,7 @@ public partial class ThrowPreview : Node3D
     {
         Vector3 reticlePos = path.End + Vector3.Up * 0.01f;
         Vector3 targetRaycastPos = reticlePos + Vector3.Down;
-        if (Utils.Raycast(this, reticlePos, targetRaycastPos, out Dictionary result, PhysicsLayers.WORLD))
+        if (RaycastUtils.Ray(this, reticlePos, targetRaycastPos, out Dictionary result, PhysicsLayers.WORLD))
         {
             Vector3 hitNormal = result["normal"].AsVector3();
             Vector3 hitPosition = result["position"].AsVector3();

@@ -28,7 +28,7 @@ public partial class InteractComponent
         Vector3 rayEnd = rayStart + -_player.Camera.GlobalBasis.Z * InteractDistance;
 
         GodotObject newComponent = null;
-        if (Utils.Raycast(
+        if (RaycastUtils.Ray(
             _player,
             rayStart,
             rayEnd, out Dictionary result,

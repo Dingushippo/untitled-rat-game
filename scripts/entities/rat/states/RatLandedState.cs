@@ -12,7 +12,7 @@ public class RatLandedState : RatState
     {
         Vector3 landingDirection = new Vector3(0, _rat.GlobalRotation.Y, 0);
 
-        if (Utils.Raycast(
+        if (RaycastUtils.Ray(
             _rat,
             _rat.GlobalPosition,
             _rat.GlobalPosition + Vector3.Down * 0.25f,

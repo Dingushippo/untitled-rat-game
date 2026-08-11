@@ -3,9 +3,9 @@ using Godot.Collections;
 using System;
 using System.Linq;
 
-public static partial class Utils
+public static partial class RaycastUtils
 {
-    public static bool Raycast(
+    public static bool Ray(
         Node3D node,
         Vector3 a,
         Vector3 b,
@@ -61,7 +61,7 @@ public static partial class Utils
         return state.IntersectRay(query);
     }
 
-    public static bool ShapeCast(
+    public static bool Shape(
         Node3D node,
         CollisionShape3D collider,
         out Array<Dictionary> result,
@@ -82,4 +82,47 @@ public static partial class Utils
         result = state.IntersectShape(query);
         return result.Count != 0;
     }
+
+    public static bool Circle(
+        Node3D node,
+        Vector3 position,
+        float radius,
+        int samples,
+        out Dictionary result,
+        uint collisionMask = 4294967295,
+        bool collideWithAreas = true,
+        bool collideWithBodies = true,
+        Func<GodotObject, bool> accept = null,
+        int maxDepth = 5
+    )
+    {
+        result = default;
+        for (int i = 0; i < samples; i++)
+        {
+            float angle = i * (Mathf.Tau / samples);
+            Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
+            Vector3 endPos = position + direction * radius;
+            if (Ray(node, position, endPos, out result, collisionMask, collideWithAreas, collideWithBodies, accept, maxDepth))
+                return true;
+        }
+        return false;
+    }
 }
+
+/*
+
+if (_currentRitual.GlobalPosition.DistanceTo(_player.GlobalPosition) > VALID_DISTANCE)
+            return false;
+
+        const int NUM_CHECKS = 16;
+        Vector3 startPos = _currentRitual.GlobalPosition;
+        for (int i = 0; i < NUM_CHECKS; i++)
+        {
+            float angle = i * (Mathf.Tau / NUM_CHECKS);
+            Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
+            Vector3 endPos = startPos + direction * _maxRadiusToCheckCollision;
+            if (RaycastUtils.Ray(_currentRitual, startPos, endPos, out _, PhysicsLayers.WORLD))
+                return false;
+        }
+        return true;
+*/

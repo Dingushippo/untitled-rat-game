@@ -46,7 +46,7 @@ public class RatCurveState : RatState
             return;
         }
 
-        if (_rat.Collider.Disabled && Utils.ShapeCast(_rat, _rat.Collider, out _, PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY), false))
+        if (_rat.Collider.Disabled && RaycastUtils.Shape(_rat, _rat.Collider, out _, PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.FACILITY), false))
         {
             _rat.Collider.Disabled = false;
         }
@@ -156,7 +156,7 @@ public class RatCurveState : RatState
     {
         float probeLength = _rat.FlightTuning.GroundProbeDistance;
         uint collisionMask = PhysicsLayers.WORLD;
-        if (Utils.Raycast(_rat, _rat.GlobalPosition, _rat.GlobalPosition + Vector3.Down * probeLength, out _, collisionMask, collideWithAreas: false))
+        if (RaycastUtils.Ray(_rat, _rat.GlobalPosition, _rat.GlobalPosition + Vector3.Down * probeLength, out _, collisionMask, collideWithAreas: false))
         {
             return true;
         }

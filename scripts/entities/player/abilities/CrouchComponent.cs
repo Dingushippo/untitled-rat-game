@@ -82,7 +82,7 @@ public partial class CrouchComponent
     {
         if (!IsCrouching) return;
 
-        if (Utils.Raycast(_player, _player.GlobalPosition, Vector3.Up * CROUCH_OFFSET, out _))
+        if (RaycastUtils.Ray(_player, _player.GlobalPosition, Vector3.Up * CROUCH_OFFSET, out _))
         {
             _canStand = false;
         }

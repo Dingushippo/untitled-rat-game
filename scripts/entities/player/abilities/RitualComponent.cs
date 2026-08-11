@@ -34,7 +34,7 @@ public partial class RitualComponent
 
         Vector3 rayStart = _camera.GlobalPosition;
         Vector3 rayEnd = rayStart + -_camera.GlobalBasis.Z * MAX_DISTANCE;
-        if (Utils.Raycast(_player, rayStart, rayEnd, out Dictionary result, _collisionMask))
+        if (RaycastUtils.Ray(_player, rayStart, rayEnd, out Dictionary result, _collisionMask))
         {
             Vector3 position;
             ValidPosition = IsValidPosition();
@@ -89,15 +89,7 @@ public partial class RitualComponent
 
         const int NUM_CHECKS = 16;
         Vector3 startPos = _currentRitual.GlobalPosition;
-        for (int i = 0; i < NUM_CHECKS; i++)
-        {
-            float angle = i * (Mathf.Tau / NUM_CHECKS);
-            Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
-            Vector3 endPos = startPos + direction * _maxRadiusToCheckCollision;
-            if (Utils.Raycast(_currentRitual, startPos, endPos, out _, PhysicsLayers.WORLD))
-                return false;
-        }
-        return true;
+        return !RaycastUtils.Circle(_currentRitual, startPos, _maxRadiusToCheckCollision, NUM_CHECKS, out _, PhysicsLayers.WORLD);
     }
 
     public void Cancel()
