@@ -9,6 +9,8 @@ public partial class PlayerCamera : Camera3D
     [Export] public Player Player;
     [Export] public bool DebugAimMarker = false;
     [Export] public PlayerCameraTuning Tuning;
+    [Export] public Node3D HeadNode;
+    [Export] public Node3D HandNode;
     [Export] public Noise ShakeNoise;
 
     public float YOffset = 0f;
@@ -20,6 +22,7 @@ public partial class PlayerCamera : Camera3D
 
     private Vector3 _basePosition;
     private Vector3 _baseRotation;
+    private Vector3 _handOffset;
 
     // Additive offsets driven by tweens, applied on top of the look rotation.
     private float _kickPitch;
@@ -46,6 +49,7 @@ public partial class PlayerCamera : Camera3D
         _originalFov = Fov;
         _basePosition = Position;
         _baseRotation = Rotation;
+        _handOffset = HandNode.Position;
 
         // Capture the mouse for FPS look
         Input.MouseMode = Input.MouseModeEnum.Captured;
@@ -66,16 +70,19 @@ public partial class PlayerCamera : Camera3D
     {
         HandleHeadbob((float)delta);
         HandleFovMovementChange((float)delta);
-        ApplyPose();
+        ApplyPose((float)delta);
     }
 
-    private void ApplyPose()
+    private void ApplyPose(float delta)
     {
-        Vector3 rotation = _baseRotation;
-        rotation.X = _pitchRad + _kickPitch;
-        rotation.Z = _baseRotation.Z + _kickRoll;
-        Rotation = rotation;
+        Vector3 pitch = _baseRotation;
+        Vector3 yaw = _baseRotation;
+        pitch.X = _pitchRad + _kickPitch;
+        yaw.Z = _baseRotation.Z + _kickRoll;
+        Rotation = yaw;
+        HeadNode.Rotation = pitch;
         Position = _basePosition + new Vector3(0f, YOffset, _kickZ) + _bobOffset;
+        HandNode.Position = _handOffset + new Vector3(0f, YOffset, _kickZ);
         Fov = _originalFov + _fovOffset;
     }
 
