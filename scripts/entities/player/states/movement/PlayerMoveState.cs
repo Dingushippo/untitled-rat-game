@@ -40,6 +40,13 @@ public class PlayerMoveState : PlayerState
         {
             fsm.ChangeState("slide");
         }
+        if (@event.IsActionPressed("crouch") && _player.IsOnFloor() && _player.GetFloorAngle() != 0)
+        {
+            if (_player.GetRealVelocity().Y < 0)
+                fsm.ChangeState("slide");
+        }
+
+        // _player.IsOnFloor() || _player.GetFloorAngle() != 0
     }
 
     protected virtual void HandleMovement(float delta)
