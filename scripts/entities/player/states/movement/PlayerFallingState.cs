@@ -25,7 +25,10 @@ public class PlayerFallingState : PlayerState
 
         if (_player.IsOnFloor())
         {
-            fsm.ChangeState("move", this);
+            if (Input.IsActionPressed("crouch"))
+                fsm.ChangeState("slide", this);
+            else
+                fsm.ChangeState("move", this);
         }
         else if (CanWallrun())
         {
