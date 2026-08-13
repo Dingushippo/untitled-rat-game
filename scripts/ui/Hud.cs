@@ -18,8 +18,8 @@ public partial class Hud : Control
     public override void _EnterTree()
     {
         EventBus.Subscribe<ResourceChanged>(OnResourceChanged);
-        EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
-        EventBus.Subscribe(Event.RatReleased, OnRatReleased);
+        EventBus.Subscribe<RatPickedUp>(OnRatPickedUp);
+        EventBus.Subscribe<RatReleased>(OnRatReleased);
         EventBus.Subscribe<QuotaUpdated>(OnQuotaUpdated);
         EventBus.Subscribe<DayStarted>(OnDayStarted);
         EventBus.Subscribe<ClockTick>(OnClockTick);
@@ -27,8 +27,8 @@ public partial class Hud : Control
     public override void _ExitTree()
     {
         EventBus.Unsubscribe<ResourceChanged>(OnResourceChanged); ;
-        EventBus.Unsubscribe(Event.RatPickedUp, OnRatPickedUp);
-        EventBus.Unsubscribe(Event.RatReleased, OnRatReleased);
+        EventBus.Unsubscribe<RatPickedUp>(OnRatPickedUp);
+        EventBus.Unsubscribe<RatReleased>(OnRatReleased);
         EventBus.Unsubscribe<QuotaUpdated>(OnQuotaUpdated);
         EventBus.Unsubscribe<DayStarted>(OnDayStarted);
         EventBus.Unsubscribe<ClockTick>(OnClockTick);
@@ -39,7 +39,8 @@ public partial class Hud : Control
     {
         InventoryLabel.Text = IntventoryPrint.PrintContent(_currentHeldInventory);
     }
-    private void OnRatReleased(object[] obj)
+
+    private void OnRatReleased(RatReleased evt)
     {
         InventoryLabel.Text = "";
         _currentHeldInventory.Changed -= UpdateInventory;
@@ -47,15 +48,13 @@ public partial class Hud : Control
         InventoryContainer.Hide();
     }
 
-    private void OnRatPickedUp(object[] obj)
+    private void OnRatPickedUp(RatPickedUp evt)
     {
-        if (obj[0] is Rat rat)
-        {
-            _currentHeldInventory = rat.Cargo;
-            InventoryContainer.Show();
-            _currentHeldInventory.Changed += UpdateInventory;
-            UpdateInventory();
-        }
+        _currentHeldInventory = evt.Rat.Cargo;
+        InventoryContainer.Show();
+        _currentHeldInventory.Changed += UpdateInventory;
+        UpdateInventory();
+
     }
 
     private void OnClockTick(ClockTick evt)

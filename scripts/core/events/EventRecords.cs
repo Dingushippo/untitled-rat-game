@@ -19,3 +19,6 @@ public readonly record struct ClockTick(string Text, int Day, float DayProgress)
 public readonly record struct StartQte(string Id, Action<bool> OnComplete);
 public readonly record struct QteStarted(QteBase Qte);
 public readonly record struct QteCompleted(QteBase Qte);
+public readonly record struct RatPickedUp(Rat Rat);
+public readonly record struct RatReleased(Rat Rat);
+public readonly record struct SetDisruptFacilityInRange(Vector3 Position, float Radius, bool Disrupt);

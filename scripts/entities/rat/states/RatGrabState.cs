@@ -16,13 +16,13 @@ public class RatGrabState : RatState
         _rat.Reparent(_player.ThrowComponent.HandNode);
         _rat.Collider.Disabled = true;
         _rat.InteractArea?.SetActive(false);
-        EventBus.Publish(Event.RatPickedUp, _rat);
+        EventBus.Publish(new RatPickedUp(_rat));
     }
     public override void Exit()
     {
         _rat.Reparent(_prevParent);
         _rat.InteractArea?.SetActive(true);
-        EventBus.Publish(Event.RatReleased, _rat);
+        EventBus.Publish(new RatReleased(_rat));
     }
 
 
