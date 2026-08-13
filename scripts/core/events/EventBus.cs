@@ -1,11 +1,33 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Godot;
 
 public partial class EventBus
 {
     // private static readonly Dictionary<Type, List<Delegate>> Subscribers = new();
     private static readonly Dictionary<Event, List<Delegate>> Subscribers = new();
+
+    public static void Subscribe<T>(Action<T> cb)
+    {
+        if (Channel<T>.Subscribers == null)
+        {
+            Channel<T>.Subscribers = new();
+        }
+        Channel<T>.Subscribers.Add(cb);
+    }
+    public static void Unsubscribe<T>(Action<T> cb)
+    {
+        Channel<T>.Subscribers.Remove(cb);
+    }
+    public static void Publish<T>(in T evt)
+    {
+        foreach (Action<T> cb in Channel<T>.Subscribers)
+        {
+            cb?.Invoke(evt);
+        }
+    }
+
 
     public static void Subscribe(Event evt, Action<object[]> callback)
     {
@@ -34,4 +56,9 @@ public partial class EventBus
             ((Action<object[]>)cb)?.Invoke(args);
         }
     }
+}
+
+public static class Channel<T>
+{
+    internal static List<Action<T>> Subscribers;
 }
