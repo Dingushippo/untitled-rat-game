@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters;
 using Godot;
+using System;
 
 public class FiniteStateMachine
 {
@@ -22,11 +22,35 @@ public class FiniteStateMachine
         _isEnabled = enabled;
     }
 
-    public void Add(string key, State state)
+    public void Add<T>(T state) where T : State
     {
-        states[key] = state;
+        states[nameof(T)] = state;
         state.fsm = this;
     }
+
+    public void InitState<T>() where T : State
+    {
+        string state = nameof(T);
+        if (!ValidateState(state))
+            return;
+        CurrentState = states[state];
+        CurrentStateName = state;
+        CurrentState.Enter();
+    }
+
+    public void ChangeState<T>(State previous = null) where T : State
+    {
+        string state = nameof(T);
+        if (!ValidateState(state)) return;
+        if (Debug) GD.Print($"{_owner} - Changing state from {CurrentStateName} to {state}");
+        PreviousStateName = CurrentStateName;
+        CurrentState.Exit();
+        CurrentState = states[state];
+        CurrentStateName = state;
+        CurrentState.Enter(previous);
+    }
+
+    public T Get<T>() where T : State => (T)states[nameof(T)];
 
     public void StatePhysicsProcess(float delta)
     {
@@ -47,25 +71,6 @@ public class FiniteStateMachine
     {
         if (!_isEnabled) return;
         CurrentState.HandleUnhandledInput(@event);
-    }
-
-    public void InitState(string newState)
-    {
-        if (!ValidateState(newState)) return;
-        CurrentState = states[newState];
-        CurrentStateName = newState;
-        CurrentState.Enter();
-    }
-
-    public void ChangeState(string newState, State previous = null)
-    {
-        if (!ValidateState(newState)) return;
-        if (Debug) GD.Print($"{_owner} - Changing state from {CurrentStateName} to {newState}");
-        PreviousStateName = CurrentStateName;
-        CurrentState.Exit();
-        CurrentState = states[newState];
-        CurrentStateName = newState;
-        CurrentState.Enter(previous);
     }
 
     private bool ValidateState(string state)
