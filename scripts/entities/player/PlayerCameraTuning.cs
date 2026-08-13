@@ -37,4 +37,5 @@ public partial class PlayerCameraTuning : Resource
     [Export] public float Roll = 0f;
     [Export] public float Z = 0f;
     [Export] public float Fov = 0f;
+    [Export] public float Side = 0f;
 }

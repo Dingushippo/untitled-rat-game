@@ -25,17 +25,18 @@ public partial class PlayerCamera : Camera3D
     private Vector3 _handOffset;
 
     // Additive offsets driven by tweens, applied on top of the look rotation.
-    private float _kickPitch;
-    private float _kickRoll;
+    private float _pitchOffset;
+    private float _rollOffset;
     private float _kickZ;
     private float _fovOffset;
+    private float _XOffset;
 
     private Tween _cameraTween;
 
-    private readonly record struct CamPose(float Pitch, float Roll, float Z, float Fov);
+    private readonly record struct CamPose(float Pitch, float Roll, float Z, float Fov, float Side);
 
-    private static readonly CamPose RestPose = new(0f, 0f, 0f, 0f);
-    private CamPose CurrentPose => new(_kickPitch, _kickRoll, _kickZ, _fovOffset);
+    private static readonly CamPose RestPose = new(0f, 0f, 0f, 0f, 0f);
+    private CamPose CurrentPose => new(_pitchOffset, _rollOffset, _kickZ, _fovOffset, _XOffset);
 
     public override void _Ready()
     {
@@ -77,11 +78,11 @@ public partial class PlayerCamera : Camera3D
     {
         Vector3 pitch = _baseRotation;
         Vector3 yaw = _baseRotation;
-        pitch.X = _pitchRad + _kickPitch;
-        yaw.Z = _baseRotation.Z + _kickRoll;
+        pitch.X = _pitchRad + _pitchOffset;
+        yaw.Z = _baseRotation.Z + _rollOffset;
         Rotation = yaw;
         HeadNode.Rotation = pitch;
-        Position = _basePosition + new Vector3(0f, YOffset, _kickZ) + _bobOffset;
+        Position = _basePosition + new Vector3(_XOffset, YOffset, _kickZ) + _bobOffset;
         HandNode.Position = _handOffset + new Vector3(0f, YOffset, _kickZ);
         Fov = _originalFov + _fovOffset;
     }
@@ -171,7 +172,7 @@ public partial class PlayerCamera : Camera3D
                 _cameraTween?.Kill();
                 _cameraTween = CreateTween();
                 _cameraTween.SetParallel();
-                CamPose newPose = new(Tuning.Pitch, Tuning.Roll, Tuning.Z, Tuning.Fov);
+                CamPose newPose = new(Tuning.Pitch, Tuning.Roll, Tuning.Z, Tuning.Fov, Tuning.Side);
                 TweenPose(CurrentPose, newPose, 0.2f);
             }
             if (key.Keycode == Key.Key2)
@@ -202,6 +203,28 @@ public partial class PlayerCamera : Camera3D
         _cameraEnabled = enabled;
     }
 
+    public void SetLean(Side dir, float angle = 0.2f, float xOffset = 0.25f, float leanDuration = 0.2f)
+    {
+        int sign = dir == Side.Left ? -1 : 1;
+        CamPose leanPose = new(0f, sign * angle, 0f, 0f, -sign * xOffset);
+        _cameraTween?.Kill();
+        _cameraTween = CreateTween();
+        _cameraTween.SetParallel(true);
+        _cameraTween.SetEase(Tween.EaseType.Out);
+        _cameraTween.SetTrans(Tween.TransitionType.Sine);
+        TweenPose(CurrentPose, leanPose, leanDuration);
+    }
+
+    public void ResetPose(float duration = 0.2f)
+    {
+        _cameraTween?.Kill();
+        _cameraTween = CreateTween();
+        _cameraTween.SetParallel(true);
+        _cameraTween.SetEase(Tween.EaseType.Out);
+        _cameraTween.SetTrans(Tween.TransitionType.Sine);
+        TweenPose(CurrentPose, RestPose, duration);
+    }
+
     private void OnCameraCharge(CameraCharge charge)
     {
         // Wind-up: pull back, tilt down and narrow the FOV to build tension.
@@ -209,7 +232,8 @@ public partial class PlayerCamera : Camera3D
             -Mathf.DegToRad(Tuning.ChargePitchDegrees),
             0f,
             Tuning.ChargePullDistance,
-            -Tuning.ChargeFovZoom
+            -Tuning.ChargeFovZoom,
+            0f
         );
 
         _cameraTween?.Kill();
@@ -244,7 +268,8 @@ public partial class PlayerCamera : Camera3D
             Mathf.DegToRad(Tuning.ImpactPitchDegrees) * scale,
             -Mathf.DegToRad(Tuning.ImpactRollDegrees) * scale,
             -Tuning.ImpactPunchDistance * scale,
-            Tuning.ImpactFovPunch * scale
+            Tuning.ImpactFovPunch * scale,
+            0f
         );
 
         float attack = duration * Tuning.ImpactAttackRatio;
@@ -266,10 +291,11 @@ public partial class PlayerCamera : Camera3D
 
     private void TweenPose(CamPose from, CamPose to, float duration, float delay = 0f)
     {
-        TweenChannel(v => _kickPitch = v, from.Pitch, to.Pitch, duration, delay);
-        TweenChannel(v => _kickRoll = v, from.Roll, to.Roll, duration, delay);
+        TweenChannel(v => _pitchOffset = v, from.Pitch, to.Pitch, duration, delay);
+        TweenChannel(v => _rollOffset = v, from.Roll, to.Roll, duration, delay);
         TweenChannel(v => _kickZ = v, from.Z, to.Z, duration, delay);
         TweenChannel(v => _fovOffset = v, from.Fov, to.Fov, duration, delay);
+        TweenChannel(v => _XOffset = v, from.Side, to.Side, duration, delay);
     }
 
     private void TweenChannel(Action<float> setter, float from, float to, float duration, float delay)

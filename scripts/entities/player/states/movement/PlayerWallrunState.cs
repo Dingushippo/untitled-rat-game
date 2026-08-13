@@ -42,6 +42,8 @@ public class PlayerWallRunState : PlayerState
         {
             _side = fall.Side;
         }
+        _player.Camera.SetLean(_side);
+
         _gravityScale = 0f;
         _decayTween?.Kill();
         _decayTween = _player.CreateTween();
@@ -49,6 +51,12 @@ public class PlayerWallRunState : PlayerState
         _decayTween.SetTrans(Tween.TransitionType.Sine);
         _decayTween.TweenMethod(Callable.From<float>((x) => _gravityScale = x), 0, 8f, _decayTime);
     }
+
+    public override void Exit()
+    {
+        _player.Camera.ResetPose();
+    }
+
 
     private bool IsStillOnWall()
     {
