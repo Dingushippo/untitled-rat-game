@@ -1,6 +1,5 @@
 public enum Event
 {
-    SpawnRat,
     QuotaUpdated,
     ClockTick,
     StartQte,

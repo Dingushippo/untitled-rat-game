@@ -12,4 +12,4 @@ public readonly record struct NavigationRegionReady(NavigationRegion3D Region);
 public readonly record struct ResourceChanged(Economy Type, int OldVal, int NewVal);
 public readonly record struct Sundown(int Day);
 public readonly record struct DayStarted(int Day);
-public readonly record struct SpawnRat(int Day);
+public readonly record struct SpawnRat(int Amount);

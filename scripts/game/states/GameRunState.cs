@@ -47,10 +47,7 @@ public class GameRunState : GameState
     private void OnLevelLoaded()
     {
         RunClock.Instance.Start();
-        EventBus.Publish(
-            Event.SpawnRat,
-            _manager.Tuning.RatsSpawnedPerDay[RunClock.Instance.Day - 1]
-        );
+        EventBus.Publish(new SpawnRat(_manager.Tuning.RatsSpawnedPerDay[RunClock.Instance.Day - 1]));
         EventBus.Publish(new DayStarted(1));
         EventBus.Publish(Event.QuotaUpdated, _stewsDeliveredToday, GetCurrentQuota());
     }
@@ -62,7 +59,6 @@ public class GameRunState : GameState
         EventBus.Unsubscribe(Event.ClockTick, HandleClockTick);
         _level.Ready -= OnLevelLoaded;
     }
-
     private int GetCurrentQuota() => _manager.Tuning.Quotas[RunClock.Instance.Day - 1];
 
     private void HandleClockTick(object[] args)
@@ -121,7 +117,7 @@ public class GameRunState : GameState
         clock.ResetTimer();
 
         EventBus.Publish(new DayStarted(clock.Day));
-        EventBus.Publish(Event.SpawnRat, _manager.Tuning.RatsSpawnedPerDay[clock.Day - 1]);
+        EventBus.Publish(new SpawnRat(_manager.Tuning.RatsSpawnedPerDay[clock.Day - 1]));
     }
 
     private void ResetRunState()
