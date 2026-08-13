@@ -24,6 +24,7 @@ public partial class ThrowComponent : Node3D
 
         _gravity = Player.GetGravity();
         _currentForce = Tuning.ThrowForce;
+        _originalBasis = HandNode.Basis;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -47,6 +48,7 @@ public partial class ThrowComponent : Node3D
                     _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
                 }
             }
+            HandAnimation((float)delta);
             ThrowPreview.ShowPreview(_currentPath);
         }
         else
@@ -85,6 +87,15 @@ public partial class ThrowComponent : Node3D
         EventBus.Publish(new CameraCharge(Tuning.ChargeDuration, Tuning.ChargeStartDelay));
     }
 
+    private float _rotationSpeed;
+    private Basis _originalBasis;
+    private void HandAnimation(float delta)
+    {
+        float newSpeed = Mathf.Remap(_currentForce, Tuning.ThrowForce, Tuning.MaxThrowForce, 0, 4f);
+        _rotationSpeed = Mathf.Lerp(_rotationSpeed, newSpeed, delta);
+        HandNode.RotateX(-_rotationSpeed);
+    }
+
     public void ResetCharge()
     {
         if (_chargeTween != null)
@@ -92,6 +103,7 @@ public partial class ThrowComponent : Node3D
             _chargeTween.Kill();
         }
         _currentForce = Tuning.ThrowForce;
+        _rotationSpeed = 0;
 
         // Only when the charge is abandoned - a completed throw hands the
         // camera over to the impact effect instead.
@@ -119,6 +131,9 @@ public partial class ThrowComponent : Node3D
 
         _isCharging = false;
         ResetCharge();
+
+        Tween resetTween = CreateTween();
+        resetTween.TweenProperty(HandNode, "basis", _originalBasis, 0.4);
 
         EventBus.Publish(new RatThrown());
         EventBus.Publish(new CameraImpact(chargeAmount, 0.35f));
