@@ -1,6 +1,5 @@
 public enum Event
 {
-    ResourceChanged,
     Sundown,
     DayStarted,
     SpawnRat,

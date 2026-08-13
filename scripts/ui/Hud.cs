@@ -17,7 +17,7 @@ public partial class Hud : Control
 
     public override void _EnterTree()
     {
-        EventBus.Subscribe(Event.ResourceChanged, OnResourceChanged);
+        EventBus.Subscribe<ResourceChanged>(OnResourceChanged);
         EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
         EventBus.Subscribe(Event.RatReleased, OnRatReleased);
         EventBus.Subscribe(Event.QuotaUpdated, OnQuotaUpdated);
@@ -26,7 +26,7 @@ public partial class Hud : Control
     }
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.ResourceChanged, OnResourceChanged);
+        EventBus.Unsubscribe<ResourceChanged>(OnResourceChanged); ;
         EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
         EventBus.Subscribe(Event.RatReleased, OnRatReleased);
         EventBus.Unsubscribe(Event.QuotaUpdated, OnQuotaUpdated);
@@ -78,20 +78,16 @@ public partial class Hud : Control
         QuotaLabel.Text = quotaText;
     }
 
-    private void OnResourceChanged(object[] args)
+    private void OnResourceChanged(ResourceChanged evt)
     {
-        if (args[0] is Economy type)
+        if (evt.Type == Economy.Tithes)
         {
-            if (type == Economy.Tithes)
-            {
-                int newValue = (int)args[2];
-                TitheLabel.Text = $"Tithes: {newValue}";
-            }
-            else if (type == Economy.Fervor)
-            {
-                int newValue = (int)args[2];
-                FervorProgressBar.Value = newValue;
-            }
+            TitheLabel.Text = $"Tithes: {evt.NewVal}";
         }
+        else if (evt.Type == Economy.Fervor)
+        {
+            FervorProgressBar.Value = evt.NewVal;
+        }
+
     }
 }

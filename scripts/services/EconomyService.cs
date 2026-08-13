@@ -33,7 +33,7 @@ public partial class EconomyService : Node
         {
             int oldTithes = _tithes;
             _tithes = value;
-            EventBus.Publish(Event.ResourceChanged, Economy.Tithes, oldTithes, Tithes);
+            EventBus.Publish(new ResourceChanged(Economy.Tithes, oldTithes, _tithes));
         }
     }
 
@@ -47,7 +47,7 @@ public partial class EconomyService : Node
             int oldFervor = _fervor;
             _fervor = Mathf.Clamp(value, 0, 100);
             if (oldFervor != _fervor)
-                EventBus.Publish(Event.ResourceChanged, Economy.Fervor, oldFervor, _fervor);
+                EventBus.Publish(new ResourceChanged(Economy.Fervor, oldFervor, _fervor));
         }
     }
 
