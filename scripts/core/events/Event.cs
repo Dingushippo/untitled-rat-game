@@ -1,7 +1,5 @@
 public enum Event
 {
-    RatSlotted,
-    RatUnslotted,
     ProductionCompleted,
     ProductionHalted,
     ProductionMissingItems,
