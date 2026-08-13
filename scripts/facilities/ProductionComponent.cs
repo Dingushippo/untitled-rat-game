@@ -71,19 +71,16 @@ public class ProductionComponent : IDisposable
         if (!@base.Input.Has(def.Inputs))
         {
             _timer = def.CycleSeconds;
-            SetStalled(@base, Event.ProductionMissingItems, def.Inputs);
             return;
         }
         if (!@base.Output.CanAdd(def.Outputs))
         {
             _timer = def.CycleSeconds;
-            SetStalled(@base, Event.ProductionHalted, def.Outputs);
             return;
         }
 
         @base.Input.TryRemove(def.Inputs);
         @base.Output.TryAdd(def.Outputs);
-        EventBus.Publish(Event.ProductionCompleted, @base, def.Outputs);
 
         _timer = 0f;
         IsStalled = false;

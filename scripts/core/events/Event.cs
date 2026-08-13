@@ -1,9 +1,5 @@
 public enum Event
 {
-    ProductionCompleted,
-    ProductionHalted,
-    ProductionMissingItems,
-    ItemsTransferred,
     ResourceChanged,
     Sundown,
     DayStarted,
