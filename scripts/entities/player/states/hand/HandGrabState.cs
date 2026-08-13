@@ -19,7 +19,7 @@ public class HandGrabState : PlayerState
             if (_player.GrabComponent.HasGrabbed())
             {
                 _player.GrabComponent.Release();
-                fsm.ChangeState("empty");
+                fsm.ChangeState<HandEmptyState>(this);
             }
         }
         if (@event.IsActionPressed("throw"))
@@ -30,7 +30,7 @@ public class HandGrabState : PlayerState
         {
             Rat ratToThrow = _player.GrabComponent.Retrieve();
             _player.ThrowComponent.Throw(ratToThrow);
-            fsm.ChangeState("empty");
+            fsm.ChangeState<HandEmptyState>(this);
         }
     }
     public override void Exit()

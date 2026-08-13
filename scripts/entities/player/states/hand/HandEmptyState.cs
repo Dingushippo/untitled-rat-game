@@ -9,7 +9,7 @@ public class HandEmptyState : PlayerState
     {
         if (_player.GrabComponent.HasGrabbed())
         {
-            fsm.ChangeState("grab");
+            fsm.ChangeState<HandGrabState>(this);
         }
     }
 
@@ -17,7 +17,7 @@ public class HandEmptyState : PlayerState
     {
         if (@event.IsActionPressed("ritual"))
         {
-            fsm.ChangeState("ritual");
+            fsm.ChangeState<HandRitualState>();
         }
     }
 }

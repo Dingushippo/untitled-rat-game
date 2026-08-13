@@ -89,22 +89,22 @@ public partial class Player : CharacterBody3D
     private void InitStateMachines()
     {
         _movementFsm = new(this);
-        _movementFsm.Add("idle", new PlayerIdleState(this));
-        _movementFsm.Add("move", new PlayerMoveState(this));
-        _movementFsm.Add("jump", new PlayerJumpState(this));
-        _movementFsm.Add("falling", new PlayerFallingState(this));
-        _movementFsm.Add("vault", new PlayerVaultState(this));
-        _movementFsm.Add("slide", new PlayerSlideState(this));
-        _movementFsm.Add("wallrun", new PlayerWallRunState(this));
-        _movementFsm.Add("walljump", new PlayerWallJumpState(this));
-        _movementFsm.InitState("idle");
+        _movementFsm.Add(new PlayerIdleState(this));
+        _movementFsm.Add(new PlayerMoveState(this));
+        _movementFsm.Add(new PlayerJumpState(this));
+        _movementFsm.Add(new PlayerFallingState(this));
+        _movementFsm.Add(new PlayerVaultState(this));
+        _movementFsm.Add(new PlayerSlideState(this));
+        _movementFsm.Add(new PlayerWallRunState(this));
+        _movementFsm.Add(new PlayerWallJumpState(this));
+        _movementFsm.InitState<PlayerIdleState>();
         _movementFsm.Debug = true;
 
         _handFsm = new(this);
-        _handFsm.Add("empty", new HandEmptyState(this));
-        _handFsm.Add("grab", new HandGrabState(this));
-        _handFsm.Add("ritual", new HandRitualState(this));
-        _handFsm.InitState("empty");
+        _handFsm.Add(new HandEmptyState(this));
+        _handFsm.Add(new HandGrabState(this));
+        _handFsm.Add(new HandRitualState(this));
+        _handFsm.InitState<HandEmptyState>();
         _handFsm.Debug = false;
     }
 
