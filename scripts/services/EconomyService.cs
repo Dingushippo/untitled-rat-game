@@ -57,7 +57,8 @@ public partial class EconomyService : Node
     public override void _EnterTree()
     {
         if (!Singleton.ClaimOrFree(ref _instance, this)) return;
-        EventBus.Subscribe(Event.ItemSold, OnItemSold);
+        // EventBus.Subscribe(Event.ItemSold, OnItemSold);
+        EventBus.Subscribe<ItemSold>(OnItemSold);
     }
 
     public override void _Process(double delta)
@@ -76,15 +77,14 @@ public partial class EconomyService : Node
         _fervorDecayTimer = 0;
     }
 
-    public void OnItemSold(params object[] args)
+    public void OnItemSold(ItemSold item)
     {
-        string itemId = (string)args[0];
-        int amount = (int)args[1];
-        ItemDef item = ItemDatabase.Get(itemId);
+
+        ItemDef itemDef = ItemDatabase.Get(item.ItemId);
 
         // TODO Possibly add global value stuff here, either positive or negative
-        Tithes += item.BaseValue * amount;
-        Fervor += 2 * amount;
+        Tithes += itemDef.BaseValue * item.Amount;
+        Fervor += 2 * item.Amount;
     }
 
     public void ResetForRun()

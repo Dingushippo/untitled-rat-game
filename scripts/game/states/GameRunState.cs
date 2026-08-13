@@ -30,7 +30,8 @@ public class GameRunState : GameState
 
         GD.Seed(_manager.Tuning.FixedSeed ? _manager.Tuning.Seed : (ulong)DateTime.Now.Ticks);
 
-        EventBus.Subscribe(Event.ItemSold, OnItemSold);
+        // EventBus.Subscribe(Event.ItemSold, OnItemSold);
+        EventBus.Subscribe<ItemSold>(OnItemSold);
         EventBus.Subscribe(Event.Sundown, OnSundown);
         EventBus.Subscribe(Event.ClockTick, HandleClockTick);
         EconomyService.Instance.ResetForRun();
@@ -57,7 +58,8 @@ public class GameRunState : GameState
 
     public override void Exit()
     {
-        EventBus.Unsubscribe(Event.ItemSold, OnItemSold);
+        // EventBus.Unsubscribe(Event.ItemSold, OnItemSold);
+        EventBus.Unsubscribe<ItemSold>(OnItemSold);
         EventBus.Unsubscribe(Event.Sundown, OnSundown);
         EventBus.Unsubscribe(Event.ClockTick, HandleClockTick);
         _level.Ready -= OnLevelLoaded;
@@ -86,15 +88,12 @@ public class GameRunState : GameState
         }
     }
 
-    private void OnItemSold(object[] obj)
+    private void OnItemSold(ItemSold item)
     {
-        string item = (string)obj[0];
-        int amount = (int)obj[1];
-
-        ItemDef itemDef = ItemDatabase.Get(item);
+        ItemDef itemDef = ItemDatabase.Get(item.ItemId);
         int oldAmount = StewsDeliveredToday;
-        StewsDeliveredToday += amount;
-        TotalStewsDelivered += amount;
+        StewsDeliveredToday += item.Amount;
+        TotalStewsDelivered += item.Amount;
     }
     private void OnSundown(object[] obj)
     {
