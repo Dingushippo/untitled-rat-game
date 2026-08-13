@@ -16,7 +16,7 @@ public class GameMenuState : GameState
     {
         if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.E)
         {
-            fsm.ChangeState("run");
+            fsm.ChangeState<GameRunState>(this);
         }
     }
 }

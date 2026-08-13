@@ -103,13 +103,13 @@ public class GameRunState : GameState
         GD.Print($"Stews delivered: {StewsDeliveredToday}/{quotaToMeet}, day {clock.Day}");
         if (StewsDeliveredToday < quotaToMeet)
         {
-            fsm.ChangeState("result", this);
+            fsm.ChangeState<GameResultState>(this);
             return;
         }
         if (clock.Day == _manager.Tuning.Quotas.Length)
         {
             RunSuccess = true;
-            fsm.ChangeState("result", this);
+            fsm.ChangeState<GameResultState>(this);
             return;
         }
         ResetDay();

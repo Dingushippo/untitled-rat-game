@@ -37,10 +37,10 @@ public partial class GameManager : Node
         AssertTuning();
         _fsm = new(this);
 
-        _fsm.Add("menu", new GameMenuState(this));
-        _fsm.Add("run", new GameRunState(this));
-        _fsm.Add("result", new GameResultState(this));
-        _fsm.InitState("menu");
+        _fsm.Add(new GameMenuState(this));
+        _fsm.Add(new GameRunState(this));
+        _fsm.Add(new GameResultState(this));
+        _fsm.InitState<GameMenuState>();
         _fsm.Debug = Tuning.DebugStateTransitions;
     }
 
