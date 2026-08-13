@@ -8,8 +8,6 @@
 [sub_resource type="Resource" id="Resource_tytqk"]
 script = ExtResource("2_2rbs1")
 DayLength = 10000.0
-DebugStateTransitions = true
-DebugKeys = true
 metadata/_custom_type_script = "uid://c58yhqvn28p07"
 
 [sub_resource type="Resource" id="Resource_oexaw"]

@@ -16,7 +16,7 @@ public partial class RatThrowTuning : Node3D
 
     public override void _Ready()
     {
-        EventBus.Subscribe(Event.RatThrown, OnRatThrown);
+        EventBus.Subscribe<RatThrown>(OnRatThrown);
         EventBus.Subscribe(Event.RatLanded, OnRatLanded);
         GD.Print("Ready");
     }
@@ -28,7 +28,7 @@ public partial class RatThrowTuning : Node3D
         _ratFlyCounter += (float)delta;
     }
 
-    private void OnRatThrown(params object[] args)
+    private void OnRatThrown(RatThrown _)
     {
         GD.Print("Throw");
         _startingPosition = Player.GlobalPosition;

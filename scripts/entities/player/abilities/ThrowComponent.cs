@@ -120,7 +120,7 @@ public partial class ThrowComponent : Node3D
         _isCharging = false;
         ResetCharge();
 
-        EventBus.Publish(Event.RatThrown);
+        EventBus.Publish(new RatThrown());
         EventBus.Publish(Event.CameraImpact, chargeAmount, 0.35f);
     }
 

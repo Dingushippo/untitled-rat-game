@@ -22,6 +22,9 @@ public partial class EventBus
     }
     public static void Publish<T>(in T evt)
     {
+        if (Channel<T>.Subscribers == null)
+            return;
+
         foreach (Action<T> cb in Channel<T>.Subscribers)
         {
             cb?.Invoke(evt);
