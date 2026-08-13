@@ -21,16 +21,16 @@ public partial class Hud : Control
         EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
         EventBus.Subscribe(Event.RatReleased, OnRatReleased);
         EventBus.Subscribe(Event.QuotaUpdated, OnQuotaUpdated);
-        EventBus.Subscribe(Event.DayStarted, OnDayStarted);
+        EventBus.Subscribe<DayStarted>(OnDayStarted);
         EventBus.Subscribe(Event.ClockTick, OnClockTick);
     }
     public override void _ExitTree()
     {
         EventBus.Unsubscribe<ResourceChanged>(OnResourceChanged); ;
-        EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
-        EventBus.Subscribe(Event.RatReleased, OnRatReleased);
+        EventBus.Unsubscribe(Event.RatPickedUp, OnRatPickedUp);
+        EventBus.Unsubscribe(Event.RatReleased, OnRatReleased);
         EventBus.Unsubscribe(Event.QuotaUpdated, OnQuotaUpdated);
-        EventBus.Unsubscribe(Event.DayStarted, OnDayStarted);
+        EventBus.Unsubscribe<DayStarted>(OnDayStarted);
         EventBus.Unsubscribe(Event.ClockTick, OnClockTick);
     }
 
@@ -66,10 +66,9 @@ public partial class Hud : Control
         ClockLabel.Text = timeText;
     }
 
-    private void OnDayStarted(object[] obj)
+    private void OnDayStarted(DayStarted evt)
     {
-        int day = (int)obj[0];
-        DayLabel.Text = $"Day {day}";
+        DayLabel.Text = $"Day {evt.Day}";
     }
 
     private void OnQuotaUpdated(object[] args)

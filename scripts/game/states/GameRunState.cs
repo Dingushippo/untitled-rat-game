@@ -51,7 +51,7 @@ public class GameRunState : GameState
             Event.SpawnRat,
             _manager.Tuning.RatsSpawnedPerDay[RunClock.Instance.Day - 1]
         );
-        EventBus.Publish(Event.DayStarted, 1);
+        EventBus.Publish(new DayStarted(1));
         EventBus.Publish(Event.QuotaUpdated, _stewsDeliveredToday, GetCurrentQuota());
     }
 
@@ -120,7 +120,7 @@ public class GameRunState : GameState
         clock.IncrementDay();
         clock.ResetTimer();
 
-        EventBus.Publish(Event.DayStarted, clock.Day);
+        EventBus.Publish(new DayStarted(clock.Day));
         EventBus.Publish(Event.SpawnRat, _manager.Tuning.RatsSpawnedPerDay[clock.Day - 1]);
     }
 
