@@ -17,7 +17,8 @@ public partial class RatThrowTuning : Node3D
     public override void _Ready()
     {
         EventBus.Subscribe<RatThrown>(OnRatThrown);
-        EventBus.Subscribe(Event.RatLanded, OnRatLanded);
+        EventBus.Subscribe<RatLanded>(OnRatLanded);
+
         GD.Print("Ready");
     }
 
@@ -35,12 +36,11 @@ public partial class RatThrowTuning : Node3D
         _counterEnabled = true;
     }
 
-    private void OnRatLanded(params object[] args)
+    private void OnRatLanded(RatLanded _)
     {
         _counterEnabled = false;
         float distance = _startingPosition.DistanceTo(rat.GlobalPosition);
         GD.Print($"Traveled {distance}m in {_ratFlyCounter} seconds");
-
         _ratFlyCounter = 0;
     }
 

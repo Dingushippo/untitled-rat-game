@@ -1,7 +1,5 @@
 public enum Event
 {
-    RatThrown,
-    RatLanded,
     CameraImpact,
     CameraCharge,
     CameraChargeReset,
@@ -15,10 +13,8 @@ public enum Event
     ItemsTransferred,
     ResourceChanged,
     Sundown,
-    ItemSold,
     DayStarted,
     SpawnRat,
-    LevelLoaded,
     QuotaUpdated,
     ClockTick,
     StartQte,
