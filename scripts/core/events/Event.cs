@@ -27,6 +27,6 @@ public enum Event
     RatPickedUp,
     RatReleased,
     HazardDisruption,
-    SetDisruptProductionInRange,
+    SetDisruptFacilityInRange,
     SpawnHazard
 }

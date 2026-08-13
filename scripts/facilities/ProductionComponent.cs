@@ -11,20 +11,18 @@ public class ProductionComponent : IDisposable
     private ProductionFacility _facility;
     private readonly WorkSlot[] _workSlots;
     private float _timer = 0;
-    private float _cycleTimeScale;
     private bool _stallOverride;
 
     public ProductionComponent(ProductionFacility facility, WorkSlot[] workSlots)
     {
         _facility = facility;
         _workSlots = workSlots;
-        _cycleTimeScale = EconomyService.Instance.CycleTimeScale;
-        EventBus.Subscribe(Event.SetDisruptProductionInRange, OnDisruptProductionInRange);
+        EventBus.Subscribe(Event.SetDisruptFacilityInRange, OnDisruptProductionInRange);
     }
 
     public void Dispose()
     {
-        EventBus.Unsubscribe(Event.SetDisruptProductionInRange, OnDisruptProductionInRange);
+        EventBus.Unsubscribe(Event.SetDisruptFacilityInRange, OnDisruptProductionInRange);
     }
 
     public void OnDisruptProductionInRange(object[] args)
@@ -53,7 +51,7 @@ public class ProductionComponent : IDisposable
         // Average worker quality, so one lazy rat doesn't out-weigh the rest of the crew.
         ProductionRate = _workSlots.Sum(slot => slot.Occupant?.RatDef.WorkRate ?? 0f) / StaffedSlots;
 
-        float rate = ProductionRate * _cycleTimeScale;
+        float rate = ProductionRate * EconomyService.Instance.ProductionRateScale;
         if (@base.Output.Total >= def.BufferSize * def.BufferPenaltyRatio)
         {
             rate /= def.BufferPenalty;
@@ -82,8 +80,6 @@ public class ProductionComponent : IDisposable
             SetStalled(@base, Event.ProductionHalted, def.Outputs);
             return;
         }
-
-        _cycleTimeScale = EconomyService.Instance.CycleTimeScale;
 
         @base.Input.TryRemove(def.Inputs);
         @base.Output.TryAdd(def.Outputs);

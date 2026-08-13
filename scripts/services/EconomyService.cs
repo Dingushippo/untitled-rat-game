@@ -8,26 +8,49 @@ public enum Economy
 
 public partial class EconomyService : Node
 {
-    private const float FERVOR_CYCLE_BOOST_MULTIPLIER = 0.8f;
-    private const int FERVOR_BOOST_THRESHOLD = 75;
+    private const float FERVOR_CYCLE_BOOST_MULTIPLIER = 1.25f;
+    private const int FERVOR_BOOST_OFF = 70;
+    private const int FERVOR_BOOST_ON = 75;
     private static EconomyService _instance;
     public static EconomyService Instance => _instance;
-    public float CycleTimeScale => Fervor >= FERVOR_BOOST_THRESHOLD ? FERVOR_CYCLE_BOOST_MULTIPLIER : 1f;
+
+    private bool _boosted;
+    public float ProductionRateScale
+    {
+        get
+        {
+            if (_boosted && Fervor < FERVOR_BOOST_OFF) _boosted = false;
+            else if (!_boosted && Fervor >= FERVOR_BOOST_ON) _boosted = true;
+            return _boosted ? FERVOR_CYCLE_BOOST_MULTIPLIER : 1f;
+        }
+    }
+
+    private int _tithes;
     public int Tithes
     {
         get => _tithes;
-        private set => _tithes = value;
+        private set
+        {
+            int oldTithes = _tithes;
+            _tithes = value;
+            EventBus.Publish(Event.ResourceChanged, Economy.Tithes, oldTithes, Tithes);
+        }
     }
 
-    // TODO implement
-    private float _currentFervorMultiplier = 1f;
-    private int _tithes;
+
+    private int _fervor;
     public int Fervor
     {
         get => _fervor;
-        private set => _fervor = Mathf.Clamp(value, 0, 100);
+        private set
+        {
+            int oldFervor = _fervor;
+            _fervor = Mathf.Clamp(value, 0, 100);
+            if (oldFervor != _fervor)
+                EventBus.Publish(Event.ResourceChanged, Economy.Fervor, oldFervor, _fervor);
+        }
     }
-    private int _fervor;
+
     private int _fervorDecayPerMinute = 1;
     private float _fervorDecayTimer = 0;
 
@@ -47,6 +70,7 @@ public partial class EconomyService : Node
         if (_fervorDecayTimer < 60f)
         {
             _fervorDecayTimer += delta;
+            GD.Print($"Timer: {_fervorDecayTimer}");
             return;
         }
         Fervor -= _fervorDecayPerMinute;
@@ -58,25 +82,10 @@ public partial class EconomyService : Node
         string itemId = (string)args[0];
         int amount = (int)args[1];
         ItemDef item = ItemDatabase.Get(itemId);
+
         // TODO Possibly add global value stuff here, either positive or negative
-        AddTithes(item.BaseValue * amount);
-        AddFervor(2 * amount);
-    }
-
-    public void AddTithes(int amount)
-    {
-        int oldTithes = Tithes;
-        Tithes += amount;
-        // May need to introduce a cap here sometime
-        EventBus.Publish(Event.ResourceChanged, Economy.Tithes, oldTithes, Tithes);
-    }
-
-    public void AddFervor(int amount)
-    {
-        int oldFervor = Fervor;
-        Fervor += amount;
-        if (oldFervor != Fervor)
-            EventBus.Publish(Event.ResourceChanged, Economy.Fervor, oldFervor, Fervor);
+        Tithes += item.BaseValue * amount;
+        Fervor += 2 * amount;
     }
 
     public void ResetForRun()
