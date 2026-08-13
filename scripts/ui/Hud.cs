@@ -20,7 +20,7 @@ public partial class Hud : Control
         EventBus.Subscribe<ResourceChanged>(OnResourceChanged);
         EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
         EventBus.Subscribe(Event.RatReleased, OnRatReleased);
-        EventBus.Subscribe(Event.QuotaUpdated, OnQuotaUpdated);
+        EventBus.Subscribe<QuotaUpdated>(OnQuotaUpdated);
         EventBus.Subscribe<DayStarted>(OnDayStarted);
         EventBus.Subscribe(Event.ClockTick, OnClockTick);
     }
@@ -29,7 +29,7 @@ public partial class Hud : Control
         EventBus.Unsubscribe<ResourceChanged>(OnResourceChanged); ;
         EventBus.Unsubscribe(Event.RatPickedUp, OnRatPickedUp);
         EventBus.Unsubscribe(Event.RatReleased, OnRatReleased);
-        EventBus.Unsubscribe(Event.QuotaUpdated, OnQuotaUpdated);
+        EventBus.Unsubscribe<QuotaUpdated>(OnQuotaUpdated);
         EventBus.Unsubscribe<DayStarted>(OnDayStarted);
         EventBus.Unsubscribe(Event.ClockTick, OnClockTick);
     }
@@ -71,9 +71,9 @@ public partial class Hud : Control
         DayLabel.Text = $"Day {evt.Day}";
     }
 
-    private void OnQuotaUpdated(object[] args)
+    private void OnQuotaUpdated(QuotaUpdated evt)
     {
-        string quotaText = $"Quota: {args[0]}/{args[1]}";
+        string quotaText = $"Quota: {evt.Current}/{evt.Required}";
         QuotaLabel.Text = quotaText;
     }
 

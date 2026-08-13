@@ -13,3 +13,4 @@ public readonly record struct ResourceChanged(Economy Type, int OldVal, int NewV
 public readonly record struct Sundown(int Day);
 public readonly record struct DayStarted(int Day);
 public readonly record struct SpawnRat(int Amount);
+public readonly record struct QuotaUpdated(int Current, int Required);

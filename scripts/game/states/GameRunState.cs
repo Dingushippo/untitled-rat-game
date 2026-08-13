@@ -16,7 +16,7 @@ public class GameRunState : GameState
         set
         {
             _stewsDeliveredToday = value;
-            EventBus.Publish(Event.QuotaUpdated, _stewsDeliveredToday, GetCurrentQuota());
+            EventBus.Publish(new QuotaUpdated(_stewsDeliveredToday, GetCurrentQuota()));
         }
     }
     private int _stewsDeliveredToday = 0;
@@ -49,7 +49,7 @@ public class GameRunState : GameState
         RunClock.Instance.Start();
         EventBus.Publish(new SpawnRat(_manager.Tuning.RatsSpawnedPerDay[RunClock.Instance.Day - 1]));
         EventBus.Publish(new DayStarted(1));
-        EventBus.Publish(Event.QuotaUpdated, _stewsDeliveredToday, GetCurrentQuota());
+        EventBus.Publish(new QuotaUpdated(_stewsDeliveredToday, GetCurrentQuota()));
     }
 
     public override void Exit()
