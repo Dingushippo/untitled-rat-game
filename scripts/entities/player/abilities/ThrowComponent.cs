@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System;
 using System.Collections.Generic;
 
 [GlobalClass]
@@ -17,6 +18,11 @@ public partial class ThrowComponent : Node3D
     private bool _preview = false;
     private bool _isCharging = false;
     private float _aimYaw = 0f;
+    private Tween _chargeTween;
+    private float _rotationSpeed;
+    private Basis _originalBasis;
+    private readonly record struct StillCheck(Vector3 CamPos, Basis CamBasis, float CurrentForce);
+    private StillCheck _cachedCheck;
 
     public override void _Ready()
     {
@@ -33,9 +39,14 @@ public partial class ThrowComponent : Node3D
         {
             using (Profiler.Sample("throw.simulate"))
             {
-                _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
+                if (!IsStill())
+                {
+                    GD.Print("Changing");
+                    _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
+                }
                 if (!_currentPath.Homing && _currentPath.ThrowTarget.IsValid && _currentPath.Points.Length >= 2)
                 {
+                    // Adjust towards center;
                     Vector3 right = Player.Camera.GlobalBasis.X;
                     Vector3 toEnd = _currentPath.End - Player.Camera.GlobalPosition;
                     float lateral = right.Dot(toEnd);
@@ -57,7 +68,27 @@ public partial class ThrowComponent : Node3D
         }
     }
 
-    /// <summary>Aim state for a simulation run. Public so the profiler bench can drive it headlessly.</summary>
+    private StillCheck CheckCurrent() => new StillCheck(Player.Camera.GlobalPosition, Player.Camera.GlobalBasis, _currentForce);
+    private bool IsStill()
+    {
+        StillCheck check = CheckCurrent();
+        if (!check.CamPos.IsEqualApprox(_cachedCheck.CamPos))
+        {
+            _cachedCheck = check;
+            return false;
+        }
+        if (!check.CamBasis.IsEqualApprox(_cachedCheck.CamBasis))
+        {
+            _cachedCheck = check;
+            return false;
+        }
+        if (!Mathf.IsEqualApprox(check.CurrentForce, _cachedCheck.CurrentForce))
+        {
+            _cachedCheck = check;
+            return false;
+        }
+        return true;
+    }
     public ThrowContext BuildContext(Rat rat) => new(
         rat,
         GlobalPosition,
@@ -72,7 +103,6 @@ public partial class ThrowComponent : Node3D
     );
 
 
-    private Tween _chargeTween;
     public void StartDelayedCharge()
     {
         _chargeTween = CreateTween();
@@ -87,15 +117,12 @@ public partial class ThrowComponent : Node3D
         EventBus.Publish(new CameraCharge(Tuning.ChargeDuration, Tuning.ChargeStartDelay));
     }
 
-    private float _rotationSpeed;
-    private Basis _originalBasis;
     private void HandAnimation(float delta)
     {
         float newSpeed = Mathf.Remap(_currentForce, Tuning.ThrowForce, Tuning.MaxThrowForce, 0, 4f);
         _rotationSpeed = Mathf.Lerp(_rotationSpeed, newSpeed, delta);
         HandNode.RotateX(-_rotationSpeed);
     }
-
     public void ResetCharge()
     {
         if (_chargeTween != null)
