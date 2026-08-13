@@ -12,6 +12,9 @@ public partial class ProductionFacility : FacilityBase
     private WorkSlot[] _workSlots;
     private ProductionComponent _production;
     private int _lastOutputTotal = -1;
+    private const int DEBUG_UPDATES_EVERY_N_SECONDS = 3;
+    private float _debugUpdateTimer;
+
 
 
     public override void _Ready()
@@ -61,7 +64,13 @@ public partial class ProductionFacility : FacilityBase
             RefreshOutputPrompt();
         }
 
-        UpdateDebugLabel();
+        if (_debugUpdateTimer > DEBUG_UPDATES_EVERY_N_SECONDS)
+        {
+            UpdateDebugLabel();
+            _debugUpdateTimer = 0;
+        }
+        else
+            _debugUpdateTimer += (float)delta;
     }
 
     /// <summary>Fills the held rat with finished product. Wired to the output interact area.</summary>
@@ -145,6 +154,8 @@ public partial class ProductionFacility : FacilityBase
 
     protected override void UpdateDebugLabel()
     {
+        base.UpdateDebugLabel();
+
         if (DebugLabel is null) return;
 
         string inputString = string.Join(", ", Input.Contents.Select(
@@ -153,10 +164,13 @@ public partial class ProductionFacility : FacilityBase
         string outputString = string.Join(", ", Output.Contents.Select(
             k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
         );
-        DebugLabel.Text =
+        string newText =
             $"{ProdFacility.DisplayName}\n" +
             $"slots {_production.StaffedSlots}/{ProdFacility.SlotCount}  " +
             $"{_production.GetProgress(ProdFacility) * 100f:0}%{(_production.IsStalled ? " (stalled)" : "")}\n" +
             $"in: {inputString}\nout: {outputString}";
+
+        if (newText != DebugLabel.Text)
+            DebugLabel.Text = newText;
     }
 }

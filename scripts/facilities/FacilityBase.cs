@@ -8,6 +8,7 @@ public abstract partial class FacilityBase : StaticBody3D, ICatchArea
     [Export] public Marker3D IntakeMarker;
     [Export] public FacilityDef Facility;
     [Export] public Label3D DebugLabel;
+    [Export] public bool ShowDebugLabel;
 
     /// <summary>
     /// World Y of the top of this facility's collision shapes. Homing throws lift their approach
@@ -62,5 +63,8 @@ public abstract partial class FacilityBase : StaticBody3D, ICatchArea
 
         return top;
     }
-    protected virtual void UpdateDebugLabel() { }
+    protected virtual void UpdateDebugLabel()
+    {
+        if (!ShowDebugLabel) return;
+    }
 }
