@@ -107,15 +107,16 @@ public partial class ThrowComponent : Node3D
         float chargeAmount = Mathf.IsEqualApprox(Tuning.MaxThrowForce, Tuning.ThrowForce)
             ? 1f
             : Mathf.Clamp((_currentForce - Tuning.ThrowForce) / (Tuning.MaxThrowForce - Tuning.ThrowForce), 0f, 1f);
+        // Flight speed comes from the simulated path itself, so charge only has to shape the arc.        
 
-        // Flight speed comes from the simulated path itself, so charge only has to shape the arc.
-        RatCurveState newState = new(rat, _currentPath);
         if (_currentPath.ThrowTarget.IsSlot)
         {
             _currentPath.ThrowTarget.WorkSlot.TryReserve(rat);
         }
 
-        rat.InjectState("throw", newState);
+        rat.GetState<RatCurveState>().Configure(_currentPath);
+        rat.ChangeState<RatCurveState>();
+
         _isCharging = false;
         ResetCharge();
 

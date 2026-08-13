@@ -44,6 +44,6 @@ public class GameResultState : GameState
         _result.MainMenu.ButtonUp -= GoToMainMenu;
     }
 
-    private void GoToMainMenu() => fsm.ChangeState("menu");
-    private void Restart() => fsm.ChangeState("run");
+    private void GoToMainMenu() => fsm.ChangeState<GameMenuState>();
+    private void Restart() => fsm.ChangeState<GameRunState>();
 }
