@@ -25,7 +25,7 @@ public class RatLandedState : RatState
         }
         else
         {
-            fsm.ChangeState("falling");
+            fsm.ChangeState<RatFallingState>();
         }
 
         _landTween = _rat.CreateTween();
@@ -42,6 +42,6 @@ public class RatLandedState : RatState
     private void SetNextState(State previous)
     {
         _rat.ResetTargetPosition();
-        fsm.ChangeState("follow", this);
+        fsm.ChangeState<RatFollowState>(this);
     }
 }

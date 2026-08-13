@@ -23,7 +23,7 @@ public class RatIntakeState : RatState
         if (_facility is null)
         {
             GD.PushWarning($"{_rat.Name} entered intake without a facility");
-            fsm.ChangeState("falling", this);
+            fsm.ChangeState<RatFallingState>(this);
             return;
         }
 
@@ -32,8 +32,10 @@ public class RatIntakeState : RatState
         {
             GD.Print($"{_facility.Name} took nothing from {_rat.Name}");
         }
-
-        fsm.ChangeState(_rat.IsOnFloor() ? "landed" : "falling", this);
+        if (_rat.IsOnFloor())
+            fsm.ChangeState<RatLandedState>(this);
+        else
+            fsm.ChangeState<RatFallingState>(this);
     }
 
     public override void Exit()

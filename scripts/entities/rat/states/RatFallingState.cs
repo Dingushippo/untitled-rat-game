@@ -13,7 +13,7 @@ public class RatFallingState : RatState
 
         if (_rat.IsOnFloor())
         {
-            fsm.ChangeState("landed", this);
+            fsm.ChangeState<RatLandedState>(this);
         }
     }
 }

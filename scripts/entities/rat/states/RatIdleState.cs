@@ -7,7 +7,7 @@ public class RatIdleState : RatState
     {
         if (!_rat.IsOnFloor())
         {
-            fsm.ChangeState("falling");
+            fsm.ChangeState<RatFallingState>();
         }
     }
     public override void Process(float delta) { }

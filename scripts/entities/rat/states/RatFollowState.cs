@@ -19,7 +19,7 @@ public class RatFollowState : RatState
     {
         if (_navAgent.IsTargetReached())
         {
-            fsm.ChangeState("idle", this);
+            fsm.ChangeState<RatIdleState>(this);
             return;
         }
         Vector3 nextPoint = _navAgent.GetNextPathPosition();
