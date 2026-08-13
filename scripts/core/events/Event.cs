@@ -1,6 +1,5 @@
 public enum Event
 {
-    NavigationRegionReady,
     RatSlotted,
     RatUnslotted,
     ProductionCompleted,
