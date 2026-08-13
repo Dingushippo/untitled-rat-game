@@ -20,7 +20,7 @@ public partial class HolyWaterLeak : Node3D, ICatchArea, IRitualInteract
     private void SetDisruptStatus(bool disrupting)
     {
         Particles.Emitting = disrupting;
-        EventBus.Publish(Event.SetDisruptFacilityInRange, GlobalPosition, DisruptionRadius, disrupting);
+        EventBus.Publish(new SetDisruptFacilityInRange(GlobalPosition, DisruptionRadius, disrupting));
     }
 
     public bool TryGetThrowTarget(Vector3 from, Rat rat, out ThrowTarget target)

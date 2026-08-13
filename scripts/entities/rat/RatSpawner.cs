@@ -18,11 +18,11 @@ public partial class RatSpawner : Node3D
 
     public override void _EnterTree()
     {
-        EventBus.Subscribe(Event.SpawnRat, OnSpawnRat);
+        EventBus.Subscribe<SpawnRat>(OnSpawnRat);
     }
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.SpawnRat, OnSpawnRat);
+        EventBus.Unsubscribe<SpawnRat>(OnSpawnRat);
     }
     public override void _Ready()
     {
@@ -46,11 +46,9 @@ public partial class RatSpawner : Node3D
         UpdateDebugMesh();
     }
 
-    public void OnSpawnRat(params object[] args)
+    public void OnSpawnRat(SpawnRat evt)
     {
-        int amount = args is not [] ? (int)args[0] : 1;
-
-        for (int i = 0; i < amount; i++)
+        for (int i = 0; i < evt.Amount; i++)
         {
             Rat rat = RatScene.Instantiate<Rat>();
             Vector3 SpawnPoint = GetRandomSpawnPoint();
@@ -87,13 +85,5 @@ public partial class RatSpawner : Node3D
             _mesh.SurfaceAddVertex(new Vector3(x, GlobalPosition.Y + 0.3f, z));
         }
         _mesh.SurfaceEnd();
-    }
-
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.Z && GameManager.Instance.Tuning.DebugKeys)
-        {
-            OnSpawnRat();
-        }
     }
 }

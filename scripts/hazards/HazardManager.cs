@@ -23,19 +23,18 @@ public partial class HazardManager : Node
                 _spawnPositions.Add(marker);
         }
 
-        EventBus.Subscribe(Event.SpawnHazard, OnSpawnHazard);
+        EventBus.Subscribe<SpawnHazard>(OnSpawnHazard);
     }
 
-    private void OnSpawnHazard(object[] args)
+    private void OnSpawnHazard(SpawnHazard evt)
     {
-        string hazardId = (string)args[0];
-        HazardResource resource = _hazards[hazardId];
+        HazardResource resource = _hazards[evt.Id];
         if (!TryGetSpawnMarker(resource, out Marker3D marker))
         {
             GD.Print("Failed to get good position");
             return;
         }
-        // Vector3 spawnLocation = newPos;
+        
         Node3D hazardNode = resource.Scene.Instantiate<Node3D>();
         AddChild(hazardNode);
         hazardNode.GlobalTransform = marker.GlobalTransform;

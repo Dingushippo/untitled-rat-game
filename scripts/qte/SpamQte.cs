@@ -66,7 +66,6 @@ public partial class SpamQte : QteBase
             tween.TweenProperty(Progress, "value", Progress.Value + ButtonPressIncrease, .1);
             tween.TweenProperty(ActionPanel, "offset_transform_scale", Vector2.One * 1.25f, .05);
             tween.TweenProperty(ActionPanel, "offset_transform_scale", Vector2.One, .3);
-            EventBus.Publish(Event.CameraImpact, 1f, .5f);
         }
     }
 

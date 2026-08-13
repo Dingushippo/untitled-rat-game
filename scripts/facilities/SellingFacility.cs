@@ -8,7 +8,8 @@ public partial class SellingFacility : FacilityBase
         var moved = rat.Cargo.RemoveAll();
         foreach (var (item, amount) in moved)
         {
-            EventBus.Publish(Event.ItemSold, item, amount);
+            // EventBus.Publish(Event.ItemSold, item, amount);
+            EventBus.Publish(new ItemSold(item, amount));
         }
         return moved;
     }

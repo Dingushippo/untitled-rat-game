@@ -7,14 +7,13 @@ public partial class QteBase : Control
 
     public override void _Ready()
     {
-        EventBus.Publish(Event.QteStarted, this);
-        GD.Print("Started QTE");
+        EventBus.Publish(new QteStarted(this));
     }
 
     protected void OnCompleted(bool success)
     {
         Completed?.Invoke(success);
-        EventBus.Publish(Event.QteCompleted, this);
+        EventBus.Publish(new QteCompleted(this));
         QueueFree();
     }
 }

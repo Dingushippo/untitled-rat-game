@@ -165,7 +165,7 @@ public class RatCurveState : RatState
 
     public override void Exit()
     {
-        EventBus.Publish(Event.RatLanded);
+        EventBus.Publish(new RatLanded());
     }
 
 }

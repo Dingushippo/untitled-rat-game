@@ -17,21 +17,21 @@ public partial class Hud : Control
 
     public override void _EnterTree()
     {
-        EventBus.Subscribe(Event.ResourceChanged, OnResourceChanged);
-        EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
-        EventBus.Subscribe(Event.RatReleased, OnRatReleased);
-        EventBus.Subscribe(Event.QuotaUpdated, OnQuotaUpdated);
-        EventBus.Subscribe(Event.DayStarted, OnDayStarted);
-        EventBus.Subscribe(Event.ClockTick, OnClockTick);
+        EventBus.Subscribe<ResourceChanged>(OnResourceChanged);
+        EventBus.Subscribe<RatPickedUp>(OnRatPickedUp);
+        EventBus.Subscribe<RatReleased>(OnRatReleased);
+        EventBus.Subscribe<QuotaUpdated>(OnQuotaUpdated);
+        EventBus.Subscribe<DayStarted>(OnDayStarted);
+        EventBus.Subscribe<ClockTick>(OnClockTick);
     }
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.ResourceChanged, OnResourceChanged);
-        EventBus.Subscribe(Event.RatPickedUp, OnRatPickedUp);
-        EventBus.Subscribe(Event.RatReleased, OnRatReleased);
-        EventBus.Unsubscribe(Event.QuotaUpdated, OnQuotaUpdated);
-        EventBus.Unsubscribe(Event.DayStarted, OnDayStarted);
-        EventBus.Unsubscribe(Event.ClockTick, OnClockTick);
+        EventBus.Unsubscribe<ResourceChanged>(OnResourceChanged); ;
+        EventBus.Unsubscribe<RatPickedUp>(OnRatPickedUp);
+        EventBus.Unsubscribe<RatReleased>(OnRatReleased);
+        EventBus.Unsubscribe<QuotaUpdated>(OnQuotaUpdated);
+        EventBus.Unsubscribe<DayStarted>(OnDayStarted);
+        EventBus.Unsubscribe<ClockTick>(OnClockTick);
     }
 
     private Inventory _currentHeldInventory;
@@ -39,7 +39,8 @@ public partial class Hud : Control
     {
         InventoryLabel.Text = IntventoryPrint.PrintContent(_currentHeldInventory);
     }
-    private void OnRatReleased(object[] obj)
+
+    private void OnRatReleased(RatReleased evt)
     {
         InventoryLabel.Text = "";
         _currentHeldInventory.Changed -= UpdateInventory;
@@ -47,51 +48,42 @@ public partial class Hud : Control
         InventoryContainer.Hide();
     }
 
-    private void OnRatPickedUp(object[] obj)
+    private void OnRatPickedUp(RatPickedUp evt)
     {
-        if (obj[0] is Rat rat)
-        {
-            _currentHeldInventory = rat.Cargo;
-            InventoryContainer.Show();
-            _currentHeldInventory.Changed += UpdateInventory;
-            UpdateInventory();
-        }
+        _currentHeldInventory = evt.Rat.Cargo;
+        InventoryContainer.Show();
+        _currentHeldInventory.Changed += UpdateInventory;
+        UpdateInventory();
+
     }
 
-    private void OnClockTick(object[] obj)
+    private void OnClockTick(ClockTick evt)
     {
-        string timeText = (string)obj[0];
-        float dayProgress = (float)obj[1];
-        DayProgressBar.Value = dayProgress;
-        ClockLabel.Text = timeText;
+        DayProgressBar.Value = evt.DayProgress;
+        ClockLabel.Text = evt.Text;
     }
 
-    private void OnDayStarted(object[] obj)
+    private void OnDayStarted(DayStarted evt)
     {
-        int day = (int)obj[0];
-        DayLabel.Text = $"Day {day}";
+        DayLabel.Text = $"Day {evt.Day}";
     }
 
-    private void OnQuotaUpdated(object[] args)
+    private void OnQuotaUpdated(QuotaUpdated evt)
     {
-        string quotaText = $"Quota: {args[0]}/{args[1]}";
+        string quotaText = $"Quota: {evt.Current}/{evt.Required}";
         QuotaLabel.Text = quotaText;
     }
 
-    private void OnResourceChanged(object[] args)
+    private void OnResourceChanged(ResourceChanged evt)
     {
-        if (args[0] is Economy type)
+        if (evt.Type == Economy.Tithes)
         {
-            if (type == Economy.Tithes)
-            {
-                int newValue = (int)args[2];
-                TitheLabel.Text = $"Tithes: {newValue}";
-            }
-            else if (type == Economy.Fervor)
-            {
-                int newValue = (int)args[2];
-                FervorProgressBar.Value = newValue;
-            }
+            TitheLabel.Text = $"Tithes: {evt.NewVal}";
         }
+        else if (evt.Type == Economy.Fervor)
+        {
+            FervorProgressBar.Value = evt.NewVal;
+        }
+
     }
 }

@@ -20,32 +20,30 @@ public partial class QteManager : Control
             string fileName = scene.ResourcePath.Split("/")[^1].TrimSuffix(".tscn");
             _qtes[fileName] = scene;
         }
-        EventBus.Subscribe(Event.StartQte, OnQteStart);
-        EventBus.Subscribe(Event.QteCompleted, OnQteCompleted);
+        EventBus.Subscribe<StartQte>(OnQteStart);
+        EventBus.Subscribe<QteCompleted>(OnQteCompleted);
     }
 
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.StartQte, OnQteStart);
+        EventBus.Unsubscribe<StartQte>(OnQteStart);
     }
 
-    private void OnQteStart(object[] obj)
+    private void OnQteStart(StartQte evt)
     {
         if (QteActive) return;
 
-        string @event = (string)obj[0];
-        if (!_qtes.TryGetValue(@event, out PackedScene scene))
-            GD.PushError($"Invalid QTE: {@event}");
+        if (!_qtes.TryGetValue(evt.Id, out PackedScene scene))
+            GD.PushError($"Invalid QTE: {evt.Id}");
 
-        Action<bool> onCompleted = (Action<bool>)obj[1];
         QteBase qte = scene.Instantiate<QteBase>();
-        qte.Completed = onCompleted;
+        qte.Completed = evt.OnComplete;
         AddChild(qte);
 
         _activeQte = qte;
     }
 
-    private void OnQteCompleted(object[] obj)
+    private void OnQteCompleted(QteCompleted _)
     {
         _activeQte = null;
     }

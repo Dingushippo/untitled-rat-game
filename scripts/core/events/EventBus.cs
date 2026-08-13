@@ -1,37 +1,33 @@
 using System;
 using System.Collections.Generic;
-using Godot;
 
 public partial class EventBus
 {
-    // private static readonly Dictionary<Type, List<Delegate>> Subscribers = new();
-    private static readonly Dictionary<Event, List<Delegate>> Subscribers = new();
-
-    public static void Subscribe(Event evt, Action<object[]> callback)
+    public static void Subscribe<T>(Action<T> cb)
     {
-        if (!Subscribers.TryGetValue(evt, out List<Delegate> value))
+        if (Channel<T>.Subscribers == null)
         {
-            value = new List<Delegate>();
-            Subscribers[evt] = value;
+            Channel<T>.Subscribers = new();
         }
-
-        value.Add(callback);
+        Channel<T>.Subscribers.Add(cb);
     }
-
-    public static void Unsubscribe(Event evt, Action<object[]> callback)
+    public static void Unsubscribe<T>(Action<T> cb)
     {
-        if (Subscribers.TryGetValue(evt, out List<Delegate> list))
-        {
-            list.Remove(callback);
-        }
+        Channel<T>.Subscribers.Remove(cb);
     }
-
-    public static void Publish(Event evt, params object[] args)
+    public static void Publish<T>(in T evt)
     {
-        if (!Subscribers.TryGetValue(evt, out List<Delegate> list)) return;
-        foreach (Delegate cb in list.ToArray())
+        if (Channel<T>.Subscribers == null)
+            return;
+
+        foreach (Action<T> cb in Channel<T>.Subscribers)
         {
-            ((Action<object[]>)cb)?.Invoke(args);
+            cb?.Invoke(evt);
         }
     }
+}
+
+public static class Channel<T>
+{
+    internal static List<Action<T>> Subscribers;
 }

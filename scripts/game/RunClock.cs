@@ -38,7 +38,7 @@ public partial class RunClock : Node
     public override void _Ready()
     {
         _dayLength = GameManager.Instance.Tuning != null ? GameManager.Instance.Tuning.DayLength : DAY_LENGTH_DEFAULT;
-        EventBus.Publish(Event.ClockTick, _currentTimeText, DayProgress);
+        EventBus.Publish(new ClockTick(_currentTimeText, Day, DayProgress));
     }
 
     public override void _Process(double delta)
@@ -50,12 +50,12 @@ public partial class RunClock : Node
         if (_currentTimeText != GetClockText())
         {
             _currentTimeText = GetClockText();
-            EventBus.Publish(Event.ClockTick, _currentTimeText, DayProgress);
+            EventBus.Publish(new ClockTick(_currentTimeText, Day, DayProgress));
         }
 
         if (_timer >= _dayLength)
         {
-            EventBus.Publish(Event.Sundown, Day);
+            EventBus.Publish(new Sundown(Day));
         }
     }
 

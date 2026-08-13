@@ -170,8 +170,6 @@ public static class InventoryTransfer
             moved[item] = taken;
             max -= taken;
         }
-
-        if (moved.Count > 0) EventBus.Publish(Event.ItemsTransferred, from, to, moved);
         return moved;
     }
 }

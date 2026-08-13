@@ -23,8 +23,6 @@ public class RatSlottedState : RatState
         // _rat.SetNavAgentEnabled(false);
 
         // TODO Play animation associated with facility/slot
-
-        EventBus.Publish(Event.RatSlotted, _workSlot.Facility, _workSlot, _rat);
     }
     public override void Exit()
     {
@@ -32,7 +30,6 @@ public class RatSlottedState : RatState
 
         FacilityBase facility = _workSlot.Facility;
         _workSlot.Release();
-        EventBus.Publish(Event.RatUnslotted, facility, _workSlot, _rat);
     }
 
     /// <summary>Slot facing expressed in the rat's parent space, as a quaternion so the tween slerps
