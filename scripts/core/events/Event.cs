@@ -1,6 +1,5 @@
 public enum Event
 {
-    CameraImpact,
     CameraCharge,
     CameraChargeReset,
     ObjectPlaced,

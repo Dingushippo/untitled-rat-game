@@ -54,14 +54,14 @@ public partial class PlayerCamera : Camera3D
         // Capture the mouse for FPS look
         Input.MouseMode = Input.MouseModeEnum.Captured;
 
-        EventBus.Subscribe(Event.CameraImpact, OnCameraImpact);
+        EventBus.Subscribe<CameraImpact>(OnCameraImpact);
         EventBus.Subscribe(Event.CameraCharge, OnCameraCharge);
         EventBus.Subscribe(Event.CameraChargeReset, OnCameraChargeReset);
     }
 
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.CameraImpact, OnCameraImpact);
+        EventBus.Unsubscribe<CameraImpact>(OnCameraImpact);
         EventBus.Unsubscribe(Event.CameraCharge, OnCameraCharge);
         EventBus.Unsubscribe(Event.CameraChargeReset, OnCameraChargeReset);
     }
@@ -233,11 +233,9 @@ public partial class PlayerCamera : Camera3D
         TweenPose(CurrentPose, RestPose, Tuning.ChargeReturnDuration);
     }
 
-    private void OnCameraImpact(params object[] args)
+    private void OnCameraImpact(CameraImpact impact)
     {
-        float charge = args.Length > 0 ? (float)args[0] : 1f;
-        float duration = args.Length > 1 ? (float)args[1] : 0.35f;
-        PlayImpact(charge, duration);
+        PlayImpact(impact.Charge, impact.Duration);
     }
 
     private void PlayImpact(float charge, float duration)

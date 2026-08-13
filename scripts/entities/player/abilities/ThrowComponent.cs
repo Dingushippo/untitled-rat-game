@@ -121,7 +121,7 @@ public partial class ThrowComponent : Node3D
         ResetCharge();
 
         EventBus.Publish(new RatThrown());
-        EventBus.Publish(Event.CameraImpact, chargeAmount, 0.35f);
+        EventBus.Publish(new CameraImpact(chargeAmount, 0.35f));
     }
 
     public void Enable()
