@@ -24,12 +24,12 @@ public partial class RitualBase : Node3D, IPooledObject
     {
         Renderer.Position = Viewport.Size / 2;
         _fsm = new(this);
-        _fsm.Add("preview", new RitualPreviewState(this));
-        _fsm.Add("idle", new RitualIdleState(this));
-        _fsm.Add("active", new RitualActiveState(this));
-        _fsm.Add("interrupted", new RitualInterruptedState(this));
-        _fsm.Add("completed", new RitualCompletedState(this));
-        _fsm.InitState("preview");
+        _fsm.Add(new RitualPreviewState(this));
+        _fsm.Add(new RitualIdleState(this));
+        _fsm.Add(new RitualActiveState(this));
+        _fsm.Add(new RitualInterruptedState(this));
+        _fsm.Add(new RitualCompletedState(this));
+        _fsm.InitState<RitualPreviewState>();
         _fsm.Debug = true;
     }
 
@@ -38,7 +38,7 @@ public partial class RitualBase : Node3D, IPooledObject
 
     public void SetIdle()
     {
-        _fsm.ChangeState("idle");
+        _fsm.ChangeState<RitualIdleState>();
     }
 
     public void OnSpawn()

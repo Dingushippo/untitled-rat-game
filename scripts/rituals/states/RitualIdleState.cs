@@ -20,8 +20,7 @@ public class RitualIdleState : RitualState
 
     public void CheckValidTriggers()
     {
-        GD.Print("Checking if all triggers fulfilled");
         if (_ritual.Triggers.All(x => x.IsFulfilled))
-            fsm.ChangeState("active");
+            fsm.ChangeState<RitualActiveState>();
     }
 }

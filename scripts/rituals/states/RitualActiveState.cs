@@ -12,7 +12,7 @@ public class RitualActiveState : RitualState
             _timer += delta;
             return;
         }
-        fsm.ChangeState("completed");
+        fsm.ChangeState<RitualCompletedState>();
     }
     public override void Enter(State previous = null)
     {
