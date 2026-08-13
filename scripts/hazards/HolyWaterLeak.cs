@@ -65,7 +65,7 @@ public partial class HolyWaterLeak : Node3D, ICatchArea, IRitualInteract
         if (!Slot.IsOccupied) return;
 
         Rat rat = Slot.Occupant;
-        rat.ForceState("idle");
+        rat.ChangeState<RatIdleState>();
         rat.Velocity += Vector3.Up * 10f;
     }
 }

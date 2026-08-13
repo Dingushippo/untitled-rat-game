@@ -13,7 +13,7 @@ public partial class ReturnArea : Area3D
     {
         if (obj is Rat rat)
         {
-            rat.ForceState("falling");
+            rat.ChangeState<RatFallingState>();
             rat.GlobalPosition = rat.HomePosition + Vector3.Up * 0.5f;
         }
 

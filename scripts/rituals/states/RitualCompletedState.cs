@@ -10,7 +10,7 @@ public class RitualCompletedState : RitualState
     {
         foreach (RitualElementSlot slot in _ritual.Slots)
         {
-            slot.WorkSlot.Occupant.ForceState("follow");
+            slot.WorkSlot.Occupant.ChangeState<RatFollowState>();
         }
         // Play exit animation, and then despawn the parent
         _ritual.OnComplete?.Invoke(_ritual);
