@@ -16,7 +16,10 @@ public class GameMenuState : GameState
     {
         if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.E)
         {
-            fsm.ChangeState<GameRunState>(this);
+            if (GameManager.Instance.HasFatalDataError)
+                OS.Alert("Fatal data error, check output");
+            else
+                fsm.ChangeState<GameRunState>(this);
         }
     }
 }

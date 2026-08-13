@@ -10,6 +10,8 @@ public partial class GameManager : Node
     public static GameManager Instance => _instance;
     private FiniteStateMachine<GameState> _fsm;
 
+    public bool HasFatalDataError {get; private set;}= false;
+
     public override void _Process(double delta) => _fsm.StateProcess((float)delta);
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
     public override void _UnhandledInput(InputEvent @event) => _fsm.StateUnhandledInput(@event);
@@ -43,6 +45,8 @@ public partial class GameManager : Node
         _fsm.InitState<GameMenuState>();
         _fsm.Debug = Tuning.DebugStateTransitions;
     }
+
+    public void SetDataErrorFlag() => HasFatalDataError = true;
 
     private void AssertTuning()
     {

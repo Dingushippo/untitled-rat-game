@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -9,7 +10,7 @@ public partial class ItemDatabase : Node
     private const string FACILITY_RESOURCE_PATH = "res://resources/facilities";
     private static Dictionary<string, ItemDef> _items = new();
 
-    public override void _EnterTree()
+    public override void _Ready()
     {
         PopulateItems();
         ValidateFacilities();
@@ -48,8 +49,27 @@ public partial class ItemDatabase : Node
                 GD.PushError($"{file} is missing ID");
                 continue;
             }
+            if (_items.ContainsKey(item.Id))
+            {
+                GD.PushError($"ID: {item.Id} is duplicate");
+                continue;
+            }
             _items[item.Id] = item;
         }
+    }
+
+    public static ItemDef Get(string id)
+    {
+        if (TryGet(id, out ItemDef def))
+        {
+            return def;
+        }
+        return default;
+    }
+
+    public static bool TryGet(string id, out ItemDef def)
+    {
+        return _items.TryGetValue(id, out def);
     }
 
     private void ValidateFacilities()
@@ -65,7 +85,13 @@ public partial class ItemDatabase : Node
             ProductionDef facility = ResourceLoader.Load<ProductionDef>(FACILITY_RESOURCE_PATH.PathJoin(fileNameTrim));
             if (facility is null)
             {
-                GD.PrintErr($"{file} is not a valid ProductionDef");
+                string error = $"{file} is not a valid ProductionDef";
+                GD.PrintErr(error);
+                if (OS.IsDebugBuild())
+                {
+                    OS.Alert(error, "ItemDatabase error");
+                    GameManager.Instance.SetDataErrorFlag();
+                }
                 continue;
             }
 
@@ -74,24 +100,15 @@ public partial class ItemDatabase : Node
             {
                 if (!_items.ContainsKey(key))
                 {
-                    GD.PushError($"{file} contains item missing ItemDef: {key}");
+                    string error = $"{file} contains item missing ItemDef: {key}";
+                    GD.PushError(error);
+                    if (OS.IsDebugBuild())
+                    {
+                        OS.Alert(error, "ItemDatabase error");
+                        GameManager.Instance.SetDataErrorFlag();
+                    }
                 }
             }
         }
-    }
-
-    public static ItemDef Get(string id)
-    {
-        if (TryGet(id, out ItemDef def))
-        {
-            return def;
-        }
-        GD.PrintErr($"Invalid item id: {id}");
-        return null;
-    }
-
-    public static bool TryGet(string id, out ItemDef def)
-    {
-        return _items.TryGetValue(id, out def);
     }
 }
