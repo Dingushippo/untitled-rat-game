@@ -35,6 +35,7 @@ public partial class ThrowPreview : Node3D
     private Aabb _bounds;
     private Camera3D _camera;
     private Color _lastColor = new(0, 0, 0, 0);
+    private bool _visible;
 
     public override void _Ready()
     {
@@ -182,6 +183,11 @@ public partial class ThrowPreview : Node3D
 
         if (_camera is null) return;
 
+        if (!_visible)
+        {
+            _visible = true;
+        }
+
         Color color = PathColor(path);
         using (Profiler.Sample("throw.preview"))
         {
@@ -207,6 +213,11 @@ public partial class ThrowPreview : Node3D
 
     public void HidePreview()
     {
+        if (!_visible)
+        {
+            return;
+        }
+        _visible = false;
         _multiMesh.VisibleInstanceCount = 00;
         _dots.Visible = false;
         _reticle.Visible = false;

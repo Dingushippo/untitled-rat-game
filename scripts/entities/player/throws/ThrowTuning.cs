@@ -20,6 +20,7 @@ public partial class ThrowTuning : Resource
     [ExportGroup("Path Simulation")]
     [Export(PropertyHint.Range, "0.005,0.1,0.005")] public float Step = 0.02f;
     [Export(PropertyHint.Range, "50,2000,1")] public int MaxPoints = 250;
+    [Export] public int SkipFrames = 2;
 
     [ExportGroup("Arc")]
     [Export(PropertyHint.Range, "0.1,10,0.1")] public float AscentGravityScale = 1.5f;

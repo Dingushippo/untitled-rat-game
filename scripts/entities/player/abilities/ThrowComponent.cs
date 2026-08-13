@@ -13,6 +13,7 @@ public partial class ThrowComponent : Node3D
     [Export] public ThrowTuning Tuning;
 
     private float _currentForce = 0;
+    private int _framesSkipped = 0;
     private Vector3 _gravity;
     private ThrowPath _currentPath;
     private bool _preview = false;
@@ -41,22 +42,21 @@ public partial class ThrowComponent : Node3D
             {
                 if (!IsStill())
                 {
-                    GD.Print("Changing");
                     _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
-                }
-                if (!_currentPath.Homing && _currentPath.ThrowTarget.IsValid && _currentPath.Points.Length >= 2)
-                {
-                    // Adjust towards center;
-                    Vector3 right = Player.Camera.GlobalBasis.X;
-                    Vector3 toEnd = _currentPath.End - Player.Camera.GlobalPosition;
-                    float lateral = right.Dot(toEnd);
-                    float forward = Mathf.Max(toEnd.Dot(-Player.Camera.GlobalBasis.Z), Tuning.MinAimDistance);
-                    _aimYaw = Mathf.Clamp(
-                        _aimYaw - Tuning.AimGain * Mathf.Atan2(lateral, forward),
-                        -Mathf.DegToRad(Tuning.MaxAimCorrectionDegrees),
-                        -Mathf.DegToRad(Tuning.MaxAimCorrectionDegrees)
-                    );
-                    _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
+                    if (!_currentPath.Homing && _currentPath.ThrowTarget.IsValid && _currentPath.Points.Length >= 2)
+                    {
+                        // Adjust towards center;
+                        Vector3 right = Player.Camera.GlobalBasis.X;
+                        Vector3 toEnd = _currentPath.End - Player.Camera.GlobalPosition;
+                        float lateral = right.Dot(toEnd);
+                        float forward = Mathf.Max(toEnd.Dot(-Player.Camera.GlobalBasis.Z), Tuning.MinAimDistance);
+                        _aimYaw = Mathf.Clamp(
+                            _aimYaw - Tuning.AimGain * Mathf.Atan2(lateral, forward),
+                            -Mathf.DegToRad(Tuning.MaxAimCorrectionDegrees),
+                            -Mathf.DegToRad(Tuning.MaxAimCorrectionDegrees)
+                        );
+                        _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
+                    }
                 }
             }
             HandAnimation((float)delta);
