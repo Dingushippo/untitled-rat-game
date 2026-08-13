@@ -1,6 +1,5 @@
 public enum Event
 {
-    ObjectPlaced,
     NavigationRegionReady,
     RatSlotted,
     RatUnslotted,

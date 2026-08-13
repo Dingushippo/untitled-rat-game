@@ -4,12 +4,12 @@ public partial class NavigationRegion3d : NavigationRegion3D
 {
     public override void _EnterTree()
     {
-        EventBus.Subscribe(Event.ObjectPlaced, OnObjectPlaced);
+        EventBus.Subscribe<ObjectPlaced>(OnObjectPlaced);
     }
 
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.ObjectPlaced, OnObjectPlaced);
+        EventBus.Unsubscribe<ObjectPlaced>(OnObjectPlaced);
     }
 
     public override void _Ready()
@@ -17,7 +17,7 @@ public partial class NavigationRegion3d : NavigationRegion3D
         EventBus.Publish(Event.NavigationRegionReady, this);
     }
 
-    private void OnObjectPlaced(object[] args)
+    private void OnObjectPlaced(ObjectPlaced _)
     {
         BakeNavigationMesh(true);
     }
