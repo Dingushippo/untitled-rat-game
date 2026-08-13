@@ -14,7 +14,7 @@ public partial class NavigationRegion3d : NavigationRegion3D
 
     public override void _Ready()
     {
-        EventBus.Publish(Event.NavigationRegionReady, this);
+        EventBus.Publish(new NavigationRegionReady(this));
     }
 
     private void OnObjectPlaced(ObjectPlaced _)

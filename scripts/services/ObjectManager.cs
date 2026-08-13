@@ -17,7 +17,7 @@ public partial class ObjectManager : Node
     }
     public override void _Ready()
     {
-        EventBus.Subscribe(Event.NavigationRegionReady, OnNavigationRegionReady);
+        EventBus.Subscribe<NavigationRegionReady>(OnNavigationRegionReady);
     }
 
     public void SpawnObject(ObjectResource resource, Vector3 position, Vector3 rotation)
@@ -27,10 +27,9 @@ public partial class ObjectManager : Node
         EventBus.Publish(new ObjectPlaced());
     }
 
-    public void OnNavigationRegionReady(object[] args)
+    public void OnNavigationRegionReady(NavigationRegionReady evt)
     {
-        _mainNavigationRegion = (NavigationRegion3D)args[0];
-        Node poolTarget = _mainNavigationRegion.GetNode("Objects");
+        Node poolTarget = evt.Region.GetNode("Objects");
         _pool = new ObjectPoolComponent(poolTarget, objectScene, 10);
     }
 
