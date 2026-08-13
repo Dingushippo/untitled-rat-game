@@ -10,7 +10,7 @@ public class PlayerMoveState : PlayerState
     {
         if (!_player.IsOnFloor())
         {
-            fsm.ChangeState("falling", this);
+            fsm.ChangeState<PlayerFallingState>(this);
             return;
         }
 
@@ -22,7 +22,7 @@ public class PlayerMoveState : PlayerState
 
         if (new Vector2(_player.Velocity.X, _player.Velocity.Z).Length() < 0.05f && _inputDir == Vector2.Zero)
         {
-            fsm.ChangeState("idle");
+            fsm.ChangeState<PlayerIdleState>();
         }
     }
 
@@ -30,7 +30,7 @@ public class PlayerMoveState : PlayerState
     {
         if (@event.IsActionPressed("jump"))
         {
-            fsm.ChangeState("jump", this);
+            fsm.ChangeState<PlayerJumpState>(this);
         }
         if (@event.IsActionPressed("sprint"))
         {
@@ -38,15 +38,13 @@ public class PlayerMoveState : PlayerState
         }
         if (@event.IsActionPressed("crouch") && Input.IsActionPressed("sprint") && !_player.CrouchComponent.IsCrouching)
         {
-            fsm.ChangeState("slide");
+            fsm.ChangeState<PlayerSlideState>(this);
         }
         if (@event.IsActionPressed("crouch") && _player.IsOnFloor() && _player.GetFloorAngle() != 0)
         {
             if (_player.GetRealVelocity().Y < 0)
-                fsm.ChangeState("slide");
+                fsm.ChangeState<PlayerSlideState>(this);
         }
-
-        // _player.IsOnFloor() || _player.GetFloorAngle() != 0
     }
 
     protected virtual void HandleMovement(float delta)

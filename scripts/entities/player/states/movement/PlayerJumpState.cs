@@ -14,6 +14,6 @@ public class PlayerJumpState : PlayerState
         }
         _player.Velocity = velocity;
         _player.CrouchComponent.TryStand();
-        fsm.ChangeState("falling", this);
+        fsm.ChangeState<PlayerFallingState>(this);
     }
 }

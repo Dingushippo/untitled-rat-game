@@ -14,21 +14,20 @@ public class PlayerWallRunState : PlayerState
     {
         if (_player.IsOnFloor())
         {
-            fsm.ChangeState("idle"); return;
+            fsm.ChangeState<PlayerIdleState>(); return;
         }
         else if (!IsStillOnWall())
         {
-            fsm.ChangeState("falling", this); return;
+            fsm.ChangeState<PlayerFallingState>(this); return;
         }
         if (Input.IsActionJustPressed("jump"))
         {
-            fsm.ChangeState("walljump", this); return;
+            fsm.ChangeState<PlayerWallJumpState>(this); return;
         }
         Vector3 velocity = _player.Velocity;
         velocity.X = WallForward.X * _player.WallrunSpeed;
         velocity.Z = WallForward.Z * _player.WallrunSpeed;
         velocity.Y += _player.GetGravity().Y * _gravityScale * delta;
-        GD.Print($"Adding gravity: {_player.GetGravity().Y * _gravityScale * delta}");
 
         // Stick to wall to make it more stable
         velocity += -WallNormal * 3; // Maybe make this a tuning variable?
@@ -42,7 +41,6 @@ public class PlayerWallRunState : PlayerState
         if (previous is PlayerFallingState fall)
         {
             _side = fall.Side;
-            GD.Print($"Side: {_side}");
         }
         _gravityScale = 0f;
         _decayTween?.Kill();

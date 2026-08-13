@@ -8,14 +8,14 @@ public class PlayerIdleState : PlayerState
         Vector2 dir = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
         if (dir == Vector2.Zero)
             return;
-        fsm.ChangeState("move", this);
+        fsm.ChangeState<PlayerMoveState>(this);
     }
     public override void Enter(State previous = null) { }
     public override void HandleInput(InputEvent @event)
     {
         if (@event.IsActionPressed("jump") && _player.IsOnFloor())
         {
-            fsm.ChangeState("jump", this);
+            fsm.ChangeState<PlayerJumpState>(this);
         }
     }
     public override void Exit() { }

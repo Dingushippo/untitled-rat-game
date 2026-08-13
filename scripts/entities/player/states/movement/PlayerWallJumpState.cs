@@ -10,7 +10,6 @@ public class PlayerWallJumpState : PlayerState
             return;
 
         _player.Velocity = (wallRun.WallNormal + Vector3.Up) * _player.WallJumpForce;
-        GD.Print($"Velocity: {_player.Velocity}");
-        fsm.ChangeState("falling", this);
+        fsm.ChangeState<PlayerFallingState>(this);
     }
 }

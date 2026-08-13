@@ -24,14 +24,14 @@ public class PlayerSlideState : PlayerState
 
         if (_currentSlideVelocity.Length() < SLIDE_EXIT_VELOCITY)
         {
-            fsm.ChangeState("idle");
+            fsm.ChangeState<PlayerIdleState>();
         }
     }
     public override void HandleInput(InputEvent @event)
     {
         if (@event.IsActionPressed("jump"))
         {
-            fsm.ChangeState("jump", this);
+            fsm.ChangeState<PlayerJumpState>(this);
             _player.CrouchComponent.TryStand();
         }
     }

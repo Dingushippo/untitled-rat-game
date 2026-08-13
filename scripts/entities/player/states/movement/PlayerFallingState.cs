@@ -26,21 +26,21 @@ public class PlayerFallingState : PlayerState
         if (_player.IsOnFloor())
         {
             if (Input.IsActionPressed("crouch"))
-                fsm.ChangeState("slide", this);
+                fsm.ChangeState<PlayerSlideState>(this);
             else
-                fsm.ChangeState("move", this);
+                fsm.ChangeState<PlayerMoveState>(this);
         }
         else if (CanWallrun())
         {
-            fsm.ChangeState("wallrun", this);
+            fsm.ChangeState<PlayerWallRunState>(this);
         }
         else if (_player.VaultRaycast.IsColliding() && Input.IsActionPressed("jump") && CanVault())
         {
-            fsm.ChangeState("vault", this);
+            fsm.ChangeState<PlayerVaultState>(this);
         }
         else if (Input.IsActionJustPressed("jump") && _timer <= COYOTY_TIMER_LENGTH)
         {
-            fsm.ChangeState("jump", this);
+            fsm.ChangeState<PlayerJumpState>(this);
         }
     }
     public override void Enter(State previous = null)
