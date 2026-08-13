@@ -1,6 +1,5 @@
 public enum Event
 {
-    ClockTick,
     StartQte,
     QteStarted,
     QteCompleted,

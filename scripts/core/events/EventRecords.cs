@@ -14,3 +14,4 @@ public readonly record struct Sundown(int Day);
 public readonly record struct DayStarted(int Day);
 public readonly record struct SpawnRat(int Amount);
 public readonly record struct QuotaUpdated(int Current, int Required);
+public readonly record struct ClockTick(string Text, int Day, float DayProgress);

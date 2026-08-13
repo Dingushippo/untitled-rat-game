@@ -32,7 +32,7 @@ public class GameRunState : GameState
 
         EventBus.Subscribe<ItemSold>(OnItemSold);
         EventBus.Subscribe<Sundown>(OnSundown);
-        EventBus.Subscribe(Event.ClockTick, HandleClockTick);
+        EventBus.Subscribe<ClockTick>(HandleClockTick);
         EconomyService.Instance.ResetForRun();
         RunClock.Instance.ResetFull();
 
@@ -56,17 +56,14 @@ public class GameRunState : GameState
     {
         EventBus.Unsubscribe<ItemSold>(OnItemSold);
         EventBus.Unsubscribe<Sundown>(OnSundown);
-        EventBus.Unsubscribe(Event.ClockTick, HandleClockTick);
+        EventBus.Unsubscribe<ClockTick>(HandleClockTick);
         _level.Ready -= OnLevelLoaded;
     }
     private int GetCurrentQuota() => _manager.Tuning.Quotas[RunClock.Instance.Day - 1];
 
-    private void HandleClockTick(object[] args)
+    private void HandleClockTick(ClockTick evt)
     {
-        string tick = (string)args[0];
-        int day = RunClock.Instance.Day;
-
-        TimelineEvent[] currentEvents = _timelineDict[day].Events.Where(x => x.TimeStamp == tick).ToArray();
+        TimelineEvent[] currentEvents = _timelineDict[evt.Day].Events.Where(x => x.TimeStamp == evt.Text).ToArray();
 
         if (currentEvents.Length == 0) return;
 
