@@ -10,3 +10,4 @@ public readonly record struct CameraChargeReset();
 public readonly record struct ObjectPlaced();
 public readonly record struct NavigationRegionReady(NavigationRegion3D Region);
 public readonly record struct ResourceChanged(Economy Type, int OldVal, int NewVal);
+public readonly record struct Sundown(int Day);

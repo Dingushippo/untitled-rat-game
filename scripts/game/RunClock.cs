@@ -55,7 +55,7 @@ public partial class RunClock : Node
 
         if (_timer >= _dayLength)
         {
-            EventBus.Publish(Event.Sundown, Day);
+            EventBus.Publish(new Sundown(Day));
         }
     }
 

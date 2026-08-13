@@ -30,9 +30,8 @@ public class GameRunState : GameState
 
         GD.Seed(_manager.Tuning.FixedSeed ? _manager.Tuning.Seed : (ulong)DateTime.Now.Ticks);
 
-        // EventBus.Subscribe(Event.ItemSold, OnItemSold);
         EventBus.Subscribe<ItemSold>(OnItemSold);
-        EventBus.Subscribe(Event.Sundown, OnSundown);
+        EventBus.Subscribe<Sundown>(OnSundown);
         EventBus.Subscribe(Event.ClockTick, HandleClockTick);
         EconomyService.Instance.ResetForRun();
         RunClock.Instance.ResetFull();
@@ -58,9 +57,8 @@ public class GameRunState : GameState
 
     public override void Exit()
     {
-        // EventBus.Unsubscribe(Event.ItemSold, OnItemSold);
         EventBus.Unsubscribe<ItemSold>(OnItemSold);
-        EventBus.Unsubscribe(Event.Sundown, OnSundown);
+        EventBus.Unsubscribe<Sundown>(OnSundown);
         EventBus.Unsubscribe(Event.ClockTick, HandleClockTick);
         _level.Ready -= OnLevelLoaded;
     }
@@ -95,7 +93,7 @@ public class GameRunState : GameState
         StewsDeliveredToday += item.Amount;
         TotalStewsDelivered += item.Amount;
     }
-    private void OnSundown(object[] obj)
+    private void OnSundown(Sundown evt)
     {
         RunClock clock = RunClock.Instance;
         int quotaToMeet = GetCurrentQuota();
