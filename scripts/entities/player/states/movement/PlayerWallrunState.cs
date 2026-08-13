@@ -6,7 +6,7 @@ public class PlayerWallRunState : PlayerState
     private Side _side;
     public Vector3 WallNormal;
     public Vector3 WallForward;
-    private float _gravityScale = -0.2f;
+    private float _gravityScale = 0.5f;
     private float _decayTime = 1f;
     private Tween _decayTween;
     public PlayerWallRunState(Player owner) : base(owner) { }
@@ -44,12 +44,12 @@ public class PlayerWallRunState : PlayerState
         }
         _player.Camera.SetLean(_side);
 
-        _gravityScale = 0f;
-        _decayTween?.Kill();
-        _decayTween = _player.CreateTween();
-        _decayTween.SetEase(Tween.EaseType.In);
-        _decayTween.SetTrans(Tween.TransitionType.Sine);
-        _decayTween.TweenMethod(Callable.From<float>((x) => _gravityScale = x), 0, 8f, _decayTime);
+        // _gravityScale = 0f;
+        // _decayTween?.Kill();
+        // _decayTween = _player.CreateTween();
+        // _decayTween.SetEase(Tween.EaseType.In);
+        // _decayTween.SetTrans(Tween.TransitionType.Sine);
+        // _decayTween.TweenMethod(Callable.From<float>((x) => _gravityScale = x), 0, 8f, _decayTime);
     }
 
     public override void Exit()
