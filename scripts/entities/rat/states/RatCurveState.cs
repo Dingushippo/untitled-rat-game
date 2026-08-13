@@ -13,7 +13,10 @@ public class RatCurveState : RatState
     private Vector3 _exitVelocity;
     private int _currentIndex = 0;
 
-    public RatCurveState(Rat owner) : base(owner) { }
+    public RatCurveState(Rat owner) : base(owner)
+    {
+        _tuning = _rat.FlightTuning;
+    }
 
     public void Configure(ThrowPath path)
     {
@@ -21,7 +24,6 @@ public class RatCurveState : RatState
         _speeds = path.Speeds;
         _exitVelocity = path.ExitVelocity;
         Target = path.ThrowTarget;
-        _tuning = _rat.FlightTuning;
 
         _distanceToEnd = new float[_pathArray.Length];
         for (int i = _pathArray.Length - 2; i >= 0; i--)
@@ -165,7 +167,24 @@ public class RatCurveState : RatState
 
     public override void Exit()
     {
+        _currentIndex = 0;
+        _speeds = null;
+        _distanceToEnd = null;
+        _pathArray = null;
+
         EventBus.Publish(new RatLanded());
     }
+
+    /*
+    public ThrowTarget Target;
+    public WorkSlot WorkSlot => Target.IsSlot ? Target.WorkSlot : null;
+
+    private Vector3[] _pathArray;
+    private float[] _speeds;
+    private float[] _distanceToEnd;
+    private RatFlightTuning _tuning;
+    private Vector3 _exitVelocity;
+    private int _currentIndex = 0;
+    */
 
 }
