@@ -17,3 +17,5 @@ public readonly record struct SpawnRat(int Amount);
 public readonly record struct QuotaUpdated(int Current, int Required);
 public readonly record struct ClockTick(string Text, int Day, float DayProgress);
 public readonly record struct StartQte(string Id, Action<bool> OnComplete);
+public readonly record struct QteStarted(QteBase Qte);
+public readonly record struct QteCompleted(QteBase Qte);

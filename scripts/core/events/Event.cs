@@ -1,7 +1,5 @@
 public enum Event
 {
-    QteStarted,
-    QteCompleted,
     RatPickedUp,
     RatReleased,
     HazardDisruption,

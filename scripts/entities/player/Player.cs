@@ -39,24 +39,27 @@ public partial class Player : CharacterBody3D
         RitualComponent = new(this);
         InitStateMachines();
 
-        EventBus.Subscribe(Event.QteStarted, SetFrozen);
-        EventBus.Subscribe(Event.QteCompleted, SetUnfrozen);
+        EventBus.Subscribe<QteStarted>(OnQteStarted);
+        EventBus.Subscribe<QteCompleted>(OnQteCompleted);
     }
 
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe(Event.QteStarted, SetFrozen);
-        EventBus.Unsubscribe(Event.QteCompleted, SetUnfrozen);
+        EventBus.Unsubscribe<QteStarted>(OnQteStarted);
+        EventBus.Unsubscribe<QteCompleted>(OnQteCompleted);
     }
 
-    private void SetFrozen(object[] _)
+    private void OnQteStarted(QteStarted _) => SetFrozen();
+    private void OnQteCompleted(QteCompleted _) => SetUnfrozen();
+
+    private void SetFrozen()
     {
         _movementFsm.SetEnabled(false);
         _handFsm.SetEnabled(false);
         Camera.SetCameraInputEnabled(false);
     }
 
-    private void SetUnfrozen(object[] _)
+    private void SetUnfrozen()
     {
         _movementFsm.SetEnabled(true);
         _handFsm.SetEnabled(true);
