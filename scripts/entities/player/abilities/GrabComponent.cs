@@ -24,13 +24,13 @@ public class GrabComponent
     public void InjectGrabState(Rat rat)
     {
         CurrentGrabbed = rat;
-        RatGrabState grabState = new RatGrabState(rat, _player);
-        rat.InjectState("grab", grabState);
+        rat.GetState<RatGrabState>().Configure(_player);
+        rat.ChangeState<RatGrabState>();
     }
 
     public void Release()
     {
-        CurrentGrabbed.SetIdle();
+        CurrentGrabbed.ChangeState<RatIdleState>();
         CurrentGrabbed = null;
     }
 }
