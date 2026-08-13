@@ -19,7 +19,7 @@ public partial class RitualBase : Node3D, IPooledObject
     public Array<RitualElementSlot> Slots { get; set; }
     public Action<RitualBase> OnComplete;
     private readonly List<Tween> _animateTween = new();
-    private FiniteStateMachine _fsm;
+    private FiniteStateMachine<RitualState> _fsm;
     public override void _Ready()
     {
         Renderer.Position = Viewport.Size / 2;

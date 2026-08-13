@@ -1,5 +1,5 @@
 
-public class GameState : State
+public class GameState : State<GameState>
 {
     private protected GameManager _manager;
 

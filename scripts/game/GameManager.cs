@@ -8,7 +8,7 @@ public partial class GameManager : Node
     [Export] public Array<TimelineResource> Timeline;
     private static GameManager _instance;
     public static GameManager Instance => _instance;
-    private FiniteStateMachine _fsm;
+    private FiniteStateMachine<GameState> _fsm;
 
     public override void _Process(double delta) => _fsm.StateProcess((float)delta);
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);

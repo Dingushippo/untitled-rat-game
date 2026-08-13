@@ -1,4 +1,4 @@
-public class RitualState : State
+public class RitualState : State<RitualState>
 {
     private protected RitualBase _ritual;
 

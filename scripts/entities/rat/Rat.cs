@@ -32,7 +32,7 @@ public partial class Rat : CharacterBody3D
     public Vector3 NavigationTargetPosition;
     private Node3D _navigationTarget;
     private Node3D _navigationTargetOriginal;
-    private FiniteStateMachine _fsm;
+    private FiniteStateMachine<RatState> _fsm;
 
     public override void _Ready()
     {
@@ -99,7 +99,7 @@ public partial class Rat : CharacterBody3D
 
     private void InitStateMachine()
     {
-        _fsm = new FiniteStateMachine(this);
+        _fsm = new(this);
         _fsm.Add(new RatFollowState(this, NavAgent));
         _fsm.Add(new RatIdleState(this));
         _fsm.Add(new RatFallingState(this));

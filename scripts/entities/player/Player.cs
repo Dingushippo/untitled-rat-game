@@ -27,8 +27,8 @@ public partial class Player : CharacterBody3D
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
     public RitualComponent RitualComponent;
-    private FiniteStateMachine _movementFsm;
-    private FiniteStateMachine _handFsm;
+    private FiniteStateMachine<PlayerState> _movementFsm;
+    private FiniteStateMachine<HandState> _handFsm;
 
     private bool _isFrozen = false;
     public override void _Ready()

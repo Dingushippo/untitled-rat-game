@@ -1,4 +1,4 @@
-public class RatState : State
+public class RatState : State<RatState>
 {
     private protected Rat _rat;
 

@@ -1,4 +1,4 @@
-public class PlayerState : State
+public class PlayerState : State<PlayerState>
 {
     private protected Player _player;
 
