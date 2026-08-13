@@ -1,6 +1,6 @@
 using Godot;
 
-public class HandRitualState : PlayerState
+public class HandRitualState : HandState
 {
     public HandRitualState(Player owner) : base(owner) { }
     public override void PhysicsProcess(float delta)

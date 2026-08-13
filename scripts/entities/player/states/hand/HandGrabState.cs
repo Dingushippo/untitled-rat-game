@@ -1,6 +1,6 @@
 using Godot;
 
-public class HandGrabState : PlayerState
+public class HandGrabState : HandState
 {
     public HandGrabState(Player owner) : base(owner) { }
 

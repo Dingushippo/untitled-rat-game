@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-public class HandEmptyState : PlayerState
+public class HandEmptyState : HandState
 {
     public HandEmptyState(Player owner) : base(owner) { }
 
