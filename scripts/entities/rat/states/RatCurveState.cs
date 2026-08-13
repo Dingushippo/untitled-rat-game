@@ -1,24 +1,27 @@
 using Godot;
+using System;
 
 public class RatCurveState : RatState
 {
-    public readonly ThrowTarget Target;
+    public ThrowTarget Target;
     public WorkSlot WorkSlot => Target.IsSlot ? Target.WorkSlot : null;
 
-    private readonly Vector3[] _pathArray;
-    private readonly float[] _speeds;
-    private readonly float[] _distanceToEnd;
-    private readonly RatFlightTuning _tuning;
-    private readonly Vector3 _exitVelocity;
+    private Vector3[] _pathArray;
+    private float[] _speeds;
+    private float[] _distanceToEnd;
+    private RatFlightTuning _tuning;
+    private Vector3 _exitVelocity;
     private int _currentIndex = 0;
 
-    public RatCurveState(Rat owner, ThrowPath path) : base(owner)
+    public RatCurveState(Rat owner) : base(owner) { }
+
+    public void Configure(ThrowPath path)
     {
         _pathArray = path.Points;
         _speeds = path.Speeds;
         _exitVelocity = path.ExitVelocity;
         Target = path.ThrowTarget;
-        _tuning = owner.FlightTuning;
+        _tuning = _rat.FlightTuning;
 
         _distanceToEnd = new float[_pathArray.Length];
         for (int i = _pathArray.Length - 2; i >= 0; i--)
@@ -27,22 +30,19 @@ public class RatCurveState : RatState
         }
     }
 
+
     public override void PhysicsProcess(float delta)
     {
         if (_currentIndex >= _pathArray.Length)
         {
-            string nextState;
-            if (Target.IsSlot) nextState = "slotted";
-            else if (Target.IsIntake) nextState = "intake";
-            else if (!IsGrounded()) nextState = "falling";
-            else nextState = "landed";
-
-            // Hand the flight's momentum over so the rat keeps arcing instead of stopping dead in
-            // mid-air and dropping straight down when the simulated path runs out.
-            if (nextState == "falling")
+            if (Target.IsSlot) fsm.ChangeState<RatSlottedState>(this);
+            else if (Target.IsIntake) fsm.ChangeState<RatIntakeState>(this);
+            else if (!IsGrounded())
+            {
                 _rat.Velocity = _exitVelocity;
-
-            fsm.ChangeState(nextState, this);
+                fsm.ChangeState<RatFallingState>(this);
+            }
+            else fsm.ChangeState<RatLandedState>(this);
             return;
         }
 

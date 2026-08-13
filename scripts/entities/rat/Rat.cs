@@ -86,33 +86,29 @@ public partial class Rat : CharacterBody3D
     }
 
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
-
     public override void _Process(double delta) => _fsm.StateProcess((float)delta);
-
-    public void RevertToPrevState() => _fsm.ChangeState(_fsm.PreviousStateName);
-    public void SetIdle() => _fsm.ChangeState("idle");
-
-    public void InjectState(string key, RatState state)
+    public T GetState<T>() where T : RatState
     {
-        _fsm.Add(key, state);
-        _fsm.ChangeState(key);
+        return _fsm.Get<T>();
     }
 
-    public void ForceState(string key)
+    public void ChangeState<T>() where T : RatState
     {
-        _fsm.ChangeState(key);
+        _fsm.ChangeState<T>();
     }
 
     private void InitStateMachine()
     {
         _fsm = new FiniteStateMachine(this);
-        _fsm.Add("follow", new RatFollowState(this, NavAgent));
-        _fsm.Add("idle", new RatIdleState(this));
-        _fsm.Add("falling", new RatFallingState(this));
-        _fsm.Add("landed", new RatLandedState(this));
-        _fsm.Add("slotted", new RatSlottedState(this));
-        _fsm.Add("intake", new RatIntakeState(this));
-        _fsm.InitState("idle");
+        _fsm.Add(new RatFollowState(this, NavAgent));
+        _fsm.Add(new RatIdleState(this));
+        _fsm.Add(new RatFallingState(this));
+        _fsm.Add(new RatLandedState(this));
+        _fsm.Add(new RatSlottedState(this));
+        _fsm.Add(new RatIntakeState(this));
+        _fsm.Add(new RatGrabState(this));
+        _fsm.Add(new RatCurveState(this));
+        _fsm.InitState<RatIdleState>();
         _fsm.Debug = _debug;
     }
 
