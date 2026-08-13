@@ -55,15 +55,15 @@ public partial class PlayerCamera : Camera3D
         Input.MouseMode = Input.MouseModeEnum.Captured;
 
         EventBus.Subscribe<CameraImpact>(OnCameraImpact);
-        EventBus.Subscribe(Event.CameraCharge, OnCameraCharge);
-        EventBus.Subscribe(Event.CameraChargeReset, OnCameraChargeReset);
+        EventBus.Subscribe<CameraCharge>(OnCameraCharge);
+        EventBus.Subscribe<CameraChargeReset>(OnCameraChargeReset);
     }
 
     public override void _ExitTree()
     {
         EventBus.Unsubscribe<CameraImpact>(OnCameraImpact);
-        EventBus.Unsubscribe(Event.CameraCharge, OnCameraCharge);
-        EventBus.Unsubscribe(Event.CameraChargeReset, OnCameraChargeReset);
+        EventBus.Subscribe<CameraCharge>(OnCameraCharge);
+        EventBus.Subscribe<CameraChargeReset>(OnCameraChargeReset);
     }
 
     public override void _Process(double delta)
@@ -202,11 +202,8 @@ public partial class PlayerCamera : Camera3D
         _cameraEnabled = enabled;
     }
 
-    private void OnCameraCharge(params object[] args)
+    private void OnCameraCharge(CameraCharge charge)
     {
-        float duration = (float)args[0];
-        float delay = args.Length > 1 ? (float)args[1] : 0f;
-
         // Wind-up: pull back, tilt down and narrow the FOV to build tension.
         CamPose target = new(
             -Mathf.DegToRad(Tuning.ChargePitchDegrees),
@@ -220,10 +217,10 @@ public partial class PlayerCamera : Camera3D
         _cameraTween.SetParallel(true);
         _cameraTween.SetEase(Tween.EaseType.InOut);
         _cameraTween.SetTrans(Tween.TransitionType.Sine);
-        TweenPose(CurrentPose, target, duration, delay);
+        TweenPose(CurrentPose, target, charge.Duration, charge.Delay);
     }
 
-    private void OnCameraChargeReset(params object[] args)
+    private void OnCameraChargeReset(CameraChargeReset _)
     {
         _cameraTween?.Kill();
         _cameraTween = CreateTween();

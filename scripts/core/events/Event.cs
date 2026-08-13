@@ -1,7 +1,5 @@
 public enum Event
 {
-    CameraCharge,
-    CameraChargeReset,
     ObjectPlaced,
     NavigationRegionReady,
     RatSlotted,

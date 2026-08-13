@@ -82,7 +82,7 @@ public partial class ThrowComponent : Node3D
         ).SetDelay(Tuning.ChargeStartDelay);
         _isCharging = true;
 
-        EventBus.Publish(Event.CameraCharge, Tuning.ChargeDuration, Tuning.ChargeStartDelay);
+        EventBus.Publish(new CameraCharge(Tuning.ChargeDuration, Tuning.ChargeStartDelay));
     }
 
     public void ResetCharge()
@@ -98,7 +98,7 @@ public partial class ThrowComponent : Node3D
         if (_isCharging)
         {
             _isCharging = false;
-            EventBus.Publish(Event.CameraChargeReset);
+            EventBus.Publish(new CameraChargeReset());
         }
     }
 
