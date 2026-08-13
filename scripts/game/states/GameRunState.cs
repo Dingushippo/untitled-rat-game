@@ -72,8 +72,8 @@ public class GameRunState : GameState
             switch (@event.Type)
             {
                 case TimelineEventType.Hazard:
-                    string hazardId = (string)@event.Data["hazardId"];
-                    EventBus.Publish(Event.SpawnHazard, hazardId);
+                    string hazardId = @event.Data["hazardId"];
+                    EventBus.Publish(new SpawnHazard(hazardId));
                     break;
             }
         }
