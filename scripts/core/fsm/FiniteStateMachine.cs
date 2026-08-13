@@ -4,11 +4,10 @@ using System;
 
 public class FiniteStateMachine
 {
-    protected Dictionary<string, State> states = [];
+    protected Dictionary<Type, State> states = [];
     protected string _owner = null;
     public State CurrentState { get; private set; }
-    public string CurrentStateName { get; private set; }
-    public string PreviousStateName { get; set; }
+    public State PreviousState { get; private set; }
     public bool Debug { get; set; } = false;
 
     private bool _isEnabled = true;
@@ -24,33 +23,29 @@ public class FiniteStateMachine
 
     public void Add<T>(T state) where T : State
     {
-        states[nameof(T)] = state;
+        states[typeof(T)] = state;
         state.fsm = this;
     }
 
     public void InitState<T>() where T : State
     {
-        string state = nameof(T);
-        if (!ValidateState(state))
+        if (!ValidateState<T>())
             return;
-        CurrentState = states[state];
-        CurrentStateName = state;
+        CurrentState = states[typeof(T)];
         CurrentState.Enter();
     }
 
     public void ChangeState<T>(State previous = null) where T : State
     {
-        string state = nameof(T);
-        if (!ValidateState(state)) return;
-        if (Debug) GD.Print($"{_owner} - Changing state from {CurrentStateName} to {state}");
-        PreviousStateName = CurrentStateName;
+        if (!ValidateState<T>()) return;
+        if (Debug) GD.Print($"{_owner} - Changing state from {nameof(PreviousState)} to {typeof(T)}");
+        PreviousState = CurrentState;
         CurrentState.Exit();
-        CurrentState = states[state];
-        CurrentStateName = state;
+        CurrentState = states[typeof(T)];
         CurrentState.Enter(previous);
     }
 
-    public T Get<T>() where T : State => (T)states[nameof(T)];
+    public T Get<T>() where T : State => (T)states[typeof(T)];
 
     public void StatePhysicsProcess(float delta)
     {
@@ -73,11 +68,11 @@ public class FiniteStateMachine
         CurrentState.HandleUnhandledInput(@event);
     }
 
-    private bool ValidateState(string state)
+    private bool ValidateState<T>() where T : State
     {
-        if (!states.TryGetValue(state, out State next))
+        if (!states.TryGetValue(typeof(T), out _))
         {
-            GD.PushError($"{_owner}: no state '{state}' (have: {string.Join(", ", states.Keys)})");
+            GD.PushError($"{_owner}: no state '{typeof(T)}' (have: {string.Join(", ", states.Keys)})");
             return false;
         }
         return true;

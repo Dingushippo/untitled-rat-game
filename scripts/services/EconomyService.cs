@@ -70,7 +70,6 @@ public partial class EconomyService : Node
         if (_fervorDecayTimer < 60f)
         {
             _fervorDecayTimer += delta;
-            GD.Print($"Timer: {_fervorDecayTimer}");
             return;
         }
         Fervor -= _fervorDecayPerMinute;
