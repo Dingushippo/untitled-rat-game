@@ -17,23 +17,19 @@ public class ProductionComponent : IDisposable
     {
         _facility = facility;
         _workSlots = workSlots;
-        EventBus.Subscribe(Event.SetDisruptFacilityInRange, OnDisruptProductionInRange);
+        EventBus.Subscribe<SetDisruptFacilityInRange>(OnDisruptProductionInRange);
     }
 
     public void Dispose()
     {
-        EventBus.Unsubscribe(Event.SetDisruptFacilityInRange, OnDisruptProductionInRange);
+        EventBus.Unsubscribe<SetDisruptFacilityInRange>(OnDisruptProductionInRange);
     }
 
-    public void OnDisruptProductionInRange(object[] args)
+    public void OnDisruptProductionInRange(SetDisruptFacilityInRange evt)
     {
-        Vector3 hazardPosition = (Vector3)args[0];
-        float hazardRadius = (float)args[1];
-        bool disrupt = (bool)args[2];
-
-        if (_facility.GlobalPosition.DistanceTo(hazardPosition) <= hazardRadius)
+        if (_facility.GlobalPosition.DistanceTo(evt.Position) <= evt.Radius)
         {
-            _stallOverride = disrupt;
+            _stallOverride = evt.Disrupt;
         }
     }
 
@@ -57,27 +53,18 @@ public class ProductionComponent : IDisposable
             rate /= def.BufferPenalty;
         }
 
-        _timer += StaffedSlots * rate * delta;
-        if (_timer < def.CycleSeconds) return;
-
-        // Hold the timer at the gate on failure so work resumes the instant the facility is fed
-        // or drained, instead of restarting the whole cycle.
         if (_stallOverride)
         {
-            _timer = def.CycleSeconds;
-            SetStalled(@base, Event.HazardDisruption);
             return;
         }
         if (!@base.Input.Has(def.Inputs))
-        {
-            _timer = def.CycleSeconds;
             return;
-        }
+
         if (!@base.Output.CanAdd(def.Outputs))
-        {
-            _timer = def.CycleSeconds;
             return;
-        }
+
+        _timer += StaffedSlots * rate * delta;
+        if (_timer < def.CycleSeconds) return;
 
         @base.Input.TryRemove(def.Inputs);
         @base.Output.TryAdd(def.Outputs);
@@ -85,15 +72,7 @@ public class ProductionComponent : IDisposable
         _timer = 0f;
         IsStalled = false;
     }
-
-    /// <summary>0-1 progress through the current cycle, for debug readouts and UI.</summary>
     public float GetProgress(ProductionDef facility) =>
         facility.CycleSeconds <= 0f ? 1f : Mathf.Clamp(_timer / facility.CycleSeconds, 0f, 1f);
 
-    private void SetStalled(ProductionFacility @base, Event reason, Godot.Collections.Dictionary<string, int> items = null)
-    {
-        if (IsStalled) return; // edge-trigger, otherwise this fires every frame
-        IsStalled = true;
-        EventBus.Publish(reason, @base, items);
-    }
 }
