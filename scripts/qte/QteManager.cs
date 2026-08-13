@@ -21,7 +21,7 @@ public partial class QteManager : Control
             _qtes[fileName] = scene;
         }
         EventBus.Subscribe<StartQte>(OnQteStart);
-        EventBus.Subscribe(Event.QteCompleted, OnQteCompleted);
+        EventBus.Subscribe<QteCompleted>(OnQteCompleted);
     }
 
     public override void _ExitTree()
@@ -43,7 +43,7 @@ public partial class QteManager : Control
         _activeQte = qte;
     }
 
-    private void OnQteCompleted(object[] obj)
+    private void OnQteCompleted(QteCompleted _)
     {
         _activeQte = null;
     }
