@@ -18,11 +18,26 @@ public class ProductionComponent : IDisposable
         _facility = facility;
         _workSlots = workSlots;
         EventBus.Subscribe<SetDisruptFacilityInRange>(OnDisruptProductionInRange);
+        EventBus.Subscribe<RatSlotChange>(OnSlotChange);
+    }
+
+    private void OnSlotChange(RatSlotChange evt)
+    {
+        if (evt.Facility != _facility)
+            return;
+
+        StaffedSlots += evt.Slotted ? 1 : -1;
+
+        if (StaffedSlots == 0)
+            ProductionRate = 0;
+        else
+            ProductionRate = _workSlots.Sum(slot => slot.Occupant?.RatDef.WorkRate ?? 0f) / StaffedSlots;
     }
 
     public void Dispose()
     {
         EventBus.Unsubscribe<SetDisruptFacilityInRange>(OnDisruptProductionInRange);
+        EventBus.Unsubscribe<RatSlotChange>(OnSlotChange);
     }
 
     public void OnDisruptProductionInRange(SetDisruptFacilityInRange evt)
@@ -36,16 +51,6 @@ public class ProductionComponent : IDisposable
     public void Process(ProductionFacility @base, float delta)
     {
         ProductionDef def = @base.ProdFacility;
-
-        StaffedSlots = _workSlots.Count(slot => slot.IsEntered);
-        if (StaffedSlots == 0)
-        {
-            ProductionRate = 0f;
-            return;
-        }
-
-        // Average worker quality, so one lazy rat doesn't out-weigh the rest of the crew.
-        ProductionRate = _workSlots.Sum(slot => slot.Occupant?.RatDef.WorkRate ?? 0f) / StaffedSlots;
 
         float rate = ProductionRate * EconomyService.Instance.ProductionRateScale;
         if (@base.Output.Total >= def.BufferSize * def.BufferPenaltyRatio)

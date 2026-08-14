@@ -23,3 +23,4 @@ public readonly record struct RatPickedUp(Rat Rat);
 public readonly record struct RatReleased(Rat Rat);
 public readonly record struct SetDisruptFacilityInRange(Vector3 Position, float Radius, bool Disrupt);
 public readonly record struct SpawnHazard(string Id);
+public readonly record struct RatSlotChange(bool Slotted, Rat Rat, FacilityBase Facility, WorkSlot WorkSlot);

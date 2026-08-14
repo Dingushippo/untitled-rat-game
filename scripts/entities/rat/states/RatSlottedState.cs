@@ -23,12 +23,13 @@ public class RatSlottedState : RatState
         // _rat.SetNavAgentEnabled(false);
 
         // TODO Play animation associated with facility/slot
+        EventBus.Publish(new RatSlotChange(true, _rat, _workSlot.Facility, _workSlot));
     }
     public override void Exit()
     {
         if (_workSlot is null) return;
 
-        FacilityBase facility = _workSlot.Facility;
+        EventBus.Publish(new RatSlotChange(false, _rat, _workSlot.Facility, _workSlot));
         _workSlot.Release();
     }
 
