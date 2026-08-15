@@ -1,12 +1,12 @@
-using Godot;
 using System;
 using System.Collections.Generic;
+using Godot;
 
 public class FiniteStateMachine<T>
     where T : State<T>
 {
-    protected Dictionary<Type, T> _states = [];
-    protected string _owner = null;
+    private Dictionary<Type, T> _states = [];
+    private string _owner = null;
     public State CurrentState { get; private set; }
     public State PreviousState { get; private set; }
     public bool Debug { get; set; } = false;
