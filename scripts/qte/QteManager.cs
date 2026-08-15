@@ -4,7 +4,8 @@ using Godot.Collections;
 [GlobalClass]
 public partial class QteManager : Control
 {
-    [Export] PackedScene[] QteScenes;
+    [Export]
+    public PackedScene[] QteScenes;
 
     private readonly Dictionary<string, PackedScene> _qtes = new();
 
@@ -30,7 +31,8 @@ public partial class QteManager : Control
 
     private void OnQteStart(StartQte evt)
     {
-        if (QteActive) return;
+        if (QteActive)
+            return;
 
         if (!_qtes.TryGetValue(evt.Id, out PackedScene scene))
             GD.PushError($"Invalid QTE: {evt.Id}");

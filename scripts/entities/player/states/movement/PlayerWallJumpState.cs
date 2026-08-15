@@ -2,8 +2,9 @@ using Godot;
 
 public class PlayerWallJumpState : PlayerState
 {
-    const float SLIDE_BOOST = 1.5f;
-    public PlayerWallJumpState(Player owner) : base(owner) { }
+    public PlayerWallJumpState(Player owner)
+        : base(owner) { }
+
     public override void Enter(State previous = null)
     {
         if (previous is not PlayerWallRunState wallRun)

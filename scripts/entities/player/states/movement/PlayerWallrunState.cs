@@ -7,22 +7,26 @@ public class PlayerWallRunState : PlayerState
     public Vector3 WallNormal;
     public Vector3 WallForward;
     private float _gravityScale = 0.5f;
-    private float _decayTime = 1f;
-    private Tween _decayTween;
-    public PlayerWallRunState(Player owner) : base(owner) { }
+
+    public PlayerWallRunState(Player owner)
+        : base(owner) { }
+
     public override void PhysicsProcess(float delta)
     {
         if (_player.IsOnFloor())
         {
-            fsm.ChangeState<PlayerIdleState>(); return;
+            fsm.ChangeState<PlayerIdleState>();
+            return;
         }
         else if (!IsStillOnWall())
         {
-            fsm.ChangeState<PlayerFallingState>(this); return;
+            fsm.ChangeState<PlayerFallingState>(this);
+            return;
         }
         if (Input.IsActionJustPressed("jump"))
         {
-            fsm.ChangeState<PlayerWallJumpState>(this); return;
+            fsm.ChangeState<PlayerWallJumpState>(this);
+            return;
         }
         Vector3 velocity = _player.Velocity;
         velocity.X = WallForward.X * _player.WallrunSpeed;
@@ -34,8 +38,8 @@ public class PlayerWallRunState : PlayerState
 
         _player.Velocity = velocity;
         _player.MoveAndSlide();
-
     }
+
     public override void Enter(State previous = null)
     {
         if (previous is PlayerFallingState fall)
@@ -43,13 +47,6 @@ public class PlayerWallRunState : PlayerState
             _side = fall.Side;
         }
         _player.Camera.SetLean(_side);
-
-        // _gravityScale = 0f;
-        // _decayTween?.Kill();
-        // _decayTween = _player.CreateTween();
-        // _decayTween.SetEase(Tween.EaseType.In);
-        // _decayTween.SetTrans(Tween.TransitionType.Sine);
-        // _decayTween.TweenMethod(Callable.From<float>((x) => _gravityScale = x), 0, 8f, _decayTime);
     }
 
     public override void Exit()
@@ -57,18 +54,28 @@ public class PlayerWallRunState : PlayerState
         _player.Camera.ResetPose();
     }
 
-
     private bool IsStillOnWall()
     {
         Vector3 position = _player.Camera.GlobalPosition;
-        Vector3 leftOfPlayer = (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, Mathf.Pi / 2)) * _player.WallrunCheckDistance;
-        Vector3 rightOfPlayer = (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, -Mathf.Pi / 2)) * _player.WallrunCheckDistance;
+        Vector3 leftOfPlayer =
+            (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, Mathf.Pi / 2))
+            * _player.WallrunCheckDistance;
+        Vector3 rightOfPlayer =
+            (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, -Mathf.Pi / 2))
+            * _player.WallrunCheckDistance;
 
         Vector3 posToCheck = _side == Side.Left ? leftOfPlayer : rightOfPlayer;
         int sign = _side == Side.Left ? -1 : 1;
 
-
-        if (RaycastUtils.Ray(_player, position, posToCheck, out Dictionary result, PhysicsLayers.WORLD))
+        if (
+            RaycastUtils.Ray(
+                _player,
+                position,
+                posToCheck,
+                out Dictionary result,
+                PhysicsLayers.WORLD
+            )
+        )
         {
             WallNormal = result["normal"].AsVector3();
             WallForward = sign * WallNormal.Cross(Vector3.Up);
@@ -76,5 +83,4 @@ public class PlayerWallRunState : PlayerState
         }
         return false;
     }
-
 }

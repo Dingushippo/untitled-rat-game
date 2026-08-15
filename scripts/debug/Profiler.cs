@@ -15,7 +15,7 @@ public static class Profiler
     /// <summary>Number of recent samples kept per section for the rolling figures.</summary>
     private const int WINDOW = 256;
 
-    private static readonly double TICKS_TO_US = 1_000_000.0 / Stopwatch.Frequency;
+    private static readonly double _ticksToUs = 1_000_000.0 / Stopwatch.Frequency;
 
     private static readonly Dictionary<string, Section> _sections = new();
     private static readonly Dictionary<string, Counter> _counters = new();
@@ -30,7 +30,8 @@ public static class Profiler
 
     public static void Count(string name, long amount = 1)
     {
-        if (!Enabled) return;
+        if (!Enabled)
+            return;
 
         if (!_counters.TryGetValue(name, out Counter counter))
         {
@@ -44,7 +45,8 @@ public static class Profiler
     /// <summary>Call once per frame so counters can report a per-frame rate rather than a raw total.</summary>
     public static void EndFrame()
     {
-        if (!Enabled) return;
+        if (!Enabled)
+            return;
 
         foreach (Counter counter in _counters.Values)
         {
@@ -70,12 +72,14 @@ public static class Profiler
 
         if (_sections.Count > 0)
         {
-            text.AppendLine($"{"section",-24}{"calls",8}{"avg us",10}{"recent",10}{"p95",10}{"peak",10}");
+            text.AppendLine(
+                $"{"section",-24}{"calls",8}{"avg us",10}{"recent",10}{"p95",10}{"peak",10}"
+            );
             foreach ((string name, Section section) in _sections)
             {
                 text.AppendLine(
-                    $"{name,-24}{section.Stats.Count,8}{section.Stats.Average,10:F1}" +
-                    $"{section.Stats.RecentAverage,10:F1}{section.Stats.Percentile95,10:F1}{section.Stats.Max,10:F1}"
+                    $"{name,-24}{section.Stats.Count,8}{section.Stats.Average,10:F1}"
+                        + $"{section.Stats.RecentAverage,10:F1}{section.Stats.Percentile95,10:F1}{section.Stats.Max,10:F1}"
                 );
             }
         }
@@ -97,7 +101,7 @@ public static class Profiler
 
     private static void Stop(string name, long startTicks)
     {
-        double elapsed = (Stopwatch.GetTimestamp() - startTicks) * TICKS_TO_US;
+        double elapsed = (Stopwatch.GetTimestamp() - startTicks) * _ticksToUs;
 
         if (!_sections.TryGetValue(name, out Section section))
         {
@@ -157,21 +161,25 @@ public static class Profiler
         {
             Count++;
             _total += value;
-            if (value > Max) Max = value;
+            if (value > Max)
+                Max = value;
 
             _window[_next] = value;
             _next = (_next + 1) % WINDOW;
-            if (_filled < WINDOW) _filled++;
+            if (_filled < WINDOW)
+                _filled++;
         }
 
         public double RecentAverage
         {
             get
             {
-                if (_filled == 0) return 0.0;
+                if (_filled == 0)
+                    return 0.0;
 
                 double sum = 0.0;
-                for (int i = 0; i < _filled; i++) sum += _window[i];
+                for (int i = 0; i < _filled; i++)
+                    sum += _window[i];
                 return sum / _filled;
             }
         }
@@ -180,7 +188,8 @@ public static class Profiler
         {
             get
             {
-                if (_filled == 0) return 0.0;
+                if (_filled == 0)
+                    return 0.0;
 
                 double[] sorted = new double[_filled];
                 Array.Copy(_window, sorted, _filled);

@@ -1,18 +1,32 @@
 using Godot;
 using System;
 
+public enum HandRequirement
+{
+    Any,
+    Empty,
+    HoldsRat,
+}
 
-public enum HandRequirement { Any, Empty, HoldsRat }
 [GlobalClass]
 public partial class InteractAreaComponent : Area3D, IInteract
 {
     public const uint INTERACT_LAYER = 4;
 
-    [Export] public string InteractionText = "Interact";
-    [Export] public bool ShowInteractionText = true;
-    [Export] public Vector3 InteractionTextOffset = new Vector3(0, 2, 0);
-    [Export] public bool IsEnabled = true;
-    [Export] public HandRequirement RequiredHands = HandRequirement.Any;
+    [Export]
+    public string InteractionText = "Interact";
+
+    [Export]
+    public bool ShowInteractionText = true;
+
+    [Export]
+    public Vector3 InteractionTextOffset = new Vector3(0, 2, 0);
+
+    [Export]
+    public bool IsEnabled = true;
+
+    [Export]
+    public HandRequirement RequiredHands = HandRequirement.Any;
     public Action<Node3D, bool> OnInteract;
     public Action OnLookedAt;
     public Action OnLookedAwayFrom;
@@ -20,7 +34,8 @@ public partial class InteractAreaComponent : Area3D, IInteract
     /// <summary>True when something is actually listening, so callers can tell a live prompt from scenery.</summary>
     public bool HasHandler => IsEnabled && OnInteract != null;
 
-    private Label3D interactionLabel;
+    private Label3D _interactionLabel;
+
     public override void _Ready()
     {
         CollisionLayer = IsEnabled ? INTERACT_LAYER : 0;
@@ -36,52 +51,61 @@ public partial class InteractAreaComponent : Area3D, IInteract
     {
         IsEnabled = active;
         CollisionLayer = active ? INTERACT_LAYER : 0;
-        if (!active) IsLookedAwayFrom();
+        if (!active)
+            IsLookedAwayFrom();
     }
 
     private void InstantiateInteractionLabel()
     {
-        interactionLabel = new Label3D
+        _interactionLabel = new Label3D
         {
             Visible = false,
             Text = InteractionText,
             Billboard = BaseMaterial3D.BillboardModeEnum.FixedY,
             Transform = new Transform3D(Basis.Identity, InteractionTextOffset),
         };
-        AddChild(interactionLabel);
+        AddChild(_interactionLabel);
     }
+
     public void IsLookedAt()
     {
-        if (!IsEnabled) return;
+        if (!IsEnabled)
+            return;
         // Show interaction text above the object
         if (ShowInteractionText)
         {
-            interactionLabel.Visible = true;
+            _interactionLabel.Visible = true;
         }
         OnLookedAt?.Invoke();
     }
 
     public void IsLookedAwayFrom()
     {
-        if (interactionLabel is null) return;
+        if (_interactionLabel is null)
+            return;
 
-        interactionLabel.Visible = false;
+        _interactionLabel.Visible = false;
         OnLookedAwayFrom?.Invoke();
     }
 
     public void Interact(Node3D interactor, bool isHeld)
     {
-        if (!IsEnabled) return;
+        if (!IsEnabled)
+            return;
         OnInteract?.Invoke(interactor, isHeld);
     }
 
     public bool IsAvailableTo(Node3D interactor)
     {
-        if (interactor is not Player player) return false;
-        if (RequiredHands == HandRequirement.Any) return true;
+        if (interactor is not Player player)
+            return false;
+        if (RequiredHands == HandRequirement.Any)
+            return true;
         bool hasGrab = player.GrabComponent.HasGrabbed();
-        if (RequiredHands == HandRequirement.HoldsRat && hasGrab) return true;
-        if (RequiredHands == HandRequirement.Empty && !hasGrab) return true;
+        if (RequiredHands == HandRequirement.HoldsRat && hasGrab)
+            return true;
+        if (RequiredHands == HandRequirement.Empty && !hasGrab)
+            return true;
         return false;
     }
 
@@ -89,6 +113,7 @@ public partial class InteractAreaComponent : Area3D, IInteract
     public void SetInteractionText(string text)
     {
         InteractionText = text;
-        if (interactionLabel is not null) interactionLabel.Text = text;
+        if (_interactionLabel is not null)
+            _interactionLabel.Text = text;
     }
 }

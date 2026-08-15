@@ -2,17 +2,19 @@ using Godot;
 
 public class PlayerVaultState : PlayerState
 {
-    public PlayerVaultState(Player owner) : base(owner) { }
+    public PlayerVaultState(Player owner)
+        : base(owner) { }
 
-    private Vector3 vaultPoint;
-    private Vector3 startPoint;
-    private Vector3 midPoint;
+    private Vector3 _vaultPoint;
+    private Vector3 _startPoint;
+    private Vector3 _midPoint;
+
     public override void Enter(State previous = null)
     {
         Vector3 forwardDir = -_player.GlobalBasis.Z;
-        vaultPoint = _player.VaultRaycast.GetCollisionPoint() + forwardDir * 0.1f;
-        startPoint = _player.GlobalPosition;
-        midPoint = startPoint.Lerp(vaultPoint, 0.5f) + new Vector3(0, 0.5f, 0);
+        _vaultPoint = _player.VaultRaycast.GetCollisionPoint() + forwardDir * 0.1f;
+        _startPoint = _player.GlobalPosition;
+        _midPoint = _startPoint.Lerp(_vaultPoint, 0.5f) + new Vector3(0, 0.5f, 0);
 
         Tween vaultTween = _player.CreateTween();
         vaultTween.SetEase(Tween.EaseType.InOut);
@@ -23,8 +25,8 @@ public class PlayerVaultState : PlayerState
 
     private void BezierMove(float t)
     {
-        Vector3 a = startPoint.Lerp(midPoint, t);
-        Vector3 b = midPoint.Lerp(vaultPoint, t);
+        Vector3 a = _startPoint.Lerp(_midPoint, t);
+        Vector3 b = _midPoint.Lerp(_vaultPoint, t);
         _player.GlobalPosition = a.Lerp(b, t);
     }
 

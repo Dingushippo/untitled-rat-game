@@ -3,12 +3,14 @@ using Godot.Collections;
 using System;
 using System.Linq;
 
-
 [GlobalClass]
 public partial class HazardManager : Node
 {
-    [Export] Array<HazardResource> HazardResources;
-    [Export] FacilityManager FacilityManager;
+    [Export]
+    public Array<HazardResource> HazardResources;
+
+    [Export]
+    public FacilityManager FacilityManager;
     private Dictionary<string, HazardResource> _hazards;
     private Array<FacilityBase> _currentAffectedFacilities = new();
     private Array<Marker3D> _spawnPositions = new();
@@ -39,22 +41,28 @@ public partial class HazardManager : Node
         AddChild(hazardNode);
         hazardNode.GlobalTransform = marker.GlobalTransform;
     }
+
     private bool TryGetSpawnMarker(HazardResource hazard, out Marker3D marker)
     {
         marker = null;
         switch (hazard.SpawnType)
         {
             case HazardSpawnType.NearFacility:
-                marker = GetNearFacilitySpawn(); break;
+                marker = GetNearFacilitySpawn();
+                break;
             case HazardSpawnType.OnFloor:
-                marker = GetOnFloorSpawn(); break;
+                marker = GetOnFloorSpawn();
+                break;
             case HazardSpawnType.OnWall:
-                marker = GetOnWallSpawn(); break;
+                marker = GetOnWallSpawn();
+                break;
             case HazardSpawnType.InSky:
-                marker = GetInSkySpawn(); break;
+                marker = GetInSkySpawn();
+                break;
         }
         return marker != null;
     }
+
     private Marker3D GetNearFacilitySpawn()
     {
         Marker3D marker = _spawnPositions.PickRandom();

@@ -1,5 +1,5 @@
 using Godot;
-
+using Godot.Collections;
 
 public enum MeshPosition
 {
@@ -13,9 +13,18 @@ public enum MeshPosition
 [GlobalClass, Tool]
 public partial class ObjectResource : Resource
 {
-    [Export] public string name;
-    [Export] public string description;
-    [Export] public bool isTilable;
-    [Export] public Godot.Collections.Dictionary<MeshPosition, Mesh> meshes;
-    [Export] public Vector3[] snapPositions;
+    [Export]
+    public string Name;
+
+    [Export]
+    public string Description;
+
+    [Export]
+    public bool IsTilable;
+
+    [Export]
+    public Dictionary<MeshPosition, Mesh> Meshes;
+
+    [Export]
+    public Vector3[] SnapPositions;
 }

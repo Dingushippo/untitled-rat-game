@@ -3,12 +3,23 @@ using System;
 
 public partial class PlayerCamera : Camera3D
 {
-    [Export] public Player Player;
-    [Export] public bool DebugAimMarker = false;
-    [Export] public PlayerCameraTuning Tuning;
-    [Export] public Node3D HeadNode;
-    [Export] public Node3D HandNode;
-    [Export] public Noise ShakeNoise;
+    [Export]
+    public Player Player;
+
+    [Export]
+    public bool DebugAimMarker = false;
+
+    [Export]
+    public PlayerCameraTuning Tuning;
+
+    [Export]
+    public Node3D HeadNode;
+
+    [Export]
+    public Node3D HandNode;
+
+    [Export]
+    public Noise ShakeNoise;
 
     public float YOffset = 0f;
 
@@ -26,14 +37,14 @@ public partial class PlayerCamera : Camera3D
     private float _rollOffset;
     private float _kickZ;
     private float _fovOffset;
-    private float _XOffset;
+    private float _xOffset;
 
     private Tween _cameraTween;
 
     private readonly record struct CamPose(float Pitch, float Roll, float Z, float Fov, float Side);
 
-    private static readonly CamPose RestPose = new(0f, 0f, 0f, 0f, 0f);
-    private CamPose CurrentPose => new(_pitchOffset, _rollOffset, _kickZ, _fovOffset, _XOffset);
+    private static readonly CamPose _restPose = new(0f, 0f, 0f, 0f, 0f);
+    private CamPose CurrentPose => new(_pitchOffset, _rollOffset, _kickZ, _fovOffset, _xOffset);
 
     public override void _Ready()
     {
@@ -79,7 +90,7 @@ public partial class PlayerCamera : Camera3D
         yaw.Z = _baseRotation.Z + _rollOffset;
         Rotation = yaw;
         HeadNode.Rotation = pitch;
-        Position = _basePosition + new Vector3(_XOffset, YOffset, _kickZ) + _bobOffset;
+        Position = _basePosition + new Vector3(_xOffset, YOffset, _kickZ) + _bobOffset;
         HandNode.Position = _handOffset + new Vector3(0f, YOffset, _kickZ);
         Fov = _originalFov + _fovOffset;
     }
@@ -93,7 +104,11 @@ public partial class PlayerCamera : Camera3D
     private void HandleHeadbob(float delta)
     {
         float blendDelta = delta * _blendSpeed;
-        if (Player.Velocity.IsZeroApprox() || Player.CrouchComponent.IsCrouching || !Player.IsOnFloor())
+        if (
+            Player.Velocity.IsZeroApprox()
+            || Player.CrouchComponent.IsCrouching
+            || !Player.IsOnFloor()
+        )
         {
             _bobTime = 0;
             _bobOffset = _bobOffset.Lerp(Vector3.Zero, blendDelta);
@@ -115,11 +130,14 @@ public partial class PlayerCamera : Camera3D
         );
 
         _bobTime += delta;
-        _bobOffset = _bobOffset.Lerp(new(
-            Mathf.Sin(_bobSpeed * _bobTime / 2) * _bobStrength,
-            Mathf.Cos(_bobSpeed * _bobTime) * _bobStrength / 2,
-            0f
-        ), blendDelta);
+        _bobOffset = _bobOffset.Lerp(
+            new(
+                Mathf.Sin(_bobSpeed * _bobTime / 2) * _bobStrength,
+                Mathf.Cos(_bobSpeed * _bobTime) * _bobStrength / 2,
+                0f
+            ),
+            blendDelta
+        );
     }
 
     private void HandleFovMovementChange(float delta)
@@ -130,7 +148,6 @@ public partial class PlayerCamera : Camera3D
             _fovOffset = Mathf.Lerp(_fovOffset, 0, blendDelta);
             return;
         }
-
 
         float newOffset;
 
@@ -151,7 +168,8 @@ public partial class PlayerCamera : Camera3D
     {
         if (@event is InputEventMouseMotion mm)
         {
-            if (!_cameraEnabled) return;
+            if (!_cameraEnabled)
+                return;
 
             Player.RotateY(-mm.Relative.X * Tuning.Sensitivity * 0.01f);
 
@@ -177,7 +195,7 @@ public partial class PlayerCamera : Camera3D
                 _cameraTween?.Kill();
                 _cameraTween = CreateTween();
                 _cameraTween.SetParallel();
-                TweenPose(CurrentPose, RestPose, 0.2f);
+                TweenPose(CurrentPose, _restPose, 0.2f);
             }
         }
 
@@ -200,7 +218,12 @@ public partial class PlayerCamera : Camera3D
         _cameraEnabled = enabled;
     }
 
-    public void SetLean(Side dir, float angle = 0.2f, float xOffset = 0.25f, float leanDuration = 0.2f)
+    public void SetLean(
+        Side dir,
+        float angle = 0.2f,
+        float xOffset = 0.25f,
+        float leanDuration = 0.2f
+    )
     {
         int sign = dir == Side.Left ? -1 : 1;
         CamPose leanPose = new(0f, sign * angle, 0f, 0f, -sign * xOffset);
@@ -219,7 +242,7 @@ public partial class PlayerCamera : Camera3D
         _cameraTween.SetParallel(true);
         _cameraTween.SetEase(Tween.EaseType.Out);
         _cameraTween.SetTrans(Tween.TransitionType.Sine);
-        TweenPose(CurrentPose, RestPose, duration);
+        TweenPose(CurrentPose, _restPose, duration);
     }
 
     private void OnCameraCharge(CameraCharge charge)
@@ -248,7 +271,7 @@ public partial class PlayerCamera : Camera3D
         _cameraTween.SetParallel(true);
         _cameraTween.SetEase(Tween.EaseType.Out);
         _cameraTween.SetTrans(Tween.TransitionType.Sine);
-        TweenPose(CurrentPose, RestPose, Tuning.ChargeReturnDuration);
+        TweenPose(CurrentPose, _restPose, Tuning.ChargeReturnDuration);
     }
 
     private void OnCameraImpact(CameraImpact impact)
@@ -283,7 +306,7 @@ public partial class PlayerCamera : Camera3D
         _cameraTween.Chain();
         _cameraTween.SetEase(Tween.EaseType.Out);
         _cameraTween.SetTrans(Tween.TransitionType.Back);
-        TweenPose(peak, RestPose, recover);
+        TweenPose(peak, _restPose, recover);
     }
 
     private void TweenPose(CamPose from, CamPose to, float duration, float delay = 0f)
@@ -292,12 +315,23 @@ public partial class PlayerCamera : Camera3D
         TweenChannel(v => _rollOffset = v, from.Roll, to.Roll, duration, delay);
         TweenChannel(v => _kickZ = v, from.Z, to.Z, duration, delay);
         TweenChannel(v => _fovOffset = v, from.Fov, to.Fov, duration, delay);
-        TweenChannel(v => _XOffset = v, from.Side, to.Side, duration, delay);
+        TweenChannel(v => _xOffset = v, from.Side, to.Side, duration, delay);
     }
 
-    private void TweenChannel(Action<float> setter, float from, float to, float duration, float delay)
+    private void TweenChannel(
+        Action<float> setter,
+        float from,
+        float to,
+        float duration,
+        float delay
+    )
     {
-        MethodTweener tweener = _cameraTween.TweenMethod(Callable.From<float>(setter), from, to, duration);
+        MethodTweener tweener = _cameraTween.TweenMethod(
+            Callable.From<float>(setter),
+            from,
+            to,
+            duration
+        );
         if (delay > 0f)
         {
             tweener.SetDelay(delay);

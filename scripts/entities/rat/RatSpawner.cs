@@ -3,11 +3,20 @@ using Godot;
 [GlobalClass, Tool]
 public partial class RatSpawner : Node3D
 {
-    [Export] public PackedScene RatScene;
-    [Export] public RatDef ratDef;
-    [Export] public float InnerRadius = 1f;
-    [Export] public float OuterRadius = 2f;
-    [Export] bool Debug;
+    [Export]
+    public PackedScene RatScene;
+
+    [Export]
+    public RatDef RatDef;
+
+    [Export]
+    public float InnerRadius = 1f;
+
+    [Export]
+    public float OuterRadius = 2f;
+
+    [Export]
+    public bool Debug;
 
     private int _ratCounter = 0;
     private MeshInstance3D _debugMesh;
@@ -18,24 +27,22 @@ public partial class RatSpawner : Node3D
     {
         EventBus.Subscribe<SpawnRat>(OnSpawnRat);
     }
+
     public override void _ExitTree()
     {
         EventBus.Unsubscribe<SpawnRat>(OnSpawnRat);
     }
+
     public override void _Ready()
     {
         if (GetChildOrNull<MeshInstance3D>(0) != null)
         {
             return;
         }
-        _debugMesh = new MeshInstance3D
-        {
-            Mesh = _mesh
-        };
+        _debugMesh = new MeshInstance3D { Mesh = _mesh };
         AddChild(_debugMesh);
         _material.AlbedoColor = Colors.Red;
         _debugMesh.Owner = GetTree().EditedSceneRoot;
-
     }
 
     public override void _Process(double delta)
@@ -51,7 +58,7 @@ public partial class RatSpawner : Node3D
             Rat rat = RatScene.Instantiate<Rat>();
             Vector3 SpawnPoint = GetRandomSpawnPoint();
             AddChild(rat);
-            rat.RatDef = ratDef;
+            rat.RatDef = RatDef;
             rat.GlobalPosition = SpawnPoint;
             rat.HomePosition = SpawnPoint;
             _ratCounter++;
@@ -67,7 +74,8 @@ public partial class RatSpawner : Node3D
 
     private void UpdateDebugMesh()
     {
-        if (!Debug) return;
+        if (!Debug)
+            return;
         _mesh.ClearSurfaces();
         DrawDebugCircle(InnerRadius, 0.02f);
         DrawDebugCircle(OuterRadius, 0.02f);

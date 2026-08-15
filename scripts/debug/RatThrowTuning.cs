@@ -2,17 +2,27 @@ using Godot;
 
 public partial class RatThrowTuning : Node3D
 {
-    [Export] public Player Player;
-    [Export] public Rat rat;
-    [Export] public ThrowTuning throwTuning;
-    [Export] public ThrowPreviewTuning throwPreviewTuning;
-    [Export] public RatFlightTuning ratFlightTuning;
-    [Export] public PlayerCameraTuning playerCameraTuning;
+    [Export]
+    public Player Player;
+
+    [Export]
+    public Rat Rat;
+
+    [Export]
+    public ThrowTuning ThrowTuning;
+
+    [Export]
+    public ThrowPreviewTuning ThrowPreviewTuning;
+
+    [Export]
+    public RatFlightTuning RatFlightTuning;
+
+    [Export]
+    public PlayerCameraTuning PlayerCameraTuning;
 
     private float _ratFlyCounter = 0;
     private Vector3 _startingPosition;
     private bool _counterEnabled = false;
-
 
     public override void _Ready()
     {
@@ -22,7 +32,8 @@ public partial class RatThrowTuning : Node3D
 
     public override void _Process(double delta)
     {
-        if (!_counterEnabled) return;
+        if (!_counterEnabled)
+            return;
 
         _ratFlyCounter += (float)delta;
     }
@@ -36,7 +47,7 @@ public partial class RatThrowTuning : Node3D
     private void OnRatLanded(RatLanded _)
     {
         _counterEnabled = false;
-        float distance = _startingPosition.DistanceTo(rat.GlobalPosition);
+        float distance = _startingPosition.DistanceTo(Rat.GlobalPosition);
         GD.Print($"Traveled {distance}m in {_ratFlyCounter} seconds");
         _ratFlyCounter = 0;
     }
@@ -45,7 +56,7 @@ public partial class RatThrowTuning : Node3D
     {
         if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.Key1)
         {
-            Player.GrabComponent.InjectGrabState(rat);
+            Player.GrabComponent.InjectGrabState(Rat);
         }
     }
 }

@@ -4,6 +4,7 @@ using Godot;
 public partial class RitualRenderer : Node2D
 {
     private RitualResource _ritualResource;
+
     [Export]
     public RitualResource RitualResource
     {
@@ -15,7 +16,8 @@ public partial class RitualRenderer : Node2D
         }
     }
 
-    public float _lineThickness = 1f;
+    private float _lineThickness = 1f;
+
     [Export]
     public float LineThickness
     {
@@ -28,6 +30,7 @@ public partial class RitualRenderer : Node2D
     }
 
     private Color _colorOverride = Colors.White;
+
     [Export]
     public Color ColorOverride
     {
@@ -43,7 +46,8 @@ public partial class RitualRenderer : Node2D
 
     public override void _Draw()
     {
-        if (RitualResource == null) return;
+        if (RitualResource == null)
+            return;
         foreach (RitualCircleResource circle in RitualResource.RitualCircles)
         {
             DrawRitualCircle(circle);
@@ -65,13 +69,27 @@ public partial class RitualRenderer : Node2D
         }
     }
 
-    private void DrawInterpolatedArcs(RitualCircleResource circle, int index, float angleChange, int points = 10)
+    private void DrawInterpolatedArcs(
+        RitualCircleResource circle,
+        int index,
+        float angleChange,
+        int points = 10
+    )
     {
         DrawSetTransform(_center, 0);
         float elementAngleOffset = Mathf.Atan2(circle.ElementRadius, circle.Radius);
         float startAngle = index * angleChange + circle.AngleOffset + elementAngleOffset;
-        float endAngle = index * angleChange + (angleChange - elementAngleOffset) + circle.AngleOffset;
-        DrawArc(Vector2.Zero, circle.Radius, startAngle, endAngle, points, ColorOverride, LineThickness);
+        float endAngle =
+            index * angleChange + (angleChange - elementAngleOffset) + circle.AngleOffset;
+        DrawArc(
+            Vector2.Zero,
+            circle.Radius,
+            startAngle,
+            endAngle,
+            points,
+            ColorOverride,
+            LineThickness
+        );
     }
 
     private void DrawElementCircle(RitualCircleResource circle, int index)

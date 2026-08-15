@@ -19,18 +19,22 @@ public partial class RitualComponent
     private Color _placedColor = Colors.White;
     private Color _prevColor;
     private uint _collisionMask;
-    private IRitualInteract ritualInteract;
+    private IRitualInteract _ritualInteract;
     private bool _initialSnap = true;
-
 
     public RitualComponent(Player player)
     {
         _player = player;
-        _collisionMask = PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.RITUAL_INTERACT);
+        _collisionMask = PhysicsLayers.GetOrMask(
+            PhysicsLayers.WORLD,
+            PhysicsLayers.RITUAL_INTERACT
+        );
     }
+
     public void PhysicsProcess(float delta)
     {
-        if (_currentRitual == null) return;
+        if (_currentRitual == null)
+            return;
 
         Vector3 rayStart = _camera.GlobalPosition;
         Vector3 rayEnd = rayStart + -_camera.GlobalBasis.Z * MAX_DISTANCE;
@@ -39,13 +43,13 @@ public partial class RitualComponent
             Vector3 position;
             ValidPosition = IsValidPosition();
             if (
-                (Node)result["collider"] is Area3D a &&
-                a.GetParent() is IRitualInteract interact &&
-                interact.TryGetRitualPosition(_currentRitual, out position) &&
-                ValidPosition
+                (Node)result["collider"] is Area3D a
+                && a.GetParent() is IRitualInteract interact
+                && interact.TryGetRitualPosition(_currentRitual, out position)
+                && ValidPosition
             )
             {
-                ritualInteract = interact;
+                _ritualInteract = interact;
                 position += Vector3.Up * 0.05f;
             }
             else
@@ -54,7 +58,7 @@ public partial class RitualComponent
                     ValidPosition = false;
                 Vector3 normal = result["normal"].AsVector3();
                 position = result["position"].AsVector3() + normal * 0.05f;
-                ritualInteract = null;
+                _ritualInteract = null;
             }
 
             if (_initialSnap)
@@ -63,7 +67,10 @@ public partial class RitualComponent
                 _initialSnap = false;
             }
             else
-                _currentRitual.GlobalPosition = _currentRitual.GlobalPosition.MoveToward(position, delta * 30f);
+                _currentRitual.GlobalPosition = _currentRitual.GlobalPosition.MoveToward(
+                    position,
+                    delta * 30f
+                );
 
             Color currentColor = ValidPosition ? _previewColor : _errorColor;
             if (currentColor != _prevColor)
@@ -73,12 +80,18 @@ public partial class RitualComponent
             }
         }
     }
+
     public void StartRitualPreview()
     {
         _initialSnap = true;
         RitualResource res = ResourceLoader.Load<RitualResource>("uid://c1e6c1npwbqxi");
-        _currentRitual = RitualManagerNode.Instance.InstanciateRitualPreview(res, _player.GlobalPosition);
-        _maxRadiusToCheckCollision = (_currentRitual.RitualResource.RitualCircles.Max(x => x.Radius) / 100) + COLLISION_CHECK_MARGIN;
+        _currentRitual = RitualManagerNode.Instance.InstanciateRitualPreview(
+            res,
+            _player.GlobalPosition
+        );
+        _maxRadiusToCheckCollision =
+            (_currentRitual.RitualResource.RitualCircles.Max(x => x.Radius) / 100)
+            + COLLISION_CHECK_MARGIN;
         _currentRitual.Renderer.ColorOverride = _previewColor;
     }
 
@@ -89,7 +102,14 @@ public partial class RitualComponent
 
         const int NUM_CHECKS = 16;
         Vector3 startPos = _currentRitual.GlobalPosition;
-        return !RaycastUtils.Circle(_currentRitual, startPos, _maxRadiusToCheckCollision, NUM_CHECKS, out _, PhysicsLayers.WORLD);
+        return !RaycastUtils.Circle(
+            _currentRitual,
+            startPos,
+            _maxRadiusToCheckCollision,
+            NUM_CHECKS,
+            out _,
+            PhysicsLayers.WORLD
+        );
     }
 
     public void Cancel()
@@ -110,9 +130,9 @@ public partial class RitualComponent
         _currentRitual.SetIdle();
         _currentRitual.Renderer.ColorOverride = _placedColor;
 
-        if (ritualInteract != null)
+        if (_ritualInteract != null)
         {
-            _currentRitual.OnComplete += ritualInteract.OnRitualComplete;
+            _currentRitual.OnComplete += _ritualInteract.OnRitualComplete;
         }
 
         _currentRitual = null;

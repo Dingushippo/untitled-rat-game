@@ -14,34 +14,36 @@ public partial class PlaceableObject : Node3D, IPooledObject
     }
     public bool IsActive { get; set; }
 
-    [Export] public MeshInstance3D meshInstance;
+    [Export]
+    public MeshInstance3D MeshInstance;
 
-    public string name;
-    public string description;
+    public string ObjectName;
+    public string Description;
 
-    public Vector3[] snapPoints;
+    public Vector3[] SnapPoints;
 
-    private CollisionShape3D collider;
+    private CollisionShape3D _collider;
 
     public override void _PhysicsProcess(double delta)
     {
-        if (!IsActive) return;
+        if (!IsActive)
+            return;
     }
 
     private void SetObjectResource(ObjectResource newResource)
     {
         _objectResource = newResource;
 
-        if (newResource == null || meshInstance == null)
+        if (newResource == null || MeshInstance == null)
             return;
 
-        meshInstance.ClearChildren();
+        MeshInstance.ClearChildren();
 
         // TODO add support for dynamic mesh checking
-        meshInstance.Mesh = newResource.meshes[MeshPosition.Main];
-        meshInstance.CreateConvexCollision();
+        MeshInstance.Mesh = newResource.Meshes[MeshPosition.Main];
+        MeshInstance.CreateConvexCollision();
 
-        collider = (CollisionShape3D)meshInstance.FindChild("CollisionShape3D");
+        _collider = (CollisionShape3D)MeshInstance.FindChild("CollisionShape3D");
     }
 
     public void OnSpawn()
@@ -50,7 +52,8 @@ public partial class PlaceableObject : Node3D, IPooledObject
         Show();
         SetPhysicsProcess(true);
 
-        if (collider != null) collider.Disabled = false;
+        if (_collider != null)
+            _collider.Disabled = false;
     }
 
     public void OnDespawn()
@@ -59,6 +62,7 @@ public partial class PlaceableObject : Node3D, IPooledObject
         Hide();
         SetPhysicsProcess(false);
 
-        if (collider != null) collider.Disabled = true;
+        if (_collider != null)
+            _collider.Disabled = true;
     }
 }
