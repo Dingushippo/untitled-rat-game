@@ -11,6 +11,7 @@ public partial class RunClock : Node
     private float _timer = 0;
     private bool _timerActive = false;
     private float _dayLength;
+    private bool _dayComplete;
     private string _currentTimeText = "";
     public float DayProgress => Mathf.Clamp(_timer / _dayLength, 0, 1f);
     public int Day { get; private set; } = 1;
@@ -20,6 +21,7 @@ public partial class RunClock : Node
     public void ResetTimer()
     {
         _timer = 0;
+        _dayComplete = false;
         Pause();
     }
 
@@ -53,8 +55,9 @@ public partial class RunClock : Node
             EventBus.Publish(new ClockTick(_currentTimeText, Day, DayProgress));
         }
 
-        if (_timer >= _dayLength)
+        if (_timer >= _dayLength && !_dayComplete)
         {
+            _dayComplete = true;
             EventBus.Publish(new Sundown(Day));
         }
     }
