@@ -15,13 +15,17 @@ public partial class RitualManagerNode : Node
     {
         if (!Singleton.ClaimOrFree(ref _instance, this)) return;
 
-        _elementSlotPool = new(this, GD.Load<PackedScene>(ELEMENT_SLOT_UID), 10);
-        _ritualPool = new(this, GD.Load<PackedScene>(RITUAL_BASE_UID), 10);
+        _elementSlotPool = new(this, GD.Load<PackedScene>(ELEMENT_SLOT_UID), 50);
+        _ritualPool = new(this, GD.Load<PackedScene>(RITUAL_BASE_UID), 15);
     }
 
     public RitualBase InstanciateRitualPreview(RitualResource resource, Vector3 position)
     {
-        RitualBase ritual = _ritualPool.SpawnObject<RitualBase>(position);
+        if (!_ritualPool.TrySpawnObject(out RitualBase ritual, position))
+        {
+            return default;
+        }
+
         ritual.RitualResource = resource;
         return ritual;
     }
@@ -33,7 +37,8 @@ public partial class RitualManagerNode : Node
         {
             foreach (RitualElement element in circle.RitualElements)
             {
-                RitualElementSlot slot = _elementSlotPool.SpawnObject<RitualElementSlot>(ritual.GlobalPosition);
+                if (!_elementSlotPool.TrySpawnObject(out RitualElementSlot slot, ritual.GlobalPosition))
+                    return;
 
                 slot.Position = new Vector3(
                     ritual.GlobalPosition.X + element.Position.X / 100f,
@@ -51,7 +56,7 @@ public partial class RitualManagerNode : Node
 
     public void DisposeRitual(RitualBase ritual)
     {
-        if(ritual.Slots != null)
+        if (ritual.Slots != null)
             foreach (RitualElementSlot slot in ritual.Slots)
             {
                 _elementSlotPool.DespawnObject(slot);

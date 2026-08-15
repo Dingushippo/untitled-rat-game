@@ -44,17 +44,23 @@ public partial class ObjectPoolComponent
         }
     }
 
-    public Node SpawnObject(Vector3 position, Vector3 rotation = new())
+    public bool TrySpawnObject(out Node obj, Vector3 position, Vector3 rotation = new())
     {
-        Node obj = _pool.Dequeue();
+        obj = default;
+        if (_pool.Count == 0)
+        {
+            GD.PrintErr($"{_parentNode} pool is empty, cannot spawn");
+            return false;
+        }
+        obj = _pool.Dequeue();
         PrepareObject(obj, position, rotation);
         Active.Add(obj);
-        return obj;
+        return true;
     }
 
-    public T SpawnObject<T>(Vector3 position, Vector3 rotation = new()) where T : Node
+    public bool TrySpawnObject<T>(out T obj, Vector3 position, Vector3 rotation = new()) where T : Node
     {
-        return (T)SpawnObject(position, rotation);
+        return TrySpawnObject(out obj, position, rotation);
     }
 
     public void DespawnObject(Node obj)
