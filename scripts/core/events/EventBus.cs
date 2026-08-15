@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public partial class EventBus
+public static class EventBus
 {
     public static void Subscribe<T>(Action<T> cb)
     {
