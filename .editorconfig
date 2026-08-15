@@ -8,6 +8,10 @@ root = true
 
 # Remove unused usings
 dotnet_diagnostic.IDE0005.severity = warning
+# property assigned within its own setter -> C05
+dotnet_diagnostic.CA2011.severity = error
+# declared and never used
+dotnet_diagnostic.CS0168.severity = warning
 
 # Indentation and spacing
 indent_size = 4
