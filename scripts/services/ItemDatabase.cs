@@ -1,5 +1,5 @@
-using Godot;
 using System.Collections.Generic;
+using Godot;
 
 public partial class ItemDatabase : Node
 {
@@ -79,11 +79,13 @@ public partial class ItemDatabase : Node
                 continue;
             }
 
-            ProductionDef facility = ResourceLoader.Load<ProductionDef>(FACILITY_RESOURCE_PATH.PathJoin(fileNameTrim));
+            ProductionDef facility = ResourceLoader.Load<ProductionDef>(
+                FACILITY_RESOURCE_PATH.PathJoin(fileNameTrim)
+            );
             if (facility is null)
             {
                 string error = $"{file} is not a valid ProductionDef";
-                GD.PrintErr(error);
+                GD.PushError(error);
                 if (OS.IsDebugBuild())
                 {
                     OS.Alert(error, "ItemDatabase error");

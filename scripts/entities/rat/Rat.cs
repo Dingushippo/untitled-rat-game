@@ -2,24 +2,47 @@ using Godot;
 
 public partial class Rat : CharacterBody3D
 {
-    [Export] public NavigationAgent3D NavAgent;
-    [Export] public CollisionShape3D Collider;
-    [Export] public InteractAreaComponent InteractArea;
-    [Export] public MeshInstance3D Mesh;
-    [Export] public RatDef RatDef;
-    [Export] public RatFlightTuning FlightTuning;
-    [Export] public MeshInstance3D StatusMesh;
-    [Export] public float Speed = 10f;
-    [Export] public float Acceleration = 10f;
-    [Export] public Vector3 GrabOrientation { get; set; }
-    [Export] public Vector3 GrabOffset { get; set; }
+    [Export]
+    public NavigationAgent3D NavAgent;
+
+    [Export]
+    public CollisionShape3D Collider;
+
+    [Export]
+    public InteractAreaComponent InteractArea;
+
+    [Export]
+    public MeshInstance3D Mesh;
+
+    [Export]
+    public RatDef RatDef;
+
+    [Export]
+    public RatFlightTuning FlightTuning;
+
+    [Export]
+    public MeshInstance3D StatusMesh;
+
+    [Export]
+    public float Speed = 10f;
+
+    [Export]
+    public float Acceleration = 10f;
+
+    [Export]
+    public Vector3 GrabOrientation { get; set; }
+
+    [Export]
+    public Vector3 GrabOffset { get; set; }
+
     [Export]
     public bool Debug
     {
         get => _debug;
         set
         {
-            if (_fsm is null) return;
+            if (_fsm is null)
+                return;
             _debug = value;
             _fsm.Debug = _debug;
         }
@@ -38,7 +61,7 @@ public partial class Rat : CharacterBody3D
 
         if (NavAgent == null)
         {
-            GD.PrintErr("Rat requires a NavigationAgent3D to function.");
+            GD.PushError("Rat requires a NavigationAgent3D to function.");
         }
         Cargo = new Inventory(RatDef.MaxCapacity);
         Cargo.Changed += CheckInventory;
@@ -63,7 +86,8 @@ public partial class Rat : CharacterBody3D
 
     private void OnInteract(Node3D interactor, bool _)
     {
-        if (interactor is not Player player) return;
+        if (interactor is not Player player)
+            return;
         player.GrabComponent.InjectGrabState(this);
     }
 
@@ -84,13 +108,17 @@ public partial class Rat : CharacterBody3D
     }
 
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
+
     public override void _Process(double delta) => _fsm.StateProcess((float)delta);
-    public T GetState<T>() where T : RatState
+
+    public T GetState<T>()
+        where T : RatState
     {
         return _fsm.Get<T>();
     }
 
-    public void ChangeState<T>() where T : RatState
+    public void ChangeState<T>()
+        where T : RatState
     {
         _fsm.ChangeState<T>();
     }

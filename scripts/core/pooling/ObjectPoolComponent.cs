@@ -1,5 +1,5 @@
-using Godot;
 using System.Collections.Generic;
+using Godot;
 
 public partial class ObjectPoolComponent
 {
@@ -49,7 +49,7 @@ public partial class ObjectPoolComponent
         obj = default;
         if (_pool.Count == 0)
         {
-            GD.PrintErr($"{_parentNode} pool is empty, cannot spawn");
+            GD.PushError($"{_parentNode} pool is empty, cannot spawn");
             return false;
         }
         obj = _pool.Dequeue();

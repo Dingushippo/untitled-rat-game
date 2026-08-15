@@ -49,7 +49,6 @@ public partial class ProfilerOverlay : CanvasLayer
         // _label.SetAnchorsPreset(Control.LayoutPreset.CenterRight);
         _label.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterRight);
 
-
         _printOnExit = HasFlag("--profile");
         _benchActive = HasFlag("--bench-throw");
     }
@@ -65,7 +64,8 @@ public partial class ProfilerOverlay : CanvasLayer
         // on the physics step, and the two run at different rates.
         Profiler.EndFrame();
 
-        if (!_benchActive) return;
+        if (!_benchActive)
+            return;
 
         _benchFrame++;
 
@@ -76,7 +76,8 @@ public partial class ProfilerOverlay : CanvasLayer
             return;
         }
 
-        if (_benchFrame < BENCH_SETTLE_FRAMES) return;
+        if (_benchFrame < BENCH_SETTLE_FRAMES)
+            return;
 
         ThrowContext ctx = _benchThrow.BuildContext(_benchRat);
         int measured = _benchFrame - BENCH_SETTLE_FRAMES;
@@ -84,7 +85,8 @@ public partial class ProfilerOverlay : CanvasLayer
         if (measured < BENCH_WARMUP_FRAMES)
         {
             _benchThrow.ThrowType.Simulate(ctx);
-            if (measured == BENCH_WARMUP_FRAMES - 1) Profiler.Reset();
+            if (measured == BENCH_WARMUP_FRAMES - 1)
+                Profiler.Reset();
             return;
         }
 
@@ -93,10 +95,13 @@ public partial class ProfilerOverlay : CanvasLayer
             _benchThrow.ThrowType.Simulate(ctx);
         }
 
-        if (measured - BENCH_WARMUP_FRAMES < BENCH_ITERATIONS) return;
+        if (measured - BENCH_WARMUP_FRAMES < BENCH_ITERATIONS)
+            return;
 
         _benchActive = false;
-        GD.Print($"bench-throw: {BENCH_ITERATIONS} frames, MaxPoints={_benchThrow.Tuning.MaxPoints}, Step={_benchThrow.Tuning.Step}");
+        GD.Print(
+            $"bench-throw: {BENCH_ITERATIONS} frames, MaxPoints={_benchThrow.Tuning.MaxPoints}, Step={_benchThrow.Tuning.Step}"
+        );
         GD.Print(Profiler.Report());
 
         // Deferred: quitting straight from a physics callback tears the tree down mid-frame.
@@ -110,18 +115,23 @@ public partial class ProfilerOverlay : CanvasLayer
         _benchThrow = FindFirst<ThrowComponent>(GetTree().Root);
         _benchRat = FindFirst<Rat>(GetTree().Root);
 
-        if (_benchThrow is not null && _benchRat is not null) return true;
+        if (_benchThrow is not null && _benchRat is not null)
+            return true;
 
-        GD.PrintErr($"bench-throw: need a ThrowComponent (found: {_benchThrow is not null}) and a Rat (found: {_benchRat is not null}) in the tree.");
+        GD.PushError(
+            $"bench-throw: need a ThrowComponent (found: {_benchThrow is not null}) and a Rat (found: {_benchRat is not null}) in the tree."
+        );
         return false;
     }
 
     public override void _Process(double delta)
     {
-        if (!_label.Visible) return;
+        if (!_label.Visible)
+            return;
 
         _sinceRefresh += (float)delta;
-        if (_sinceRefresh < REFRESH_SECONDS) return;
+        if (_sinceRefresh < REFRESH_SECONDS)
+            return;
 
         _sinceRefresh = 0f;
         _label.Text = Profiler.Report();
@@ -129,7 +139,8 @@ public partial class ProfilerOverlay : CanvasLayer
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is not InputEventKey { Pressed: true, Echo: false } key) return;
+        if (@event is not InputEventKey { Pressed: true, Echo: false } key)
+            return;
 
         if (key.Keycode == Key.F3)
         {
@@ -155,22 +166,27 @@ public partial class ProfilerOverlay : CanvasLayer
     private static bool HasFlag(string flag)
     {
         foreach (string arg in OS.GetCmdlineArgs())
-            if (arg == flag) return true;
+            if (arg == flag)
+                return true;
 
         foreach (string arg in OS.GetCmdlineUserArgs())
-            if (arg == flag) return true;
+            if (arg == flag)
+                return true;
 
         return false;
     }
 
-    private static T FindFirst<T>(Node from) where T : class
+    private static T FindFirst<T>(Node from)
+        where T : class
     {
-        if (from is T match) return match;
+        if (from is T match)
+            return match;
 
         foreach (Node child in from.GetChildren())
         {
             T found = FindFirst<T>(child);
-            if (found is not null) return found;
+            if (found is not null)
+                return found;
         }
 
         return null;
