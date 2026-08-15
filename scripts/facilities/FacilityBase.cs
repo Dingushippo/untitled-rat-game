@@ -1,5 +1,4 @@
 using Godot;
-using System.Linq;
 
 
 public abstract partial class FacilityBase : StaticBody3D, ICatchArea

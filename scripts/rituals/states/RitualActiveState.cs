@@ -1,6 +1,3 @@
-using Godot;
-
-
 public class RitualActiveState : RitualState
 {
     private float _timer;

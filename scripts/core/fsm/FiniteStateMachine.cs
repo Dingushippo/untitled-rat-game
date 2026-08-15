@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public class FiniteStateMachine<T> where T : State<T>
 {

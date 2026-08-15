@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Godot;
+using System.Collections.Generic;
 
 public partial class ObjectPoolComponent
 {
@@ -58,7 +58,8 @@ public partial class ObjectPoolComponent
         return true;
     }
 
-    public bool TrySpawnObject<T>(out T obj, Vector3 position, Vector3 rotation = new()) where T : Node
+    public bool TrySpawnObject<T>(out T obj, Vector3 position, Vector3 rotation = new())
+        where T : Node
     {
         return TrySpawnObject(out obj, position, rotation);
     }

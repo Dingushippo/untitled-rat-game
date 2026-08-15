@@ -1,5 +1,4 @@
 using Godot;
-using Godot.Collections;
 
 [GlobalClass, Tool]
 public partial class FacilityDef : Resource

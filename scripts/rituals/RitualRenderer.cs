@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Linq.Expressions;
 
 [GlobalClass, Tool]
 public partial class RitualRenderer : Node2D

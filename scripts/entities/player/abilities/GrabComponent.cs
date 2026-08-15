@@ -1,8 +1,3 @@
-using Godot;
-using Godot.Collections;
-using System.Diagnostics.Tracing;
-using System.Runtime.CompilerServices;
-
 public class GrabComponent
 {
     public Rat CurrentGrabbed;

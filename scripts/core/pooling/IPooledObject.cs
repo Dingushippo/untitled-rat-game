@@ -1,5 +1,3 @@
-using Godot;
-
 public interface IPooledObject
 {
     void OnSpawn();

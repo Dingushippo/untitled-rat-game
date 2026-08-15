@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class ObjectPlacementRaycast : RayCast3D
 {
@@ -14,8 +13,8 @@ public partial class ObjectPlacementRaycast : RayCast3D
         debugMarker = new MeshInstance3D();
         debugMarker.Mesh = new SphereMesh()
         {
-          Radius = 0.15f,
-          Height = 0.3f
+            Radius = 0.15f,
+            Height = 0.3f
         };
         AddChild(debugMarker);
         debugMarker.Visible = Debug;

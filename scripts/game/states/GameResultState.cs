@@ -14,6 +14,7 @@ public class GameResultState : GameState
         if (previous is not GameRunState run)
         {
             GD.PushError("Something is wrong here, previous state is not run");
+            fsm.ChangeState<GameMenuState>(this);
             return;
         }
 

@@ -1,7 +1,3 @@
-
-
-using Godot;
-
 public static class PhysicsLayers
 {
     public static uint WORLD = 1;

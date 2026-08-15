@@ -1,6 +1,3 @@
-using Godot;
-
-
 public class RitualInterruptedState : RitualState
 {
     public RitualInterruptedState(RitualBase owner) : base(owner) { }

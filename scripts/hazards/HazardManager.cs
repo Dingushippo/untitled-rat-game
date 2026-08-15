@@ -34,7 +34,7 @@ public partial class HazardManager : Node
             GD.Print("Failed to get good position");
             return;
         }
-        
+
         Node3D hazardNode = resource.Scene.Instantiate<Node3D>();
         AddChild(hazardNode);
         hazardNode.GlobalTransform = marker.GlobalTransform;

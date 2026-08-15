@@ -1,6 +1,5 @@
 using Godot;
 using System.Collections.Generic;
-using System.Linq;
 
 /// <summary>
 /// Collects path points together with the speed the rat should be travelling at when it reaches

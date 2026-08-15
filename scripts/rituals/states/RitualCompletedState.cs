@@ -1,6 +1,3 @@
-using Godot;
-
-
 public class RitualCompletedState : RitualState
 {
     public RitualCompletedState(RitualBase owner) : base(owner) { }

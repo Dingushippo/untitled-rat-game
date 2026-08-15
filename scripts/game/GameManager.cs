@@ -10,7 +10,7 @@ public partial class GameManager : Node
     public static GameManager Instance => _instance;
     private FiniteStateMachine<GameState> _fsm;
 
-    public bool HasFatalDataError {get; private set;}= false;
+    public bool HasFatalDataError { get; private set; } = false;
 
     public override void _Process(double delta) => _fsm.StateProcess((float)delta);
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);

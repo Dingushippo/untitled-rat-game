@@ -1,6 +1,3 @@
-using Godot;
-
-
 public class RitualPreviewState : RitualState
 {
     public RitualPreviewState(RitualBase owner) : base(owner) { }

@@ -1,5 +1,4 @@
 using Godot;
-using System.Diagnostics.Tracing;
 
 
 public class RatSlottedState : RatState

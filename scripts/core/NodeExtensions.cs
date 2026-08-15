@@ -7,11 +7,11 @@ namespace Extensions
         public static void ClearChildren(this Node node, bool free = true)
         {
             foreach (Node child in node.GetChildren())
-        {
-            if (free) child.QueueFree();
-            
-            node.RemoveChild(child);
-        }
+            {
+                if (free) child.QueueFree();
+
+                node.RemoveChild(child);
+            }
         }
     }
 }

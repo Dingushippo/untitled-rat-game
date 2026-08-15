@@ -1,8 +1,6 @@
 using Godot;
 using Godot.Collections;
 using System;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 
 public partial class ThrowPreview : Node3D
 {

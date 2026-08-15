@@ -1,5 +1,3 @@
-using Godot;
-
 public class RatIdleState : RatState
 {
     public RatIdleState(Rat owner) : base(owner) { }

@@ -1,8 +1,5 @@
 using Godot;
-using Godot.Collections;
 using System;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.Serialization;
 
 public partial class PlayerCamera : Camera3D
 {

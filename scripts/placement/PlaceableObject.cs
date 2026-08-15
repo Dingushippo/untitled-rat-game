@@ -12,7 +12,7 @@ public partial class PlaceableObject : Node3D, IPooledObject
         get => _objectResource;
         set => SetObjectResource(value);
     }
-    public bool IsActive {get; set;}
+    public bool IsActive { get; set; }
 
     [Export] public MeshInstance3D meshInstance;
 
@@ -58,7 +58,7 @@ public partial class PlaceableObject : Node3D, IPooledObject
         IsActive = false;
         Hide();
         SetPhysicsProcess(false);
-        
+
         if (collider != null) collider.Disabled = true;
     }
 }
