@@ -70,7 +70,7 @@ dotnet_prefer_system_hash_code = true
 dotnet_style_readonly_field = true
 
 # Parameter preferences
-dotnet_code_quality_unused_parameters = all:silent
+# dotnet_code_quality_unused_parameters = all:silent
 
 # Suppression preferences
 dotnet_remove_unnecessary_suppression_exclusions = none
@@ -225,15 +225,40 @@ dotnet_naming_symbols.non_field_members.required_modifiers =
 
 # Naming styles
 
-dotnet_naming_style.pascal_case.required_prefix = 
-dotnet_naming_style.pascal_case.required_suffix = 
-dotnet_naming_style.pascal_case.word_separator = 
-dotnet_naming_style.pascal_case.capitalization = pascal_case
+# 1. Define a broad rule for all private fields
+dotnet_naming_rule.private_fields_with_underscore.symbols  = all_private_fields
+dotnet_naming_rule.private_fields_with_underscore.style    = prefix_underscore_style
+dotnet_naming_rule.private_fields_with_underscore.severity = warning
 
-dotnet_naming_style.begins_with_i.required_prefix = I
-dotnet_naming_style.begins_with_i.required_suffix = 
-dotnet_naming_style.begins_with_i.word_separator = 
-dotnet_naming_style.begins_with_i.capitalization = pascal_case
+dotnet_naming_symbols.all_private_fields.applicable_kinds           = field
+dotnet_naming_symbols.all_private_fields.applicable_accessibilities = private, protected
+
+dotnet_naming_style.prefix_underscore_style.required_prefix = _
+dotnet_naming_style.prefix_underscore_style.capitalization  = camel_case
+
+# 2. Define a broad rule for all public fields
+dotnet_naming_rule.public_fields.symbols  = all_public_fields
+dotnet_naming_rule.public_fields.style  = public_field_style
+dotnet_naming_rule.public_fields.severity = warning
+
+dotnet_naming_symbols.all_public_fields.applicable_kinds           = field
+dotnet_naming_symbols.all_public_fields.applicable_accessibilities = public
+
+dotnet_naming_style.public_field_style.capitalization = pascal_case
+
+# 3. EXCLUDE/OVERRIDE: Create a specific rule for constants with severity 'none'
+dotnet_naming_rule.constants_are_ignored.symbols  = constants
+dotnet_naming_rule.constants_are_ignored.style    = uppercase_style
+dotnet_naming_rule.constants_are_ignored.severity = none
+
+dotnet_naming_symbols.constants.applicable_kinds           = field
+dotnet_naming_symbols.constants.required_modifiers         = const
+dotnet_naming_symbols.constants.applicable_accessibilities = private, public
+
+dotnet_naming_style.uppercase_style.capitalization = all_upper
+
+
+
 [*]
 cpp_indent_braces=false
 cpp_indent_multi_line_relative_to=innermost_parenthesis
