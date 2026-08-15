@@ -1,15 +1,15 @@
+using System;
 using Godot;
 using Godot.Collections;
-using System;
 
-public static partial class RaycastUtils
+public static class RaycastUtils
 {
     public static bool Ray(
         Node3D node,
         Vector3 a,
         Vector3 b,
         out Dictionary result,
-        uint collisionMask = 4294967295,
+        uint collisionMask = uint.MaxValue,
         bool collideWithAreas = true,
         bool collideWithBodies = true,
         Func<GodotObject, bool> accept = null,
@@ -26,7 +26,15 @@ public static partial class RaycastUtils
         result = [];
         while (depth < maxDepth)
         {
-            result = RaycastHelper(node, a, b, collisionMask, collideWithAreas, collideWithBodies, excludeRidArray);
+            result = RaycastHelper(
+                node,
+                a,
+                b,
+                collisionMask,
+                collideWithAreas,
+                collideWithBodies,
+                excludeRidArray
+            );
             if (result.Count > 0 && !accept(result["collider"].As<GodotObject>()))
             {
                 excludeRidArray.Add(result["rid"].As<Rid>());
@@ -43,16 +51,14 @@ public static partial class RaycastUtils
         Node3D node,
         Vector3 a,
         Vector3 b,
-        uint collisionMask = 4294967295,
+        uint collisionMask = uint.MaxValue,
         bool collideWithAreas = true,
         bool collideWithBodies = true,
         Array<Rid> excludeRidArray = null
     )
     {
         PhysicsDirectSpaceState3D state = node.GetWorld3D().DirectSpaceState;
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(
-            a, b, collisionMask
-        );
+        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(a, b, collisionMask);
         query.CollideWithAreas = collideWithAreas;
         query.CollideWithBodies = collideWithBodies;
         query.HitFromInside = true;
@@ -65,7 +71,7 @@ public static partial class RaycastUtils
         Node3D node,
         CollisionShape3D collider,
         out Array<Dictionary> result,
-        uint collisionMask = 4294967295,
+        uint collisionMask = uint.MaxValue,
         bool collideWithAreas = true,
         bool collideWithBodies = true
     )
@@ -76,7 +82,7 @@ public static partial class RaycastUtils
             Shape = collider.Shape,
             CollisionMask = collisionMask,
             CollideWithAreas = collideWithAreas,
-            CollideWithBodies = collideWithBodies
+            CollideWithBodies = collideWithBodies,
         };
 
         result = state.IntersectShape(query);
@@ -88,7 +94,7 @@ public static partial class RaycastUtils
         Vector3 position,
         float radius,
         out Array<Dictionary> result,
-        uint collisionMask = 4294967295,
+        uint collisionMask = uint.MaxValue,
         bool collideWithAreas = true,
         bool collideWithBodies = true
     )
@@ -107,7 +113,7 @@ public static partial class RaycastUtils
             CollisionMask = collisionMask,
             CollideWithAreas = collideWithAreas,
             CollideWithBodies = collideWithBodies,
-            Transform = new Transform3D(Basis.Identity, position + Vector3.Up * 0.4f)
+            Transform = new Transform3D(Basis.Identity, position + Vector3.Up * 0.4f),
         };
 
         result = state.IntersectShape(query);
@@ -121,7 +127,7 @@ public static partial class RaycastUtils
         float radius,
         int samples,
         out Dictionary result,
-        uint collisionMask = 4294967295,
+        uint collisionMask = uint.MaxValue,
         bool collideWithAreas = true,
         bool collideWithBodies = true,
         Func<GodotObject, bool> accept = null,
@@ -134,27 +140,21 @@ public static partial class RaycastUtils
             float angle = i * (Mathf.Tau / samples);
             Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
             Vector3 endPos = position + direction * radius;
-            if (Ray(node, position, endPos, out result, collisionMask, collideWithAreas, collideWithBodies, accept, maxDepth))
+            if (
+                Ray(
+                    node,
+                    position,
+                    endPos,
+                    out result,
+                    collisionMask,
+                    collideWithAreas,
+                    collideWithBodies,
+                    accept,
+                    maxDepth
+                )
+            )
                 return true;
         }
         return false;
     }
 }
-
-/*
-
-if (_currentRitual.GlobalPosition.DistanceTo(_player.GlobalPosition) > VALID_DISTANCE)
-            return false;
-
-        const int NUM_CHECKS = 16;
-        Vector3 startPos = _currentRitual.GlobalPosition;
-        for (int i = 0; i < NUM_CHECKS; i++)
-        {
-            float angle = i * (Mathf.Tau / NUM_CHECKS);
-            Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
-            Vector3 endPos = startPos + direction * _maxRadiusToCheckCollision;
-            if (RaycastUtils.Ray(_currentRitual, startPos, endPos, out _, PhysicsLayers.WORLD))
-                return false;
-        }
-        return true;
-*/
