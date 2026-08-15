@@ -61,7 +61,13 @@ public partial class ObjectPoolComponent
     public bool TrySpawnObject<T>(out T obj, Vector3 position, Vector3 rotation = new())
         where T : Node
     {
-        return TrySpawnObject(out obj, position, rotation);
+        obj = default;
+        if (TrySpawnObject(out Node obj2, position, rotation))
+        {
+            obj = obj2 as T;
+            return true;
+        }
+        return false;
     }
 
     public void DespawnObject(Node obj)

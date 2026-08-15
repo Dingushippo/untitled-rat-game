@@ -13,7 +13,8 @@ public partial class RitualManagerNode : Node
 
     public override void _Ready()
     {
-        if (!Singleton.ClaimOrFree(ref _instance, this)) return;
+        if (!Singleton.ClaimOrFree(ref _instance, this))
+            return;
 
         _elementSlotPool = new(this, GD.Load<PackedScene>(ELEMENT_SLOT_UID), 50);
         _ritualPool = new(this, GD.Load<PackedScene>(RITUAL_BASE_UID), 15);
@@ -37,7 +38,12 @@ public partial class RitualManagerNode : Node
         {
             foreach (RitualElement element in circle.RitualElements)
             {
-                if (!_elementSlotPool.TrySpawnObject(out RitualElementSlot slot, ritual.GlobalPosition))
+                if (
+                    !_elementSlotPool.TrySpawnObject(
+                        out RitualElementSlot slot,
+                        ritual.GlobalPosition
+                    )
+                )
                     return;
 
                 slot.Position = new Vector3(
