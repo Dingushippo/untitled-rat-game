@@ -10,11 +10,11 @@ public partial class ReturnArea : Area3D
 
     private void ReturnToHome(Node3D obj)
     {
-        if (obj is Rat rat)
-        {
-            rat.ChangeState<RatFallingState>();
-            rat.GlobalPosition = rat.HomePosition + Vector3.Up * 0.5f;
-        }
+        // if (obj is Rat rat)
+        // {
+        //     rat.ChangeState<RatFallingState>();
+        //     rat.GlobalPosition = rat.HomePosition + Vector3.Up * 0.5f;
+        // }
 
         if (obj is Player player)
         {

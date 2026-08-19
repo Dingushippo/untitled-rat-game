@@ -12,9 +12,6 @@ public partial class Player : CharacterBody3D
     public RayCast3D VaultRaycast;
 
     [Export]
-    public ThrowComponent ThrowComponent;
-
-    [Export]
     public float Speed = 10f;
 
     [Export]
@@ -54,10 +51,8 @@ public partial class Player : CharacterBody3D
 
     [Export]
     public float WallrunCheckDistance = 1f;
-    public GrabComponent GrabComponent;
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
-    public RitualComponent RitualComponent;
     private FiniteStateMachine<PlayerState> _movementFsm;
     private FiniteStateMachine<HandState> _handFsm;
 
@@ -65,10 +60,8 @@ public partial class Player : CharacterBody3D
 
     public override void _Ready()
     {
-        GrabComponent = new(this);
         CrouchComponent = new(this);
         InteractComponent = new(this);
-        RitualComponent = new(this);
         InitStateMachines();
 
         EventBus.Subscribe<QteStarted>(OnQteStarted);
@@ -141,8 +134,6 @@ public partial class Player : CharacterBody3D
 
         _handFsm = new(this);
         _handFsm.Add(new HandEmptyState(this));
-        _handFsm.Add(new HandGrabState(this));
-        _handFsm.Add(new HandRitualState(this));
         _handFsm.InitState<HandEmptyState>();
         _handFsm.Debug = false;
     }

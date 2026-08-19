@@ -1,18 +1,8 @@
 [gd_scene format=3 uid="uid://duepatdtjpo6o"]
 
-[ext_resource type="Script" uid="uid://kw3tyifkbd5q" path="res://scripts/facilities/FacilityManager.cs" id="1_eaa0b"]
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="1_jbqir"]
 [ext_resource type="Texture2D" uid="uid://d1c70tsq6n0uu" path="res://assets/rough-checked-texture-collage.jpg" id="1_yautc"]
-[ext_resource type="PackedScene" uid="uid://ccmwoc6oxxglf" path="res://scenes/facilities/production_facility.tscn" id="2_cyt5c"]
-[ext_resource type="Resource" uid="uid://c46gibkbxlvm" path="res://resources/facilities/CryptGarden.tres" id="3_7x1jh"]
-[ext_resource type="Resource" uid="uid://gh4fshjj7hfn" path="res://resources/facilities/FungalStill.tres" id="4_hfwtw"]
-[ext_resource type="PackedScene" uid="uid://dioec4yt672pk" path="res://scenes/facilities/selling_facility.tscn" id="5_2mu0v"]
-[ext_resource type="Script" uid="uid://birj7k8r0p7js" path="res://scripts/entities/rat/RatSpawner.cs" id="7_jmx14"]
-[ext_resource type="PackedScene" uid="uid://fr1ly1jvytyp" path="res://scenes/entities/rat.tscn" id="8_hfwtw"]
-[ext_resource type="Script" uid="uid://buk1fupp26own" path="res://scripts/entities/rat/RatDef.cs" id="9_2mu0v"]
 [ext_resource type="Script" uid="uid://diyb87lbrqd66" path="res://scripts/world/ReturnArea.cs" id="10_2mu0v"]
-[ext_resource type="Script" uid="uid://bqplh1abiuxrl" path="res://scripts/hazards/HazardManager.cs" id="12_a5rnb"]
-[ext_resource type="Resource" uid="uid://dvhtea1cjy1kx" path="res://resources/hazards/holy_water_leak.tres" id="13_fqldq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jbqir"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -45,13 +35,6 @@ uv1_scale = Vector3(2.6, 1, 1)
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_pso3n"]
 albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
 
-[sub_resource type="Resource" id="Resource_4nads"]
-script = ExtResource("9_2mu0v")
-Id = "basic"
-metadata/_custom_type_script = "uid://buk1fupp26own"
-
-[sub_resource type="ImmediateMesh" id="ImmediateMesh_a5rnb"]
-
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_pso3n"]
 
 [node name="TestLevel" type="Node3D" unique_id=949261]
@@ -71,21 +54,6 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 visible = false
 navigation_mesh = SubResource("NavigationMesh_pso3n")
-
-[node name="FacilityManager" type="Node" parent="NavigationRegion3D" unique_id=634348182]
-script = ExtResource("1_eaa0b")
-metadata/_custom_type_script = "uid://kw3tyifkbd5q"
-
-[node name="ProductionFacility" parent="NavigationRegion3D/FacilityManager" unique_id=830481730 instance=ExtResource("2_cyt5c")]
-transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, -22, 0, 12)
-Facility = ExtResource("3_7x1jh")
-
-[node name="ProductionFacility2" parent="NavigationRegion3D/FacilityManager" unique_id=1965589425 instance=ExtResource("2_cyt5c")]
-transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, 21.781, 4.5, 12.17)
-Facility = ExtResource("4_hfwtw")
-
-[node name="SellingBooth" parent="NavigationRegion3D/FacilityManager" unique_id=1067004511 instance=ExtResource("5_2mu0v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -13)
 
 [node name="Obstacles" type="Node" parent="NavigationRegion3D" unique_id=1029435869]
 
@@ -172,17 +140,6 @@ material = SubResource("ORMMaterial3D_pso3n")
 [node name="Player" parent="." unique_id=716301107 instance=ExtResource("1_jbqir")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, -2)
 
-[node name="RatSpawner" type="Node3D" parent="." unique_id=1995115668]
-script = ExtResource("7_jmx14")
-RatScene = ExtResource("8_hfwtw")
-RatDef = SubResource("Resource_4nads")
-OuterRadius = 3.0
-Debug = true
-metadata/_custom_type_script = "uid://birj7k8r0p7js"
-
-[node name="@MeshInstance3D@77765" type="MeshInstance3D" parent="RatSpawner" unique_id=582595926]
-mesh = SubResource("ImmediateMesh_a5rnb")
-
 [node name="ReturnArea" type="Area3D" parent="." unique_id=648300558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0)
 collision_mask = 10
@@ -191,27 +148,3 @@ script = ExtResource("10_2mu0v")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnArea" unique_id=246039262]
 shape = SubResource("WorldBoundaryShape3D_pso3n")
-
-[node name="HazardManager" type="Node" parent="." unique_id=1374385243 node_paths=PackedStringArray("FacilityManager")]
-script = ExtResource("12_a5rnb")
-HazardResources = Array[Object]([ExtResource("13_fqldq")])
-FacilityManager = NodePath("../NavigationRegion3D/FacilityManager")
-metadata/_custom_type_script = "uid://bqplh1abiuxrl"
-
-[node name="Marker3D" type="Marker3D" parent="HazardManager" unique_id=72069351]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.144224, 4.5, 9.9933195)
-
-[node name="Marker3D2" type="Marker3D" parent="HazardManager" unique_id=1112740340]
-transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 21.148102, 4.273021, 8.59931)
-
-[node name="Marker3D3" type="Marker3D" parent="HazardManager" unique_id=25288557]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.037603, 0, 11.532999)
-
-[node name="Marker3D7" type="Marker3D" parent="HazardManager" unique_id=136228667]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.551603, 4.7683716e-06, 11.932774)
-
-[node name="Marker3D8" type="Marker3D" parent="HazardManager" unique_id=62199480]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.710083, -9.536743e-07, 8.388325)
-
-[node name="Marker3D9" type="Marker3D" parent="HazardManager" unique_id=1950779797]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.995607, -9.536743e-07, 6.0284934)

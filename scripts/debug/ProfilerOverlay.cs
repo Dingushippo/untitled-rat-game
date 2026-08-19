@@ -26,8 +26,6 @@ public partial class ProfilerOverlay : CanvasLayer
 
     private bool _benchActive;
     private int _benchFrame;
-    private ThrowComponent _benchThrow;
-    private Rat _benchRat;
 
     public override void _Ready()
     {
@@ -64,64 +62,8 @@ public partial class ProfilerOverlay : CanvasLayer
         // on the physics step, and the two run at different rates.
         Profiler.EndFrame();
 
-        if (!_benchActive)
-            return;
-
-        _benchFrame++;
-
-        if (_benchFrame == BENCH_SETTLE_FRAMES && !TryBindBenchTargets())
-        {
-            _benchActive = false;
-            GetTree().CallDeferred(SceneTree.MethodName.Quit, 1);
-            return;
-        }
-
-        if (_benchFrame < BENCH_SETTLE_FRAMES)
-            return;
-
-        ThrowContext ctx = _benchThrow.BuildContext(_benchRat);
-        int measured = _benchFrame - BENCH_SETTLE_FRAMES;
-
-        if (measured < BENCH_WARMUP_FRAMES)
-        {
-            _benchThrow.ThrowType.Simulate(ctx);
-            if (measured == BENCH_WARMUP_FRAMES - 1)
-                Profiler.Reset();
-            return;
-        }
-
-        using (Profiler.Sample("throw.simulate"))
-        {
-            _benchThrow.ThrowType.Simulate(ctx);
-        }
-
-        if (measured - BENCH_WARMUP_FRAMES < BENCH_ITERATIONS)
-            return;
-
-        _benchActive = false;
-        GD.Print(
-            $"bench-throw: {BENCH_ITERATIONS} frames, MaxPoints={_benchThrow.Tuning.MaxPoints}, Step={_benchThrow.Tuning.Step}"
-        );
-        GD.Print(Profiler.Report());
-
         // Deferred: quitting straight from a physics callback tears the tree down mid-frame.
         GetTree().CallDeferred(SceneTree.MethodName.Quit);
-    }
-
-    private bool TryBindBenchTargets()
-    {
-        Profiler.Enabled = true;
-
-        _benchThrow = FindFirst<ThrowComponent>(GetTree().Root);
-        _benchRat = FindFirst<Rat>(GetTree().Root);
-
-        if (_benchThrow is not null && _benchRat is not null)
-            return true;
-
-        GD.PushError(
-            $"bench-throw: need a ThrowComponent (found: {_benchThrow is not null}) and a Rat (found: {_benchRat is not null}) in the tree."
-        );
-        return false;
     }
 
     public override void _Process(double delta)
