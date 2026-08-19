@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/entities/player/Player.cs" id="1_dqkch"]
 [ext_resource type="Resource" uid="uid://g8o35bffx81c" path="res://resources/tuning/player_camera_tuning.tres" id="3_saib0"]
+[ext_resource type="Script" uid="uid://bwutv685kaknk" path="res://scripts/entities/player/Hand.cs" id="4_d4qa6"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="Script" uid="uid://c87dhm675xypo" path="res://scripts/qte/QteManager.cs" id="12_5ki56"]
 [ext_resource type="PackedScene" uid="uid://bda3cwi7p7irq" path="res://scenes/qte/spam_qte.tscn" id="13_saib0"]
@@ -87,11 +88,12 @@ bind/15/pose = Transform3D(8.321876, -0.33419704, 0.10384854, 0.34903196, 8.1058
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("Camera", "Collider", "VaultRaycast") groups=["player"]]
+[node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("Camera", "Hand", "Collider", "VaultRaycast") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_dqkch")
 Camera = NodePath("Head/Camera3D")
+Hand = NodePath("Head/HandR")
 Collider = NodePath("CollisionShape3D")
 VaultRaycast = NodePath("VaultRaycast")
 WallrunGravityScale = 5.0
@@ -110,133 +112,27 @@ Player = NodePath("../..")
 DebugAimMarker = true
 Tuning = ExtResource("3_saib0")
 HeadNode = NodePath("..")
-HandNode = NodePath("../Hand")
+HandNode = NodePath("../HandR")
 
-[node name="Hand" type="Node3D" parent="Head" unique_id=320221158]
+[node name="HandR" type="Node3D" parent="Head" unique_id=320221158 node_paths=PackedStringArray("Player")]
 transform = Transform3D(-0.095506296, 0.12760992, 0.98721534, -0.9067514, 0.3980361, -0.1391731, -0.4107072, -0.90845084, 0.077695526, 0.7, -0.39999998, -0.8)
+script = ExtResource("4_d4qa6")
+Player = NodePath("../..")
 
-[node name="HandArmature" type="Node3D" parent="Head/Hand" unique_id=300410256]
-transform = Transform3D(0.12005909, 0, 0, 0, 0.12005909, 0, 0, 0, 0.12005909, 0.008958859, -0.13061708, -0.01962439)
-
-[node name="Skeleton3D" type="Skeleton3D" parent="Head/Hand/HandArmature" unique_id=1410815153]
-bones/0/name = "Hand"
-bones/0/parent = -1
-bones/0/rest = Transform3D(0.9933787, -0.11486359, 0.0022552337, 0.114884384, 0.9930813, -0.024314241, 0.0005531904, 0.024412336, 0.999702, -0.0714536, 0, 0)
-bones/0/enabled = true
-bones/0/position = Vector3(-0.0714536, 0, 0)
-bones/0/rotation = Quaternion(0.0122027695, 0.00042624865, 0.057536606, 0.9982687)
-bones/0/scale = Vector3(1, 1, 1.0000001)
-bones/1/name = "Pinky"
-bones/1/parent = 0
-bones/1/rest = Transform3D(0.9798931, 0.1992921, -0.009605633, -0.19949687, 0.97783977, -0.063484, -0.0032590895, 0.064123824, 0.99793655, -0.12870504, 1.9383781, 0.8870997)
-bones/1/enabled = true
-bones/1/position = Vector3(-0.12870504, 1.9383781, 0.8870997)
-bones/1/rotation = Quaternion(0.032080222, -0.0015955019, -0.100254335, 0.99444324)
-bones/1/scale = Vector3(1, 0.9999999, 0.9999999)
-bones/2/name = "PinkyCenter"
-bones/2/parent = 1
-bones/2/rest = Transform3D(0.99586785, 0.09016154, -0.010864983, -0.088081054, 0.9880913, 0.12616271, 0.022110615, -0.12468434, 0.9919502, -2.3283064e-08, 0.54729915, 3.8502662e-08)
-bones/2/enabled = true
-bones/2/position = Vector3(-2.3283064e-08, 0.54729915, 3.8502662e-08)
-bones/2/rotation = Quaternion(-0.06290147, -0.008268838, -0.044695456, 0.9969841)
-bones/2/scale = Vector3(0.99999994, 0.9999998, 1.0000001)
-bones/3/name = "PinkyTip"
-bones/3/parent = 2
-bones/3/rest = Transform3D(0.9972709, 0.071597636, -0.018014368, -0.06941316, 0.9924025, 0.101582736, 0.025150588, -0.100055076, 0.99466395, 2.9802322e-08, 0.40054086, 4.792089e-08)
-bones/3/enabled = true
-bones/3/position = Vector3(2.9802322e-08, 0.40054086, 4.792089e-08)
-bones/3/rotation = Quaternion(-0.050508443, -0.01081243, -0.03532193, 0.99804026)
-bones/3/scale = Vector3(0.99999994, 0.99999994, 0.99999994)
-bones/4/name = "Ring"
-bones/4/parent = 0
-bones/4/rest = Transform3D(0.9769731, 0.21329153, -0.0054782983, -0.21336107, 0.9765792, -0.027750524, -0.0005689591, 0.02828038, 0.9995997, -0.022266742, 2.1209362, 0.36980987)
-bones/4/enabled = true
-bones/4/position = Vector3(-0.022266742, 2.1209362, 0.36980987)
-bones/4/rotation = Quaternion(0.014090483, -0.0012345859, -0.107293315, 0.9941268)
-bones/4/scale = Vector3(0.9999998, 1, 0.9999998)
-bones/5/name = "RingCenter"
-bones/5/parent = 4
-bones/5/rest = Transform3D(0.99824196, 0.057666007, -0.013690104, -0.055264957, 0.98909205, 0.13653684, 0.021414312, -0.1355402, 0.9905404, 8.265488e-09, 0.66908354, 4.5472532e-09)
-bones/5/enabled = true
-bones/5/position = Vector3(8.265488e-09, 0.66908354, 4.5472532e-09)
-bones/5/rotation = Quaternion(-0.06820817, -0.008800477, -0.028311156, 0.9972305)
-bones/5/scale = Vector3(0.9999999, 0.99999976, 0.99999994)
-bones/6/name = "RingTip"
-bones/6/parent = 5
-bones/6/rest = Transform3D(0.9914249, 0.13055113, 0.00576829, -0.13025747, 0.9908077, -0.03651024, -0.010481721, 0.035445794, 0.9993166, -1.0011718e-08, 0.51380646, -4.4454406e-08)
-bones/6/enabled = true
-bones/6/position = Vector3(-1.0011718e-08, 0.51380646, -4.4454406e-08)
-bones/6/rotation = Quaternion(0.018030642, 0.0040719043, -0.06535304, 0.997691)
-bones/6/scale = Vector3(1.0000001, 0.99999994, 0.99999994)
-bones/7/name = "Middle"
-bones/7/parent = 0
-bones/7/rest = Transform3D(0.9825139, 0.18583538, 0.011471699, -0.18587153, 0.9753775, 0.11870331, 0.010870039, -0.11875993, 0.9928634, 0.073625505, 2.201066, -0.12960023)
-bones/7/enabled = true
-bones/7/position = Vector3(0.073625505, 2.201066, -0.12960023)
-bones/7/rotation = Quaternion(-0.05973466, 0.00015134896, -0.093504086, 0.9938253)
-bones/7/scale = Vector3(0.99999994, 1, 0.9999999)
-bones/8/name = "MiddleCenter"
-bones/8/parent = 7
-bones/8/rest = Transform3D(0.9997038, 0.022858785, 0.0083413515, -0.02174815, 0.9931197, -0.11506564, -0.0109142205, 0.11485015, 0.9933229, 2.561137e-09, 0.59730047, 5.3852904e-09)
-bones/8/enabled = true
-bones/8/position = Vector3(2.561137e-09, 0.59730047, 5.3852904e-09)
-bones/8/rotation = Quaternion(0.057578743, 0.004822251, -0.011171096, 0.9982668)
-bones/8/scale = Vector3(0.9999999, 0.9999999, 1)
-bones/9/name = "MiddleTip"
-bones/9/parent = 8
-bones/9/rest = Transform3D(0.96525556, 0.26130763, 0.00030422196, -0.2613054, 0.96525085, -0.003199938, -0.0011298187, 0.0030092625, 0.9999949, -1.9557774e-08, 0.7766799, 1.0494192e-08)
-bones/9/enabled = true
-bones/9/position = Vector3(-1.9557774e-08, 0.7766799, 1.0494192e-08)
-bones/9/rotation = Quaternion(0.0015659638, 0.00036166582, -0.13180329, 0.9912746)
-bones/9/scale = Vector3(1, 0.99999994, 1)
-bones/10/name = "Pointer"
-bones/10/parent = 0
-bones/10/rest = Transform3D(0.9833632, 0.18164201, 0.001802009, -0.18159212, 0.9827435, 0.035204645, 0.004623731, -0.034946177, 0.9993784, 0.04794484, 2.0305119, -0.6712559)
-bones/10/enabled = true
-bones/10/position = Vector3(0.04794484, 2.0305119, -0.6712559)
-bones/10/rotation = Quaternion(-0.017613865, -0.00070849375, -0.09120288, 0.9956763)
-bones/10/scale = Vector3(1.0000001, 0.9999999, 0.9999999)
-bones/11/name = "PointerCenter"
-bones/11/parent = 10
-bones/11/rest = Transform3D(0.99831307, 0.05803724, 0.0016324834, -0.057981055, 0.9980256, -0.024144253, -0.003030526, 0.024008865, 0.9997073, 1.5075784e-08, 0.69888175, -6.401478e-08)
-bones/11/enabled = true
-bones/11/position = Vector3(1.5075784e-08, 0.69888175, -6.401478e-08)
-bones/11/rotation = Quaternion(0.012044233, 0.0011663289, -0.029018922, 0.99950564)
-bones/11/scale = Vector3(1, 0.9999999, 1.0000001)
-bones/12/name = "PointerTip"
-bones/12/parent = 11
-bones/12/rest = Transform3D(0.9940919, 0.10852994, -0.0016699389, -0.10849865, 0.9940086, 0.013227219, 0.0030954834, -0.012967883, 0.9999111, 1.3038516e-08, 0.57297134, 8.2778115e-08)
-bones/12/enabled = true
-bones/12/position = Vector3(1.3038516e-08, 0.57297134, 8.2778115e-08)
-bones/12/rotation = Quaternion(-0.006558611, -0.0011931448, -0.054338634, 0.99850035)
-bones/12/scale = Vector3(1.0000001, 1, 1)
-bones/13/name = "Thumb"
-bones/13/parent = 0
-bones/13/rest = Transform3D(0.997806, 0.020089308, 0.063084155, -0.054419696, 0.79153776, 0.6086924, -0.037705284, -0.61079, 0.7908944, 0.0034287984, 0.5759268, -0.83024114)
-bones/13/enabled = true
-bones/13/position = Vector3(0.0034287984, 0.5759268, -0.83024114)
-bones/13/rotation = Quaternion(-0.3222475, 0.026633551, -0.019688962, 0.94607586)
-bones/13/scale = Vector3(1, 1, 1)
-bones/14/name = "ThumbCenter"
-bones/14/parent = 13
-bones/14/rest = Transform3D(0.9957593, 0.09196758, -0.0023598848, -0.091069944, 0.9817573, -0.16690992, -0.013033466, 0.16641699, 0.9859695, -1.5832484e-08, 0.4102481, -9.610085e-08)
-bones/14/enabled = true
-bones/14/position = Vector3(-1.5832484e-08, 0.4102481, -9.610085e-08)
-bones/14/rotation = Quaternion(0.083714694, 0.0026806581, -0.04596968, 0.9954252)
-bones/14/scale = Vector3(1.0000001, 1, 1.0000001)
-bones/15/name = "ThumbTip"
-bones/15/parent = 14
-bones/15/rest = Transform3D(0.9997621, 0.021655662, -0.0025934028, -0.02165568, 0.9714895, -0.2360916, -0.0025932565, 0.2360916, 0.9717274, 1.2572855e-08, 0.6546469, 1.15367584e-07)
-bones/15/enabled = true
-bones/15/position = Vector3(1.2572855e-08, 0.6546469, 1.15367584e-07)
-bones/15/rotation = Quaternion(0.11889629, -3.6876404e-08, -0.010905848, 0.9928468)
-bones/15/scale = Vector3(1, 1, 1)
-
-[node name="HandMesh" type="MeshInstance3D" parent="Head/Hand/HandArmature/Skeleton3D" unique_id=1685881216]
+[node name="HandMesh" type="MeshInstance3D" parent="Head/HandR" unique_id=1685881216]
+transform = Transform3D(1, 3.1028808e-08, -7.757202e-09, -3.1028808e-08, 1, -7.757201e-09, 7.757202e-09, 7.757201e-09, 1, 0.008958876, -0.13061714, -0.019624412)
 material_override = SubResource("StandardMaterial3D_j5cof")
 mesh = SubResource("ArrayMesh_rpayc")
 skin = SubResource("Skin_64kpw")
-skeleton = NodePath("..")
+
+[node name="HandL" type="Node3D" parent="Head" unique_id=977781739]
+transform = Transform3D(0.17433612, 0.009157376, 0.98464364, 0.8586688, -0.49085814, -0.14746659, 0.48196995, 0.8711915, -0.09343746, -0.7, -0.39999998, -0.8)
+
+[node name="HandMesh" type="MeshInstance3D" parent="Head/HandL" unique_id=2127399584]
+transform = Transform3D(-0.95480096, -0.045434713, -0.29375315, 0.013585925, -0.99388665, 0.1095649, 0.2969354, -0.10062174, -0.9495812, 0.023121238, 0.059746504, -0.043640316)
+material_override = SubResource("StandardMaterial3D_j5cof")
+mesh = SubResource("ArrayMesh_rpayc")
+skin = SubResource("Skin_64kpw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

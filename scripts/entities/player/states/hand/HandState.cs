@@ -1,16 +1,19 @@
 public class HandState : State<HandState>
 {
-    private protected Player _player;
+    private protected Hand _hand;
 
-    public HandState(Player owner) { _player = owner; }
+    public HandState(Hand owner)
+    {
+        _hand = owner;
+    }
 }
 
 /*
 using Godot;
 
-public class HandNewState : PlayerState
+public class HandNewState : State<HandState>
 {
-    public HandNewState(Player owner) : base(owner) { }
+    public HandNewState(Hand owner) : base(owner) { }
     public override void PhysicsProcess(float delta) { }
     public override void Process(float delta) { }
     public override void Enter(State previous = null) { }
