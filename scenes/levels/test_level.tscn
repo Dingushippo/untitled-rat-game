@@ -2,6 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://doppcexk44ncy" path="res://scenes/entities/player.tscn" id="1_jbqir"]
 [ext_resource type="Texture2D" uid="uid://d1c70tsq6n0uu" path="res://assets/rough-checked-texture-collage.jpg" id="1_yautc"]
+[ext_resource type="PackedScene" uid="uid://dornwsf1wways" path="res://scenes/entities/rat.tscn" id="4_v45ci"]
+[ext_resource type="Script" uid="uid://cobo62y6qjcp0" path="res://scripts/entities/player/RatManager.cs" id="5_48ne7"]
 [ext_resource type="Script" uid="uid://diyb87lbrqd66" path="res://scripts/world/ReturnArea.cs" id="10_2mu0v"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jbqir"]
@@ -34,6 +36,10 @@ uv1_scale = Vector3(2.6, 1, 1)
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_pso3n"]
 albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6xh4u"]
+resource_local_to_scene = true
+bounce = 10.0
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_pso3n"]
 
@@ -140,6 +146,10 @@ material = SubResource("ORMMaterial3D_pso3n")
 [node name="Player" parent="." unique_id=716301107 instance=ExtResource("1_jbqir")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, -2)
 
+[node name="Rat" parent="Player" unique_id=1418151468 instance=ExtResource("4_v45ci")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.045202, 0, 4.0021415)
+physics_material_override = SubResource("PhysicsMaterial_6xh4u")
+
 [node name="ReturnArea" type="Area3D" parent="." unique_id=648300558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0)
 collision_mask = 10
@@ -148,3 +158,8 @@ script = ExtResource("10_2mu0v")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnArea" unique_id=246039262]
 shape = SubResource("WorldBoundaryShape3D_pso3n")
+
+[node name="RatManager" type="Node" parent="." unique_id=871648112 node_paths=PackedStringArray("Player")]
+script = ExtResource("5_48ne7")
+Player = NodePath("../Player")
+RatScene = ExtResource("4_v45ci")
