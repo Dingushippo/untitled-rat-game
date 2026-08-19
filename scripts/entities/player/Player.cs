@@ -2,26 +2,58 @@ using Godot;
 
 public partial class Player : CharacterBody3D
 {
-    [Export] public PlayerCamera Camera;
-    [Export] public CollisionShape3D Collider;
-    [Export] public RayCast3D VaultRaycast;
-    [Export] public ThrowComponent ThrowComponent;
-    [Export] public float Speed = 10f;
-    [Export] public float SprintSpeed = 15f;
-    [Export] public float CrouchSpeed = 5f;
-    [Export] public float WallrunSpeed = 12f;
-    [Export] public float WallrunGravityScale = 0.9f;
-    [Export] public float Acceleration = 55f;
-    [Export] public float Deceleration = 90f;
-    [Export] public float AirAcceleration = 25f;
-    [Export] public float AirDeceleration = 0f;
+    [Export]
+    public PlayerCamera Camera;
+
+    [Export]
+    public CollisionShape3D Collider;
+
+    [Export]
+    public RayCast3D VaultRaycast;
+
+    [Export]
+    public ThrowComponent ThrowComponent;
+
+    [Export]
+    public float Speed = 10f;
+
+    [Export]
+    public float SprintSpeed = 15f;
+
+    [Export]
+    public float CrouchSpeed = 5f;
+
+    [Export]
+    public float WallrunSpeed = 12f;
+
+    [Export]
+    public float WallrunGravityScale = 0.9f;
+
+    [Export]
+    public float Acceleration = 55f;
+
+    [Export]
+    public float Deceleration = 90f;
+
+    [Export]
+    public float AirAcceleration = 25f;
+
+    [Export]
+    public float AirDeceleration = 0f;
 
     // How much harder we accelerate when the input fights the current velocity.
     // 1 = no extra bite on turns, higher = snappier direction changes.
-    [Export] public float TurnBrakeMultiplier = 2.5f;
-    [Export] public float JumpForce = 10f;
-    [Export] public float WallJumpForce = 8f;
-    [Export] public float WallrunCheckDistance = 1f;
+    [Export]
+    public float TurnBrakeMultiplier = 2.5f;
+
+    [Export]
+    public float JumpForce = 10f;
+
+    [Export]
+    public float WallJumpForce = 8f;
+
+    [Export]
+    public float WallrunCheckDistance = 1f;
     public GrabComponent GrabComponent;
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
@@ -30,6 +62,7 @@ public partial class Player : CharacterBody3D
     private FiniteStateMachine<HandState> _handFsm;
 
     private bool _isFrozen = false;
+
     public override void _Ready()
     {
         GrabComponent = new(this);
@@ -49,6 +82,7 @@ public partial class Player : CharacterBody3D
     }
 
     private void OnQteStarted(QteStarted _) => SetFrozen();
+
     private void OnQteCompleted(QteCompleted _) => SetUnfrozen();
 
     private void SetFrozen()
@@ -71,17 +105,20 @@ public partial class Player : CharacterBody3D
         _movementFsm.StateProcess((float)delta);
         _handFsm.StateProcess((float)delta);
     }
+
     public override void _PhysicsProcess(double delta)
     {
         InteractComponent.PhysicsUpdate((float)delta);
         _movementFsm.StatePhysicsProcess((float)delta);
         _handFsm.StatePhysicsProcess((float)delta);
     }
+
     public override void _UnhandledInput(InputEvent @event)
     {
         _movementFsm.StateUnhandledInput(@event);
         _handFsm.StateUnhandledInput(@event);
     }
+
     public override void _Input(InputEvent @event)
     {
         _movementFsm.StateInput(@event);
@@ -100,7 +137,7 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add(new PlayerWallRunState(this));
         _movementFsm.Add(new PlayerWallJumpState(this));
         _movementFsm.InitState<PlayerIdleState>();
-        _movementFsm.Debug = true;
+        _movementFsm.Debug = false;
 
         _handFsm = new(this);
         _handFsm.Add(new HandEmptyState(this));
@@ -112,23 +149,27 @@ public partial class Player : CharacterBody3D
 
     public Vector2 GetInputVector()
     {
-        return Input.GetVector(
-            "move_left",
-            "move_right",
-            "move_forward",
-            "move_back"
-        );
+        return Input.GetVector("move_left", "move_right", "move_forward", "move_back");
     }
 
     public float CurrentSpeed;
-    public Vector3 GetMovementInputVelocity(float acceleration, float deceleration, float delta, float speedOverride = 0)
+
+    public Vector3 GetMovementInputVelocity(
+        float acceleration,
+        float deceleration,
+        float delta,
+        float speedOverride = 0
+    )
     {
         Vector2 input = GetInputVector();
 
         float speed;
-        if (speedOverride != 0) speed = speedOverride;
-        else if (Input.IsActionPressed("sprint")) speed = SprintSpeed;
-        else speed = Speed;
+        if (speedOverride != 0)
+            speed = speedOverride;
+        else if (Input.IsActionPressed("sprint"))
+            speed = SprintSpeed;
+        else
+            speed = Speed;
 
         CurrentSpeed = speed;
 

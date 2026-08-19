@@ -3,11 +3,20 @@ using Godot;
 [GlobalClass]
 public partial class ThrowComponent : Node3D
 {
-    [Export] public Player Player;
-    [Export] public ThrowPreview ThrowPreview;
-    [Export] public Node3D HandNode;
-    [Export] public ThrowType ThrowType;
-    [Export] public ThrowTuning Tuning;
+    [Export]
+    public Player Player;
+
+    [Export]
+    public ThrowPreview ThrowPreview;
+
+    [Export]
+    public Node3D HandNode;
+
+    [Export]
+    public ThrowType ThrowType;
+
+    [Export]
+    public ThrowTuning Tuning;
 
     private float _currentForce = 0;
     private int _framesSkipped = 0;
@@ -19,7 +28,9 @@ public partial class ThrowComponent : Node3D
     private Tween _chargeTween;
     private float _rotationSpeed;
     private Basis _originalBasis;
+
     private readonly record struct StillCheck(Vector3 CamPos, Basis CamBasis, float CurrentForce);
+
     private StillCheck _cachedCheck;
 
     public override void _Ready()
@@ -29,6 +40,7 @@ public partial class ThrowComponent : Node3D
         _gravity = Player.GetGravity();
         _currentForce = Tuning.ThrowForce;
         _originalBasis = HandNode.Basis;
+        GD.Print($"{_gravity}, {_currentForce}");
     }
 
     public override void _PhysicsProcess(double delta)
@@ -39,20 +51,31 @@ public partial class ThrowComponent : Node3D
             {
                 if (!IsStill())
                 {
-                    _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
-                    if (!_currentPath.Homing && _currentPath.ThrowTarget.IsValid && _currentPath.Points.Length >= 2)
+                    _currentPath = ThrowType.Simulate(
+                        BuildContext(Player.GrabComponent.CurrentGrabbed)
+                    );
+                    if (
+                        !_currentPath.Homing
+                        && _currentPath.ThrowTarget.IsValid
+                        && _currentPath.Points.Length >= 2
+                    )
                     {
                         // Adjust towards center;
                         Vector3 right = Player.Camera.GlobalBasis.X;
                         Vector3 toEnd = _currentPath.End - Player.Camera.GlobalPosition;
                         float lateral = right.Dot(toEnd);
-                        float forward = Mathf.Max(toEnd.Dot(-Player.Camera.GlobalBasis.Z), Tuning.MinAimDistance);
+                        float forward = Mathf.Max(
+                            toEnd.Dot(-Player.Camera.GlobalBasis.Z),
+                            Tuning.MinAimDistance
+                        );
                         _aimYaw = Mathf.Clamp(
                             _aimYaw - Tuning.AimGain * Mathf.Atan2(lateral, forward),
                             -Mathf.DegToRad(Tuning.MaxAimCorrectionDegrees),
                             -Mathf.DegToRad(Tuning.MaxAimCorrectionDegrees)
                         );
-                        _currentPath = ThrowType.Simulate(BuildContext(Player.GrabComponent.CurrentGrabbed));
+                        _currentPath = ThrowType.Simulate(
+                            BuildContext(Player.GrabComponent.CurrentGrabbed)
+                        );
                     }
                 }
             }
@@ -65,7 +88,9 @@ public partial class ThrowComponent : Node3D
         }
     }
 
-    private StillCheck CheckCurrent() => new StillCheck(Player.Camera.GlobalPosition, Player.Camera.GlobalBasis, _currentForce);
+    private StillCheck CheckCurrent() =>
+        new StillCheck(Player.Camera.GlobalPosition, Player.Camera.GlobalBasis, _currentForce);
+
     private bool IsStill()
     {
         StillCheck check = CheckCurrent();
@@ -86,29 +111,35 @@ public partial class ThrowComponent : Node3D
         }
         return true;
     }
-    public ThrowContext BuildContext(Rat rat) => new(
-        rat,
-        GlobalPosition,
-        (-Player.Camera.GlobalBasis.Z).Rotated(Vector3.Right, Mathf.DegToRad(Tuning.AngleAdjust)).Rotated(Vector3.Up, _aimYaw).Normalized(),
-        _currentForce / rat.RatDef.Mass,
-        _gravity,
-        Tuning.AscentGravityScale,
-        Tuning.DescentGravityScale,
-        Tuning.DescentBlendSpeed,
-        Tuning.Step,
-        Tuning.MaxPoints
-    );
 
+    public ThrowContext BuildContext(Rat rat) =>
+        new(
+            rat,
+            GlobalPosition,
+            (-Player.Camera.GlobalBasis.Z)
+                .Rotated(Vector3.Right, Mathf.DegToRad(Tuning.AngleAdjust))
+                .Rotated(Vector3.Up, _aimYaw)
+                .Normalized(),
+            _currentForce / rat.RatDef.Mass,
+            _gravity,
+            Tuning.AscentGravityScale,
+            Tuning.DescentGravityScale,
+            Tuning.DescentBlendSpeed,
+            Tuning.Step,
+            Tuning.MaxPoints
+        );
 
     public void StartDelayedCharge()
     {
         _chargeTween = CreateTween();
-        _chargeTween.TweenMethod(
-            Callable.From<float>(v => _currentForce = v),
-            Tuning.ThrowForce,
-            Tuning.MaxThrowForce,
-            Tuning.ChargeDuration
-        ).SetDelay(Tuning.ChargeStartDelay);
+        _chargeTween
+            .TweenMethod(
+                Callable.From<float>(v => _currentForce = v),
+                Tuning.ThrowForce,
+                Tuning.MaxThrowForce,
+                Tuning.ChargeDuration
+            )
+            .SetDelay(Tuning.ChargeStartDelay);
         _isCharging = true;
 
         EventBus.Publish(new CameraCharge(Tuning.ChargeDuration, Tuning.ChargeStartDelay));
@@ -120,6 +151,7 @@ public partial class ThrowComponent : Node3D
         _rotationSpeed = Mathf.Lerp(_rotationSpeed, newSpeed, delta);
         HandNode.RotateX(-_rotationSpeed);
     }
+
     public void ResetCharge()
     {
         if (_chargeTween != null)
@@ -142,8 +174,12 @@ public partial class ThrowComponent : Node3D
     {
         float chargeAmount = Mathf.IsEqualApprox(Tuning.MaxThrowForce, Tuning.ThrowForce)
             ? 1f
-            : Mathf.Clamp((_currentForce - Tuning.ThrowForce) / (Tuning.MaxThrowForce - Tuning.ThrowForce), 0f, 1f);
-        // Flight speed comes from the simulated path itself, so charge only has to shape the arc.        
+            : Mathf.Clamp(
+                (_currentForce - Tuning.ThrowForce) / (Tuning.MaxThrowForce - Tuning.ThrowForce),
+                0f,
+                1f
+            );
+        // Flight speed comes from the simulated path itself, so charge only has to shape the arc.
 
         if (_currentPath.ThrowTarget.IsSlot)
         {

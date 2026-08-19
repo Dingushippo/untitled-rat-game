@@ -13,9 +13,9 @@
 [ext_resource type="Resource" uid="uid://cxbl4uyax4f4t" path="res://resources/tuning/rat_flight_tuning.tres" id="10_flight"]
 [ext_resource type="Texture2D" uid="uid://bmwu1vugnijb5" path="res://assets/icons/inventory_icon.aseprite" id="12_ywisg"]
 
-[sub_resource type="Resource" id="Resource_5f0dk"]
+[sub_resource type="Resource" id="Resource_vxhay"]
 script = ExtResource("2_0g0h3")
-Id = "base_rat"
+Id = "basic"
 metadata/_custom_type_script = "uid://buk1fupp26own"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3csnj"]
@@ -298,9 +298,11 @@ bind/45/bone = -1
 bind/45/pose = Transform3D(-1, 6.6888697e-07, -1.659172e-07, -8.1755275e-08, -0.35419527, -0.9351718, -6.842912e-07, -0.9351718, 0.3541949, -1.5659032e-07, -0.14429185, 0.21892913)
 
 [sub_resource type="QuadMesh" id="QuadMesh_pso3n"]
+resource_local_to_scene = true
 size = Vector2(0.265, 0.285)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_83vmk"]
+resource_local_to_scene = true
 transparency = 1
 albedo_texture = ExtResource("12_ywisg")
 texture_filter = 0
@@ -315,7 +317,7 @@ NavAgent = NodePath("NavigationAgent3D")
 Collider = NodePath("CollisionShape3D")
 InteractArea = NodePath("InteractComponent")
 Mesh = NodePath("control/Skeleton3D/Rat")
-RatDef = SubResource("Resource_5f0dk")
+RatDef = SubResource("Resource_vxhay")
 FlightTuning = ExtResource("10_flight")
 StatusMesh = NodePath("StatusMesh")
 Speed = 5.0

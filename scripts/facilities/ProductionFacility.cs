@@ -1,21 +1,25 @@
-using Godot;
 using System.Linq;
+using Godot;
 
 [GlobalClass]
 public partial class ProductionFacility : FacilityBase
 {
-    [Export] public Node3D WorkSlotGroup;
-    [Export] public InteractAreaComponent OutputInteract;
+    [Export]
+    public Node3D WorkSlotGroup;
+
+    [Export]
+    public InteractAreaComponent OutputInteract;
+
+    [Export]
+    public Sprite3D StatusSprite;
     public Inventory Input;
     public Inventory Output;
     public ProductionDef ProdFacility;
     private WorkSlot[] _workSlots;
     private ProductionComponent _production;
     private int _lastOutputTotal = -1;
-    private const int DEBUG_UPDATES_EVERY_N_SECONDS = 3;
+    private const int DEBUG_UPDATES_EVERY_N_SECONDS = 1;
     private float _debugUpdateTimer;
-
-
 
     public override void _Ready()
     {
@@ -27,25 +31,56 @@ public partial class ProductionFacility : FacilityBase
         ProdFacility = Facility as ProductionDef;
         if (_workSlots.Length != ProdFacility.SlotCount)
         {
-            GD.PushWarning($"{Name}: {ProdFacility.Id} declares {ProdFacility.SlotCount} slots but the scene has {_workSlots.Length}");
+            GD.PushWarning(
+                $"{Name}: {ProdFacility.Id} declares {ProdFacility.SlotCount} slots but the scene has {_workSlots.Length}"
+            );
         }
 
         if (ProdFacility.HasInputs && IntakeMarker is null)
         {
-            GD.PushWarning($"{Name}: {ProdFacility.Id} needs inputs but has no IntakeMarker, so it can never be fed");
+            GD.PushWarning(
+                $"{Name}: {ProdFacility.Id} needs inputs but has no IntakeMarker, so it can never be fed"
+            );
         }
 
         _production = new ProductionComponent(this, _workSlots);
+        _production.OnStallChange += SetStatusSymbol;
 
         // A null/empty filter set means the ProdFacility accepts nothing by throw, which is
         // correct for a raw producer - only recipes with inputs have an intake.
-        Input = new Inventory(ProdFacility.BufferSize, ProdFacility.Inputs?.Keys ?? Enumerable.Empty<string>());
+        Input = new Inventory(
+            ProdFacility.BufferSize,
+            ProdFacility.Inputs?.Keys ?? Enumerable.Empty<string>()
+        );
         Output = new Inventory(ProdFacility.BufferSize);
 
         if (OutputInteract is not null)
         {
             OutputInteract.OnInteract = OnOutputInteract;
             RefreshOutputPrompt();
+        }
+
+        SetStatusSymbol(StallStatus.None);
+    }
+
+    private void SetStatusSymbol(StallStatus stall)
+    {
+        GD.Print($"Setting stall status: {stall}");
+        if (stall == StallStatus.None)
+        {
+            StatusSprite.Hide();
+            return;
+        }
+        if (StatusSprite.Texture is AtlasTexture atlas)
+        {
+            int xPos = (int)stall * 64;
+            Rect2 region = new Rect2()
+            {
+                Position = new Vector2(xPos, 0),
+                Size = new Vector2(64, 64),
+            };
+            atlas.Region = region;
+            StatusSprite.Show();
         }
     }
 
@@ -76,7 +111,8 @@ public partial class ProductionFacility : FacilityBase
     /// <summary>Fills the held rat with finished product. Wired to the output interact area.</summary>
     private void OnOutputInteract(Node3D interactor, bool isHeld)
     {
-        if (interactor is not Player player) return;
+        if (interactor is not Player player)
+            return;
 
         Rat rat = player.GrabComponent.CurrentGrabbed;
         if (rat is null)
@@ -104,10 +140,12 @@ public partial class ProductionFacility : FacilityBase
 
     private void RefreshOutputPrompt()
     {
-        if (OutputInteract is null) return;
+        if (OutputInteract is null)
+            return;
 
-        string contentString = string.Join(", ", Output.Contents.Select(
-            k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
+        string contentString = string.Join(
+            ", ",
+            Output.Contents.Select(k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
         );
         OutputInteract.SetInteractionText(Output.IsEmpty ? "Empty" : $"Collect: {contentString}");
     }
@@ -115,7 +153,8 @@ public partial class ProductionFacility : FacilityBase
     public override bool TryGetThrowTarget(Vector3 from, Rat rat, out ThrowTarget target)
     {
         target = default;
-        if (rat is null) return false;
+        if (rat is null)
+            return false;
 
         if (IntakeMarker is not null && rat.Cargo.HasAnythingFor(Input))
         {
@@ -138,7 +177,8 @@ public partial class ProductionFacility : FacilityBase
 
         foreach (WorkSlot s in _workSlots)
         {
-            if (s.IsOccupied) continue;
+            if (s.IsOccupied)
+                continue;
 
             float distSq = from.DistanceSquaredTo(s.GlobalPosition);
             if (distSq < closestDistanceSq)
@@ -156,21 +196,33 @@ public partial class ProductionFacility : FacilityBase
     {
         base.UpdateDebugLabel();
 
-        if (DebugLabel is null) return;
+        if (DebugLabel is null)
+            return;
 
-        string inputString = string.Join(", ", Input.Contents.Select(
-            k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
+        string inputString = string.Join(
+            ", ",
+            Input.Contents.Select(k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
         );
-        string outputString = string.Join(", ", Output.Contents.Select(
-            k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
+        string outputString = string.Join(
+            ", ",
+            Output.Contents.Select(k => $"{ItemDatabase.Get(k.Key).DisplayName} x{k.Value}")
         );
         string newText =
-            $"{ProdFacility.DisplayName}\n" +
-            $"slots {_production.StaffedSlots}/{ProdFacility.SlotCount}  " +
-            $"{_production.GetProgress(ProdFacility) * 100f:0}%{(_production.IsStalled ? " (stalled)" : "")}\n" +
-            $"in: {inputString}\nout: {outputString}";
+            $"{ProdFacility.DisplayName}\n"
+            + $"slots {_production.StaffedSlots}/{ProdFacility.SlotCount}  "
+            + $"{_production.GetProgress(ProdFacility) * 100f:0}%{(_production.IsStalled ? " (stalled)" : "")}\n"
+            + $"in: {inputString}\nout: {outputString}";
 
         if (newText != DebugLabel.Text)
             DebugLabel.Text = newText;
     }
+}
+
+public enum StallStatus
+{
+    NoInput,
+    OutputFull,
+    NoWorkers,
+    Hazard,
+    None,
 }

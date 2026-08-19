@@ -1,7 +1,7 @@
-using Godot;
-using Godot.Collections;
 using System;
 using System.Linq;
+using Godot;
+using Godot.Collections;
 
 [GlobalClass]
 public partial class HazardManager : Node
@@ -40,6 +40,8 @@ public partial class HazardManager : Node
         Node3D hazardNode = resource.Scene.Instantiate<Node3D>();
         AddChild(hazardNode);
         hazardNode.GlobalTransform = marker.GlobalTransform;
+        if (hazardNode is IHazard hazard)
+            hazard.InitHazard();
     }
 
     private bool TryGetSpawnMarker(HazardResource hazard, out Marker3D marker)

@@ -1,13 +1,18 @@
 using Godot;
 
-
 public abstract partial class FacilityBase : StaticBody3D, ICatchArea
 {
+    [Export]
+    public Marker3D IntakeMarker;
 
-    [Export] public Marker3D IntakeMarker;
-    [Export] public FacilityDef Facility;
-    [Export] public Label3D DebugLabel;
-    [Export] public bool ShowDebugLabel;
+    [Export]
+    public FacilityDef Facility;
+
+    [Export]
+    public Label3D DebugLabel;
+
+    [Export]
+    public bool ShowDebugLabel;
 
     /// <summary>
     /// World Y of the top of this facility's collision shapes. Homing throws lift their approach
@@ -34,7 +39,8 @@ public abstract partial class FacilityBase : StaticBody3D, ICatchArea
     public virtual bool TryGetThrowTarget(Vector3 from, Rat rat, out ThrowTarget target)
     {
         target = default;
-        if (rat is null) return false;
+        if (rat is null)
+            return false;
 
         if (IntakeMarker is not null && WantsCargo(rat))
         {
@@ -50,11 +56,16 @@ public abstract partial class FacilityBase : StaticBody3D, ICatchArea
 
         foreach (Node child in GetChildren())
         {
-            if (child is not CollisionShape3D shapeNode || shapeNode.Disabled || shapeNode.Shape is null)
+            if (
+                child is not CollisionShape3D shapeNode
+                || shapeNode.Disabled
+                || shapeNode.Shape is null
+            )
                 continue;
 
             Mesh debugMesh = shapeNode.Shape.GetDebugMesh();
-            if (debugMesh is null) continue;
+            if (debugMesh is null)
+                continue;
 
             Aabb bounds = shapeNode.GlobalTransform * debugMesh.GetAabb();
             top = Mathf.Max(top, bounds.End.Y);
@@ -62,8 +73,16 @@ public abstract partial class FacilityBase : StaticBody3D, ICatchArea
 
         return top;
     }
+
     protected virtual void UpdateDebugLabel()
     {
-        if (!ShowDebugLabel) return;
+        if (!ShowDebugLabel)
+        {
+            if (Visible)
+                DebugLabel.Hide();
+            return;
+        }
+        else if (!Visible)
+            DebugLabel.Show();
     }
 }

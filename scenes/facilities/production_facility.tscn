@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://xhywwkklvxog" path="res://scripts/facilities/ProductionFacility.cs" id="1_grg31"]
 [ext_resource type="Script" uid="uid://dadi1gcc2viyk" path="res://scripts/facilities/WorkSlot.cs" id="2_d0lwy"]
 [ext_resource type="Script" uid="uid://82n4sf5bywly" path="res://scripts/interaction/InteractAreaComponent.cs" id="3_woqmr"]
+[ext_resource type="Texture2D" uid="uid://c47adnkexpaqy" path="res://assets/facility_status_icons.aseprite" id="4_bb0pt"]
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_0evyo"]
 albedo_color = Color(1, 1, 0.101960786, 1)
@@ -23,10 +24,16 @@ radius = 1.0
 [sub_resource type="SphereShape3D" id="SphereShape3D_pso3n"]
 radius = 1.8
 
-[node name="ProductionFacility" type="StaticBody3D" unique_id=830481730 node_paths=PackedStringArray("WorkSlotGroup", "OutputInteract", "IntakeMarker", "DebugLabel")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_pso3n"]
+resource_local_to_scene = true
+atlas = ExtResource("4_bb0pt")
+region = Rect2(0, 0, 64, 0)
+
+[node name="ProductionFacility" type="StaticBody3D" unique_id=830481730 node_paths=PackedStringArray("WorkSlotGroup", "OutputInteract", "StatusSprite", "IntakeMarker", "DebugLabel")]
 script = ExtResource("1_grg31")
 WorkSlotGroup = NodePath("WorkSlots")
 OutputInteract = NodePath("MeshInstance3D2/InteractAreaComponent")
+StatusSprite = NodePath("StatusSprite")
 IntakeMarker = NodePath("IntakeMarker")
 DebugLabel = NodePath("DBG_Label")
 metadata/_custom_type_script = "uid://xhywwkklvxog"
@@ -85,3 +92,10 @@ text = "Test"
 
 [node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=151779173]
 vertices = PackedVector3Array(0.59807134, 0, 0.49492002, -0.95277953, 0, 0.49233958, -0.95794046, 0, -0.495973, 0.5929105, 0, -0.5140362)
+
+[node name="StatusSprite" type="Sprite3D" parent="." unique_id=784646616]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2238042, 0)
+pixel_size = 0.03
+billboard = 1
+texture_filter = 0
+texture = SubResource("AtlasTexture_pso3n")
