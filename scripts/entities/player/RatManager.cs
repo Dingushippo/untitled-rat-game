@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 public partial class RatManager : Node
@@ -12,12 +13,27 @@ public partial class RatManager : Node
 
     private ObjectPoolComponent _ratPool;
 
+    public bool CanSpawnRats(int num = 1) => _ratPool.NumAvailable >= num;
+
     public override void _Ready()
     {
         if (!Singleton.ClaimOrFree(ref _instance, this))
             return;
 
-        _ratPool = new(this, RatScene, 100);
+        _ratPool = new(this, RatScene, 500);
+    }
+
+    public void Despawn(Rat rat)
+    {
+        _ratPool.DespawnObject(rat);
+    }
+
+    public void Despawn(IEnumerable<Rat> rats)
+    {
+        foreach (Rat rat in rats)
+        {
+            Despawn(rat);
+        }
     }
 
     public bool TrySpawnRat(out Rat rat, Vector3 position)

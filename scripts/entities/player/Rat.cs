@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Godot;
 
 public partial class Rat : RigidBody3D, IPooledObject
@@ -22,6 +21,9 @@ public partial class Rat : RigidBody3D, IPooledObject
     public void OnDespawn()
     {
         ContinuousCd = false;
+        Freeze = true;
+        Collider.Disabled = true;
+        GlobalPosition = Vector3.One * -1;
         Hide();
     }
 }

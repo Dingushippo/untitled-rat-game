@@ -1,10 +1,10 @@
 public class HandState : State<HandState>
 {
-    private protected Hand _hand;
+    private protected Player _player;
 
-    public HandState(Hand owner)
+    public HandState(Player owner)
     {
-        _hand = owner;
+        _player = owner;
     }
 }
 

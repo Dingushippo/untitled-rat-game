@@ -17,6 +17,8 @@ public partial class ObjectPoolComponent
         PreallocatePool();
     }
 
+    public int NumAvailable => _pool.Count;
+
     private void PreallocatePool()
     {
         for (int i = 0; i < _poolSize; i++)

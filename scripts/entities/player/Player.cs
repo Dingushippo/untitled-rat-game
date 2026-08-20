@@ -6,7 +6,13 @@ public partial class Player : CharacterBody3D
     public PlayerCamera Camera;
 
     [Export]
-    public Hand Hand;
+    public Node3D HandL;
+
+    [Export]
+    public Node3D HandR;
+
+    [Export]
+    public Node3D Head;
 
     [Export]
     public CollisionShape3D Collider;
@@ -56,7 +62,9 @@ public partial class Player : CharacterBody3D
     public float WallrunCheckDistance = 1f;
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
+    public RatWhipComponent Whip;
     private FiniteStateMachine<PlayerState> _movementFsm;
+    private FiniteStateMachine<HandState> _handFsm;
 
     private bool _isFrozen = false;
 
@@ -64,6 +72,7 @@ public partial class Player : CharacterBody3D
     {
         CrouchComponent = new(this);
         InteractComponent = new(this);
+        Whip = new(this);
         InitStateMachines();
 
         EventBus.Subscribe<QteStarted>(OnQteStarted);
@@ -96,22 +105,26 @@ public partial class Player : CharacterBody3D
     {
         CrouchComponent.Update();
         _movementFsm.StateProcess((float)delta);
+        _handFsm.StateProcess((float)delta);
     }
 
     public override void _PhysicsProcess(double delta)
     {
         InteractComponent.PhysicsUpdate((float)delta);
         _movementFsm.StatePhysicsProcess((float)delta);
+        _handFsm.StatePhysicsProcess((float)delta);
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
         _movementFsm.StateUnhandledInput(@event);
+        _handFsm.StateUnhandledInput(@event);
     }
 
     public override void _Input(InputEvent @event)
     {
         _movementFsm.StateInput(@event);
+        _handFsm.StateInput(@event);
     }
 
     private void InitStateMachines()
@@ -127,6 +140,11 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add(new PlayerWallJumpState(this));
         _movementFsm.InitState<PlayerIdleState>();
         _movementFsm.Debug = false;
+
+        _handFsm = new(this);
+        _handFsm.Add(new HandEmptyState(this));
+        _handFsm.InitState<HandEmptyState>();
+        _handFsm.Debug = false;
     }
 
     public Vector2 GetInputVector()

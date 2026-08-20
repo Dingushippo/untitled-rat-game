@@ -2,24 +2,29 @@ using Godot;
 
 public class HandEmptyState : HandState
 {
-    public HandEmptyState(Hand owner)
+    public HandEmptyState(Player owner)
         : base(owner) { }
 
     public override void PhysicsProcess(float delta) { }
 
     public override void HandleInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("throw"))
+        if (@event.IsActionPressed("right_hand"))
         {
-            if (!RatManager.Instance.TrySpawnRat(out Rat rat, _hand.GlobalPosition))
+            if (!RatManager.Instance.TrySpawnRat(out Rat rat, _player.GlobalPosition))
                 return;
 
-            Vector3 direction = -_hand.Player.Camera.GlobalBasis.Z;
-            rat.LookAt(_hand.ToGlobal(direction));
+            Vector3 direction = -_player.Camera.GlobalBasis.Z;
+            rat.LookAt(_player.GlobalPosition + direction * 5f);
             rat.Freeze = false;
             rat.Collider.Disabled = false;
             rat.ApplyCentralImpulse(direction * 30f);
             fsm.ChangeState<HandEmptyState>();
+        }
+
+        if (@event.IsActionPressed("left_hand"))
+        {
+            _player.Whip.SpawnWhipNodes(15f);
         }
     }
 }
