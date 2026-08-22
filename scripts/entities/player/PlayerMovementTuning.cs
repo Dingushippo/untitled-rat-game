@@ -48,4 +48,7 @@ public partial class PlayerMovementTuning : Resource
 
     [Export]
     public float JumpForce = 10f;
+
+    [Export]
+    public float SlideJumpBoost = 1.4f;
 }
