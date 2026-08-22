@@ -17,7 +17,7 @@ public class PlayerIdleState : PlayerState
 
     public override void HandleInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("jump") && _player.IsOnFloor())
+        if (@event.IsActionPressed("jump") && _player.IsOnFloor)
         {
             fsm.ChangeState<PlayerJumpState>(this);
         }

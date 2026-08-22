@@ -102,9 +102,9 @@ public partial class PlayerCamera : Camera3D
     {
         float blendDelta = delta * _blendSpeed;
         if (
-            Player.LinearVelocity.IsZeroApprox()
+            Player.LinearVelocity.ToXYVector2().IsZeroApprox()
             || Player.CrouchComponent.IsCrouching
-            || !Player.IsOnFloor()
+            || !Player.IsOnFloor
         )
         {
             _bobTime = 0;
@@ -112,15 +112,14 @@ public partial class PlayerCamera : Camera3D
             return;
         }
         _bobSpeed = Mathf.Remap(
-            Player.Speed,
+            Player.HorizontalSpeed,
             Player.Tuning.Speed,
             Player.Tuning.SprintSpeed,
             Tuning.BobSpeed,
             Tuning.BobSpeedSprint
         );
-        GD.Print($"Speed: {Player.Speed}, bob speed: {_bobSpeed}");
         _bobStrength = Mathf.Remap(
-            Player.Speed,
+            Player.HorizontalSpeed,
             Player.Tuning.Speed,
             Player.Tuning.SprintSpeed,
             Tuning.BobStrength,
@@ -153,7 +152,7 @@ public partial class PlayerCamera : Camera3D
             newOffset = Tuning.SlideFovOffset;
         else
             newOffset = Mathf.Remap(
-                Player.Speed,
+                Player.HorizontalSpeed,
                 Player.Tuning.Speed,
                 Player.Tuning.SprintSpeed,
                 Tuning.WalkFovOffset,

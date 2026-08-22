@@ -18,14 +18,10 @@ public class PlayerFallingState : PlayerState
             _wallrunTimer += delta;
         }
 
-        // HandleAirMovement(delta);
+        _player.Direction = _player.GetCorrectedInput(sideToSideScaling: .3f);
 
-        // _player.Velocity += _player.GetGravity() * delta;
-
-        // _player.MoveAndSlide();
-        if (_player.IsOnFloor())
+        if (_player.IsOnFloor)
         {
-            GD.Print("Changing to land");
             if (Input.IsActionPressed("crouch"))
                 fsm.ChangeState<PlayerSlideState>(this);
             else
@@ -50,7 +46,8 @@ public class PlayerFallingState : PlayerState
         if (previous is not PlayerJumpState)
             _timer = 0;
         _player.CrouchComponent.Enabled = false;
-
+        // _player.HorizontalSpeed = _player.Tuning.Speed;
+        // _player.HorizontalAccel = _player.Tuning.AirAcceleration;
         _wallrunTimer = previous is PlayerWallJumpState ? 0 : -1f;
     }
 
@@ -58,15 +55,6 @@ public class PlayerFallingState : PlayerState
     {
         _player.CrouchComponent.Enabled = true;
     }
-
-    // private void HandleAirMovement(float delta)
-    // {
-    //     _player.Velocity = _player.GetMovementInputVelocity(
-    //         _player.Tuning.AirAcceleration,
-    //         _player.Tuning.AirDeceleration,
-    //         delta
-    //     );
-    // }
 
     private bool CanVault()
     {

@@ -16,7 +16,7 @@ public class PlayerSlideState : PlayerState
         _player.Velocity = _currentSlideVelocity + _player.GetGravity() * delta;
         // _player.MoveAndSlide();
 
-        if (_player.IsOnFloor() || _player.GetFloorAngle() != 0)
+        if (_player.IsOnFloor || _player.GetFloorAngle() != 0)
         {
             if (_player.Velocity.Y >= 0)
                 _currentSlideVelocity *= SLIDE_DECAY;

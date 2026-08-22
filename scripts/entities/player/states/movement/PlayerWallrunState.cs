@@ -13,7 +13,7 @@ public class PlayerWallRunState : PlayerState
 
     public override void PhysicsProcess(float delta)
     {
-        if (_player.IsOnFloor())
+        if (_player.IsOnFloor)
         {
             fsm.ChangeState<PlayerIdleState>();
             return;
@@ -37,7 +37,6 @@ public class PlayerWallRunState : PlayerState
         velocity += -WallNormal * 3; // Maybe make this a tuning variable?
 
         _player.Velocity = velocity;
-        // _player.MoveAndSlide();
     }
 
     public override void Enter(State previous = null)

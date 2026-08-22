@@ -7,14 +7,8 @@ public class PlayerJumpState : PlayerState
 
     public override void Enter(State previous = null)
     {
-        Vector3 jumpForce = Vector3.Up * _player.Tuning.JumpForce;
-
-        if (previous is PlayerSlideState)
-        {
-            jumpForce.Y *= _player.Tuning.SlideJumpBoost;
-        }
-
-        _player.ApplyCentralImpulse(jumpForce);
+        Vector3 jumpImpulse = Vector3.Up * _player.Tuning.JumpForce;
+        _player.SetImpulse(jumpImpulse);
         fsm.ChangeState<PlayerFallingState>(this);
     }
 }

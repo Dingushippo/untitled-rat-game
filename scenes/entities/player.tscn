@@ -25,6 +25,8 @@ Pid = SubResource("Resource_ss7kx")
 Speed = 5.0
 SprintSpeed = 10.0
 CrouchSpeed = 3.0
+JumpForce = 70.0
+JumpAcceleration = 100.0
 metadata/_custom_type_script = "uid://cuyb4v4vre4wf"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
@@ -111,8 +113,10 @@ bind/15/pose = Transform3D(8.321876, -0.33419704, 0.10384854, 0.34903196, 8.1058
 [node name="Player" type="RigidBody3D" unique_id=1814741928 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Collider", "VaultRaycast", "Whip") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
+mass = 10.0
 physics_material_override = SubResource("PhysicsMaterial_ss7kx")
 contact_monitor = true
+max_contacts_reported = 4
 script = ExtResource("1_dqkch")
 Camera = NodePath("Head/Camera3D")
 HandL = NodePath("Head/HandL")

@@ -7,7 +7,7 @@ public class PlayerMoveState : PlayerState
 
     public override void PhysicsProcess(float delta)
     {
-        if (!_player.IsOnFloor())
+        if (!_player.IsOnFloor)
         {
             fsm.ChangeState<PlayerFallingState>(this);
             return;
@@ -20,26 +20,37 @@ public class PlayerMoveState : PlayerState
             return;
         }
 
-        _player.Acceleration =
+        _player.HorizontalAccel =
             _player.Direction == Vector3.Zero
                 ? _player.Tuning.Acceleration
                 : _player.Tuning.Deceleration;
 
         if (_player.CrouchComponent.IsCrouching)
-            _player.Speed = _player.Tuning.CrouchSpeed;
+            _player.HorizontalSpeed = _player.Tuning.CrouchSpeed;
         else if (Input.IsActionPressed("sprint"))
-            _player.Speed = _player.Tuning.SprintSpeed;
+            _player.HorizontalSpeed = _player.Tuning.SprintSpeed;
         else
-            _player.Speed = _player.Tuning.Speed;
+            _player.HorizontalSpeed = _player.Tuning.Speed;
     }
 
-    public override void Enter(State previous = null) { }
+    public override void Exit()
+    {
+        _player.VerticalAccel = 0f;
+        _player.VerticalSpeed = 0f;
+    }
+
+    public override void Enter(State previous = null)
+    {
+        _player.VerticalAccel = 100;
+        _player.VerticalSpeed = -20f;
+    }
 
     public override void HandleInput(InputEvent @event)
     {
         if (@event.IsActionPressed("jump"))
         {
             fsm.ChangeState<PlayerJumpState>(this);
+            return;
         }
         if (@event.IsActionPressed("sprint"))
         {
@@ -53,7 +64,7 @@ public class PlayerMoveState : PlayerState
         {
             fsm.ChangeState<PlayerSlideState>(this);
         }
-        if (@event.IsActionPressed("crouch") && _player.IsOnFloor() && _player.GetFloorAngle() != 0)
+        if (@event.IsActionPressed("crouch") && _player.IsOnFloor && _player.GetFloorAngle() != 0)
         {
             if (_player.Velocity.Y < 0)
                 fsm.ChangeState<PlayerSlideState>(this);

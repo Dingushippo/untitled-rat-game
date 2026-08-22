@@ -29,15 +29,21 @@ public partial class Player : RigidBody3D
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
 
-    public float Speed;
-    public float Acceleration;
+    public float HorizontalSpeed;
+    public float VerticalSpeed;
+    public float HorizontalAccel;
+    public float VerticalAccel;
     public Vector3 Velocity = Vector3.Zero;
     public Vector3 Direction;
+    public bool IsOnFloor;
+    public bool IsOnWall;
 
     private FiniteStateMachine<PlayerState> _movementFsm;
     private FiniteStateMachine<HandState> _handFsm;
 
     private bool _isFrozen = false;
+    private Vector3 _impulse = Vector3.Zero;
+    private bool _wantsImpulse;
 
     public override void _Ready()
     {
@@ -73,6 +79,12 @@ public partial class Player : RigidBody3D
         Camera.SetCameraInputEnabled(true);
     }
 
+    public void SetImpulse(Vector3 impulse)
+    {
+        _impulse = impulse;
+        _wantsImpulse = true;
+    }
+
     public override void _Process(double delta)
     {
         CrouchComponent.Update();
@@ -89,19 +101,32 @@ public partial class Player : RigidBody3D
 
     public override void _IntegrateForces(PhysicsDirectBodyState3D state)
     {
-        Vector3 targetVelocity = Direction * Speed;
+        CheckOnFloor(state);
+
+        Vector3 targetVelocity = Direction * HorizontalSpeed;
         Vector3 currentVelocity = state.LinearVelocity;
         currentVelocity.X = Mathf.MoveToward(
             currentVelocity.X,
             targetVelocity.X,
-            Acceleration * state.Step
+            HorizontalAccel * state.Step
         );
         currentVelocity.Z = Mathf.MoveToward(
             currentVelocity.Z,
             targetVelocity.Z,
-            Acceleration * state.Step
+            HorizontalAccel * state.Step
+        );
+        currentVelocity.Y = Mathf.MoveToward(
+            currentVelocity.Y,
+            VerticalSpeed,
+            VerticalAccel * state.Step
         );
         state.LinearVelocity = currentVelocity;
+
+        if (_wantsImpulse)
+        {
+            state.ApplyCentralImpulse(_impulse);
+            _wantsImpulse = false;
+        }
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -154,26 +179,36 @@ public partial class Player : RigidBody3D
         return Input.GetVector("move_left", "move_right", "move_forward", "move_back");
     }
 
-    public Vector3 GetCorrectedInput()
+    public Vector3 GetCorrectedInput(
+        float forwardBackwardScaling = 1f,
+        float sideToSideScaling = 1f
+    )
     {
         Vector2 input = GetInputVector();
         float yaw = Head.Rotation.Y;
         Vector3 forward = new(Mathf.Sin(yaw), 0, Mathf.Cos(yaw));
         Vector3 right = new(forward.Z, 0, -forward.X);
-        Vector3 desired = (right * input.X + forward * input.Y).Normalized();
+        Vector3 desired = (
+            right * input.X * sideToSideScaling + forward * input.Y * forwardBackwardScaling
+        ).Normalized();
         return new(desired.X, 0, desired.Z);
     }
 
-    public bool IsOnFloor()
+    public void CheckOnFloor(PhysicsDirectBodyState3D state)
     {
-        Vector3 startPos = GlobalPosition + Vector3.Up * 0.1f; // Account for small float errors in collision
-        return RaycastUtils.Ray(
-            this,
-            startPos,
-            startPos + Vector3.Down * 0.2f,
-            out _,
-            PhysicsLayers.WORLD
-        );
+        if (state.GetContactCount() == 0)
+        {
+            IsOnFloor = false;
+            return;
+        }
+        for (int i = 0; i < state.GetContactCount(); i++)
+        {
+            Vector3 localNormal = state.GetContactLocalNormal(i);
+            if (localNormal.Dot(Vector3.Up) < 0.3f)
+                continue;
+            IsOnFloor = true;
+            return;
+        }
     }
 
     public float GetFloorAngle()
