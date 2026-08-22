@@ -1,6 +1,7 @@
+using System.Net.Http.Headers;
 using Godot;
 
-public partial class Player : CharacterBody3D
+public partial class Player : RigidBody3D
 {
     [Export]
     public PlayerCamera Camera;
@@ -21,48 +22,19 @@ public partial class Player : CharacterBody3D
     public RayCast3D VaultRaycast;
 
     [Export]
-    public float Speed = 10f;
+    public PlayerMovementTuning Tuning;
 
     [Export]
-    public float SprintSpeed = 15f;
+    public RatWhipComponent Whip;
 
-    [Export]
-    public float CrouchSpeed = 5f;
-
-    [Export]
-    public float WallrunSpeed = 12f;
-
-    [Export]
-    public float WallrunGravityScale = 0.9f;
-
-    [Export]
-    public float Acceleration = 55f;
-
-    [Export]
-    public float Deceleration = 90f;
-
-    [Export]
-    public float AirAcceleration = 25f;
-
-    [Export]
-    public float AirDeceleration = 0f;
-
-    // How much harder we accelerate when the input fights the current velocity.
-    // 1 = no extra bite on turns, higher = snappier direction changes.
-    [Export]
-    public float TurnBrakeMultiplier = 2.5f;
-
-    [Export]
-    public float JumpForce = 10f;
-
-    [Export]
-    public float WallJumpForce = 8f;
-
-    [Export]
-    public float WallrunCheckDistance = 1f;
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
-    public RatWhipComponent Whip;
+
+    public float Speed;
+    public float Acceleration;
+    public Vector3 Velocity = Vector3.Zero;
+    public Vector3 Direction;
+
     private FiniteStateMachine<PlayerState> _movementFsm;
     private FiniteStateMachine<HandState> _handFsm;
 
@@ -72,8 +44,9 @@ public partial class Player : CharacterBody3D
     {
         CrouchComponent = new(this);
         InteractComponent = new(this);
-        Whip = new(this);
         InitStateMachines();
+
+        LockRotation = true;
 
         EventBus.Subscribe<QteStarted>(OnQteStarted);
         EventBus.Subscribe<QteCompleted>(OnQteCompleted);
@@ -115,6 +88,23 @@ public partial class Player : CharacterBody3D
         _handFsm.StatePhysicsProcess((float)delta);
     }
 
+    public override void _IntegrateForces(PhysicsDirectBodyState3D state)
+    {
+        Vector3 targetVelocity = Direction * Speed;
+        Vector3 currentVelocity = state.LinearVelocity;
+        currentVelocity.X = Mathf.MoveToward(
+            currentVelocity.X,
+            targetVelocity.X,
+            Acceleration * state.Step
+        );
+        currentVelocity.Z = Mathf.MoveToward(
+            currentVelocity.Z,
+            targetVelocity.Z,
+            Acceleration * state.Step
+        );
+        state.LinearVelocity = currentVelocity;
+    }
+
     public override void _UnhandledInput(InputEvent @event)
     {
         _movementFsm.StateUnhandledInput(@event);
@@ -138,8 +128,9 @@ public partial class Player : CharacterBody3D
         _movementFsm.Add(new PlayerSlideState(this));
         _movementFsm.Add(new PlayerWallRunState(this));
         _movementFsm.Add(new PlayerWallJumpState(this));
+        _movementFsm.Add(new PlayerSwingState(this));
         _movementFsm.InitState<PlayerIdleState>();
-        _movementFsm.Debug = false;
+        _movementFsm.Debug = true;
 
         _handFsm = new(this);
         _handFsm.Add(new HandEmptyState(this));
@@ -147,64 +138,47 @@ public partial class Player : CharacterBody3D
         _handFsm.Debug = false;
     }
 
+    public void ChangeMovementState<T>()
+        where T : PlayerState
+    {
+        _movementFsm.ChangeState<T>();
+    }
+
+    public void ChangeHandState<T>()
+        where T : HandState
+    {
+        _handFsm.ChangeState<T>();
+    }
+
     public Vector2 GetInputVector()
     {
         return Input.GetVector("move_left", "move_right", "move_forward", "move_back");
     }
 
-    public float CurrentSpeed;
-
-    public Vector3 GetMovementInputVelocity(
-        float acceleration,
-        float deceleration,
-        float delta,
-        float speedOverride = 0
-    )
+    public Vector3 GetCorrectedInput()
     {
         Vector2 input = GetInputVector();
-
-        float speed;
-        if (speedOverride != 0)
-            speed = speedOverride;
-        else if (Input.IsActionPressed("sprint"))
-            speed = SprintSpeed;
-        else
-            speed = Speed;
-
-        CurrentSpeed = speed;
-
-        float yaw = Rotation.Y;
-
+        float yaw = Head.Rotation.Y;
         Vector3 forward = new(Mathf.Sin(yaw), 0, Mathf.Cos(yaw));
         Vector3 right = new(forward.Z, 0, -forward.X);
+        Vector3 desired = (right * input.X + forward * input.Y).Normalized();
+        return new(desired.X, 0, desired.Z);
+    }
 
-        Vector3 desired = (right * input.X + forward * input.Y).LimitLength() * speed;
+    public bool IsOnFloor()
+    {
+        Vector3 startPos = GlobalPosition + Vector3.Up * 0.1f; // Account for small float errors in collision
+        return RaycastUtils.Ray(
+            this,
+            startPos,
+            startPos + Vector3.Down * 0.2f,
+            out _,
+            PhysicsLayers.WORLD
+        );
+    }
 
-        Vector3 velocity = Velocity;
-        Vector3 horizontal = new(velocity.X, 0, velocity.Z);
-
-        float rate;
-        if (desired.IsZeroApprox())
-        {
-            // No input: brake. In air this is 0, so momentum is preserved.
-            rate = deceleration;
-        }
-        else
-        {
-            // Input held: scale up the rate as the desired direction turns away from
-            // the current velocity, so reversing doesn't have to coast through zero.
-            float alignment = horizontal.IsZeroApprox()
-                ? 1f
-                : desired.Normalized().Dot(horizontal.Normalized());
-
-            rate = acceleration * Mathf.Lerp(TurnBrakeMultiplier, 1f, (alignment + 1f) * 0.5f);
-        }
-
-        horizontal = horizontal.MoveToward(desired, rate * delta);
-
-        velocity.X = horizontal.X;
-        velocity.Z = horizontal.Z;
-
-        return velocity;
+    public float GetFloorAngle()
+    {
+        return 0; // TODO implement
     }
 }

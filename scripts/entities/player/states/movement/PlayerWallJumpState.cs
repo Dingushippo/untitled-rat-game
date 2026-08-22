@@ -10,7 +10,7 @@ public class PlayerWallJumpState : PlayerState
         if (previous is not PlayerWallRunState wallRun)
             return;
 
-        _player.Velocity = (wallRun.WallNormal + Vector3.Up) * _player.WallJumpForce;
+        _player.Velocity = (wallRun.WallNormal + Vector3.Up) * _player.Tuning.WallJumpForce;
         fsm.ChangeState<PlayerFallingState>(this);
     }
 }

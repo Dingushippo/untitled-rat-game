@@ -3,9 +3,13 @@ using Godot;
 public class PlayerFallingState : PlayerState
 {
     const float COYOTY_TIMER_LENGTH = 0.2f;
-    public PlayerFallingState(Player owner) : base(owner) { }
+
+    public PlayerFallingState(Player owner)
+        : base(owner) { }
+
     private float _timer = 99f;
     private float _wallrunTimer = -2f;
+
     public override void PhysicsProcess(float delta)
     {
         _timer += delta;
@@ -14,14 +18,14 @@ public class PlayerFallingState : PlayerState
             _wallrunTimer += delta;
         }
 
-        HandleAirMovement(delta);
+        // HandleAirMovement(delta);
 
-        _player.Velocity += _player.GetGravity() * delta;
+        // _player.Velocity += _player.GetGravity() * delta;
 
-        _player.MoveAndSlide();
-
+        // _player.MoveAndSlide();
         if (_player.IsOnFloor())
         {
+            GD.Print("Changing to land");
             if (Input.IsActionPressed("crouch"))
                 fsm.ChangeState<PlayerSlideState>(this);
             else
@@ -40,41 +44,53 @@ public class PlayerFallingState : PlayerState
             fsm.ChangeState<PlayerJumpState>(this);
         }
     }
+
     public override void Enter(State previous = null)
     {
-        if (previous is not PlayerJumpState) _timer = 0;
+        if (previous is not PlayerJumpState)
+            _timer = 0;
         _player.CrouchComponent.Enabled = false;
 
         _wallrunTimer = previous is PlayerWallJumpState ? 0 : -1f;
     }
+
     public override void Exit()
     {
         _player.CrouchComponent.Enabled = true;
     }
 
-    private void HandleAirMovement(float delta)
-    {
-        _player.Velocity = _player.GetMovementInputVelocity(
-            _player.AirAcceleration,
-            _player.AirDeceleration,
-            delta);
-    }
+    // private void HandleAirMovement(float delta)
+    // {
+    //     _player.Velocity = _player.GetMovementInputVelocity(
+    //         _player.Tuning.AirAcceleration,
+    //         _player.Tuning.AirDeceleration,
+    //         delta
+    //     );
+    // }
 
     private bool CanVault()
     {
         Vector3 collisionPoint = _player.VaultRaycast.GetCollisionPoint();
-        if (RaycastUtils.Ray(_player, collisionPoint, collisionPoint + Vector3.Up * 2f, out _, _player.CollisionMask))
+        if (
+            RaycastUtils.Ray(
+                _player,
+                collisionPoint,
+                collisionPoint + Vector3.Up * 2f,
+                out _,
+                _player.CollisionMask
+            )
+        )
         {
             return false;
         }
         return true;
     }
 
-
     public Side Side;
+
     private bool CanWallrun()
     {
-        if (_player.GetRealVelocity().Y <= 0)
+        if (_player.Velocity.Y <= 0)
         {
             return false;
         }
@@ -82,8 +98,12 @@ public class PlayerFallingState : PlayerState
             return false;
 
         Vector3 position = _player.Camera.GlobalPosition;
-        Vector3 rightOfPlayer = (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, -Mathf.Pi / 2)) * _player.WallrunCheckDistance;
-        Vector3 leftOfPlayer = (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, Mathf.Pi / 2)) * _player.WallrunCheckDistance;
+        Vector3 rightOfPlayer =
+            (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, -Mathf.Pi / 2))
+            * _player.Tuning.WallrunCheckDistance;
+        Vector3 leftOfPlayer =
+            (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, Mathf.Pi / 2))
+            * _player.Tuning.WallrunCheckDistance;
 
         // Check left side
         if (RaycastUtils.Ray(_player, position, rightOfPlayer, out _, PhysicsLayers.WORLD))

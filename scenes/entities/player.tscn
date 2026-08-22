@@ -1,10 +1,31 @@
 [gd_scene format=4 uid="uid://doppcexk44ncy"]
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/entities/player/Player.cs" id="1_dqkch"]
+[ext_resource type="Script" uid="uid://cvduofv31ehnk" path="res://scripts/entities/player/PidTuning.cs" id="2_dnykm"]
+[ext_resource type="Script" uid="uid://cuyb4v4vre4wf" path="res://scripts/entities/player/PlayerMovementTuning.cs" id="2_ss7kx"]
 [ext_resource type="Resource" uid="uid://g8o35bffx81c" path="res://resources/tuning/player_camera_tuning.tres" id="3_saib0"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
+[ext_resource type="Script" uid="uid://32o2pnmqajak" path="res://scripts/entities/player/abilities/RatWhipComponent.cs" id="6_d4qa6"]
 [ext_resource type="Script" uid="uid://c87dhm675xypo" path="res://scripts/qte/QteManager.cs" id="12_5ki56"]
 [ext_resource type="PackedScene" uid="uid://bda3cwi7p7irq" path="res://scenes/qte/spam_qte.tscn" id="13_saib0"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ss7kx"]
+friction = 0.0
+
+[sub_resource type="Resource" id="Resource_ss7kx"]
+script = ExtResource("2_dnykm")
+P = 2.3
+I = 0.0
+D = 0.7
+metadata/_custom_type_script = "uid://cvduofv31ehnk"
+
+[sub_resource type="Resource" id="Resource_d4qa6"]
+script = ExtResource("2_ss7kx")
+Pid = SubResource("Resource_ss7kx")
+Speed = 5.0
+SprintSpeed = 10.0
+CrouchSpeed = 3.0
+metadata/_custom_type_script = "uid://cuyb4v4vre4wf"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
@@ -87,9 +108,11 @@ bind/15/pose = Transform3D(8.321876, -0.33419704, 0.10384854, 0.34903196, 8.1058
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[node name="Player" type="CharacterBody3D" unique_id=716301107 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Collider", "VaultRaycast") groups=["player"]]
+[node name="Player" type="RigidBody3D" unique_id=1814741928 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Collider", "VaultRaycast", "Whip") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
+physics_material_override = SubResource("PhysicsMaterial_ss7kx")
+contact_monitor = true
 script = ExtResource("1_dqkch")
 Camera = NodePath("Head/Camera3D")
 HandL = NodePath("Head/HandL")
@@ -97,8 +120,8 @@ HandR = NodePath("Head/HandR")
 Head = NodePath("Head")
 Collider = NodePath("CollisionShape3D")
 VaultRaycast = NodePath("VaultRaycast")
-WallrunGravityScale = 5.0
-JumpForce = 5.0
+Tuning = SubResource("Resource_d4qa6")
+Whip = NodePath("RatWhipComponent")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -108,6 +131,7 @@ shape = SubResource("CapsuleShape3D_2hs0m")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=2056591493 node_paths=PackedStringArray("Player", "HeadNode", "HandNode")]
+current = true
 script = ExtResource("4_fjrip")
 Player = NodePath("../..")
 DebugAimMarker = true
@@ -133,7 +157,7 @@ material_override = SubResource("StandardMaterial3D_j5cof")
 mesh = SubResource("ArrayMesh_rpayc")
 skin = SubResource("Skin_64kpw")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=502003014]
+[node name="PlayerMesh" type="MeshInstance3D" parent="." unique_id=502003014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_pso3n")
 
@@ -155,3 +179,12 @@ size_flags_vertical = 3
 script = ExtResource("12_5ki56")
 QteScenes = Array[PackedScene]([ExtResource("13_saib0")])
 metadata/_custom_type_script = "uid://c87dhm675xypo"
+
+[node name="RatWhipComponent" type="Node" parent="." unique_id=2011845445 node_paths=PackedStringArray("Player", "HandNode", "RatTailMeshInstance")]
+script = ExtResource("6_d4qa6")
+Player = NodePath("..")
+HandNode = NodePath("../Head/HandL")
+RatTailMeshInstance = NodePath("RatTailMesh")
+metadata/_custom_type_script = "uid://32o2pnmqajak"
+
+[node name="RatTailMesh" type="MeshInstance3D" parent="RatWhipComponent" unique_id=215968571]

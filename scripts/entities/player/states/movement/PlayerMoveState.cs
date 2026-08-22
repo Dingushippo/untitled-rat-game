@@ -2,9 +2,8 @@ using Godot;
 
 public class PlayerMoveState : PlayerState
 {
-    public PlayerMoveState(Player owner) : base(owner) { }
-
-    private Vector2 _inputDir;
+    public PlayerMoveState(Player owner)
+        : base(owner) { }
 
     public override void PhysicsProcess(float delta)
     {
@@ -13,18 +12,28 @@ public class PlayerMoveState : PlayerState
             fsm.ChangeState<PlayerFallingState>(this);
             return;
         }
+        _player.Direction = _player.GetCorrectedInput();
 
-        _inputDir = _player.GetInputVector();
-
-        HandleMovement(delta);
-
-        _player.MoveAndSlide();
-
-        if (new Vector2(_player.Velocity.X, _player.Velocity.Z).Length() < 0.05f && _inputDir == Vector2.Zero)
+        if (_player.LinearVelocity == Vector3.Zero && _player.Direction == Vector3.Zero)
         {
             fsm.ChangeState<PlayerIdleState>();
+            return;
         }
+
+        _player.Acceleration =
+            _player.Direction == Vector3.Zero
+                ? _player.Tuning.Acceleration
+                : _player.Tuning.Deceleration;
+
+        if (_player.CrouchComponent.IsCrouching)
+            _player.Speed = _player.Tuning.CrouchSpeed;
+        else if (Input.IsActionPressed("sprint"))
+            _player.Speed = _player.Tuning.SprintSpeed;
+        else
+            _player.Speed = _player.Tuning.Speed;
     }
+
+    public override void Enter(State previous = null) { }
 
     public override void HandleInput(InputEvent @event)
     {
@@ -36,24 +45,18 @@ public class PlayerMoveState : PlayerState
         {
             _player.CrouchComponent.TryStand();
         }
-        if (@event.IsActionPressed("crouch") && Input.IsActionPressed("sprint") && !_player.CrouchComponent.IsCrouching)
+        if (
+            @event.IsActionPressed("crouch")
+            && Input.IsActionPressed("sprint")
+            && !_player.CrouchComponent.IsCrouching
+        )
         {
             fsm.ChangeState<PlayerSlideState>(this);
         }
         if (@event.IsActionPressed("crouch") && _player.IsOnFloor() && _player.GetFloorAngle() != 0)
         {
-            if (_player.GetRealVelocity().Y < 0)
+            if (_player.Velocity.Y < 0)
                 fsm.ChangeState<PlayerSlideState>(this);
         }
-    }
-
-    protected virtual void HandleMovement(float delta)
-    {
-        float speedOverride = _player.CrouchComponent.IsCrouching ? _player.CrouchSpeed : 0;
-        _player.Velocity = _player.GetMovementInputVelocity(
-            _player.Acceleration,
-            _player.Deceleration,
-            delta,
-            speedOverride);
     }
 }

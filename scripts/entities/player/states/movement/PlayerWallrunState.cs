@@ -29,15 +29,15 @@ public class PlayerWallRunState : PlayerState
             return;
         }
         Vector3 velocity = _player.Velocity;
-        velocity.X = WallForward.X * _player.WallrunSpeed;
-        velocity.Z = WallForward.Z * _player.WallrunSpeed;
+        velocity.X = WallForward.X * _player.Tuning.WallrunSpeed;
+        velocity.Z = WallForward.Z * _player.Tuning.WallrunSpeed;
         velocity.Y += _player.GetGravity().Y * _gravityScale * delta;
 
         // Stick to wall to make it more stable
         velocity += -WallNormal * 3; // Maybe make this a tuning variable?
 
         _player.Velocity = velocity;
-        _player.MoveAndSlide();
+        // _player.MoveAndSlide();
     }
 
     public override void Enter(State previous = null)
@@ -59,10 +59,10 @@ public class PlayerWallRunState : PlayerState
         Vector3 position = _player.Camera.GlobalPosition;
         Vector3 leftOfPlayer =
             (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, Mathf.Pi / 2))
-            * _player.WallrunCheckDistance;
+            * _player.Tuning.WallrunCheckDistance;
         Vector3 rightOfPlayer =
             (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, -Mathf.Pi / 2))
-            * _player.WallrunCheckDistance;
+            * _player.Tuning.WallrunCheckDistance;
 
         Vector3 posToCheck = _side == Side.Left ? leftOfPlayer : rightOfPlayer;
         int sign = _side == Side.Left ? -1 : 1;

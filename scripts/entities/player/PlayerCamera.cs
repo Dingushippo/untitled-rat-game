@@ -1,5 +1,5 @@
-using Godot;
 using System;
+using Godot;
 
 public partial class PlayerCamera : Camera3D
 {
@@ -46,15 +46,13 @@ public partial class PlayerCamera : Camera3D
     private static readonly CamPose _restPose = new(0f, 0f, 0f, 0f, 0f);
     private CamPose CurrentPose => new(_pitchOffset, _rollOffset, _kickZ, _fovOffset, _xOffset);
 
+    public Vector3 ForwardDirection => -GlobalBasis.Z;
+
     public override void _Ready()
     {
         // Initialize yaw from target if available
-        if (Player != null)
-        {
-            // Rotation.Y is in radians; convert to degrees
-            _yawDeg = Player.Rotation.Y * (180f / MathF.PI);
-        }
-        _pitchRad = Rotation.X;
+        _pitchRad = HeadNode.Rotation.X;
+        _yawRad = HeadNode.Rotation.Y;
         _originalFov = Fov;
         _basePosition = Position;
         _baseRotation = Rotation;
@@ -84,12 +82,11 @@ public partial class PlayerCamera : Camera3D
 
     private void ApplyPose(float delta)
     {
-        Vector3 pitch = _baseRotation;
-        Vector3 yaw = _baseRotation;
-        pitch.X = _pitchRad + _pitchOffset;
-        yaw.Z = _baseRotation.Z + _rollOffset;
-        Rotation = yaw;
-        HeadNode.Rotation = pitch;
+        Vector3 rotation = _baseRotation;
+        rotation.X = _pitchRad + _pitchOffset;
+        rotation.Y = _yawRad;
+        // Rotation = yaw;
+        HeadNode.Rotation = rotation;
         Position = _basePosition + new Vector3(_xOffset, YOffset, _kickZ) + _bobOffset;
         HandNode.Position = _handOffset + new Vector3(0f, YOffset, _kickZ);
         Fov = _originalFov + _fovOffset;
@@ -105,7 +102,7 @@ public partial class PlayerCamera : Camera3D
     {
         float blendDelta = delta * _blendSpeed;
         if (
-            Player.Velocity.IsZeroApprox()
+            Player.LinearVelocity.IsZeroApprox()
             || Player.CrouchComponent.IsCrouching
             || !Player.IsOnFloor()
         )
@@ -115,16 +112,17 @@ public partial class PlayerCamera : Camera3D
             return;
         }
         _bobSpeed = Mathf.Remap(
-            Player.CurrentSpeed,
             Player.Speed,
-            Player.SprintSpeed,
+            Player.Tuning.Speed,
+            Player.Tuning.SprintSpeed,
             Tuning.BobSpeed,
             Tuning.BobSpeedSprint
         );
+        GD.Print($"Speed: {Player.Speed}, bob speed: {_bobSpeed}");
         _bobStrength = Mathf.Remap(
-            Player.CurrentSpeed,
             Player.Speed,
-            Player.SprintSpeed,
+            Player.Tuning.Speed,
+            Player.Tuning.SprintSpeed,
             Tuning.BobStrength,
             Tuning.BobStrengthSprint
         );
@@ -155,14 +153,16 @@ public partial class PlayerCamera : Camera3D
             newOffset = Tuning.SlideFovOffset;
         else
             newOffset = Mathf.Remap(
-                Player.CurrentSpeed,
                 Player.Speed,
-                Player.SprintSpeed,
+                Player.Tuning.Speed,
+                Player.Tuning.SprintSpeed,
                 Tuning.WalkFovOffset,
                 Tuning.RunFovOffset
             );
         _fovOffset = Mathf.Lerp(_fovOffset, newOffset, blendDelta);
     }
+
+    private float _yawRad;
 
     public override void _Input(InputEvent @event)
     {
@@ -171,7 +171,10 @@ public partial class PlayerCamera : Camera3D
             if (!_cameraEnabled)
                 return;
 
-            Player.RotateY(-mm.Relative.X * Tuning.Sensitivity * 0.01f);
+            // HeadNode.RotateY(-mm.Relative.X * Tuning.Sensitivity * 0.01f);
+
+            _yawRad += -mm.Relative.X * Tuning.Sensitivity * 0.01f;
+            // GD.Print($"_yawRad: {_yawRad}");
 
             _pitchRad = Mathf.Clamp(
                 _pitchRad - mm.Relative.Y * Tuning.Sensitivity * 0.01f,

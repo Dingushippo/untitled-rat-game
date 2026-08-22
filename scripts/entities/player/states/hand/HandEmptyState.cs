@@ -11,10 +11,15 @@ public class HandEmptyState : HandState
     {
         if (@event.IsActionPressed("right_hand"))
         {
-            if (!RatManager.Instance.TrySpawnRat(out Rat rat, _player.GlobalPosition))
+            Vector3 direction = -_player.Camera.GlobalBasis.Z;
+            if (
+                !RatManager.Instance.TrySpawnRat(
+                    out Rat rat,
+                    _player.HandR.GlobalPosition + direction * 0.1f
+                )
+            )
                 return;
 
-            Vector3 direction = -_player.Camera.GlobalBasis.Z;
             rat.LookAt(_player.GlobalPosition + direction * 5f);
             rat.Freeze = false;
             rat.Collider.Disabled = false;
@@ -22,9 +27,13 @@ public class HandEmptyState : HandState
             fsm.ChangeState<HandEmptyState>();
         }
 
-        if (@event.IsActionPressed("left_hand"))
+        if (@event.IsActionPressed("left_hand") && !_player.Whip.IsAnchored)
         {
-            _player.Whip.SpawnWhipNodes(15f);
+            _player.Whip.EngageWhip(20f);
+        }
+        if (@event.IsActionReleased("left_hand") && _player.Whip.IsAnchored)
+        {
+            _player.Whip.Release();
         }
     }
 }

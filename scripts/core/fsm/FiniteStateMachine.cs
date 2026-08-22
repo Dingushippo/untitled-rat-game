@@ -35,6 +35,7 @@ public class FiniteStateMachine<T>
     {
         if (!ValidateState<ST>())
             return;
+        PreviousState = _states[typeof(ST)];
         CurrentState = _states[typeof(ST)];
         CurrentState.Enter();
     }
@@ -45,7 +46,7 @@ public class FiniteStateMachine<T>
         if (!ValidateState<ST>())
             return;
         if (Debug)
-            GD.Print($"{_owner} - Changing state from {PreviousState} to {typeof(ST)}");
+            GD.Print($"{_owner} - Changing state from {CurrentState} to {typeof(ST)}");
         PreviousState = CurrentState;
         CurrentState.Exit();
         CurrentState = _states[typeof(ST)];

@@ -2,7 +2,10 @@ public class PlayerState : State<PlayerState>
 {
     private protected Player _player;
 
-    public PlayerState(Player owner) { _player = owner; }
+    public PlayerState(Player owner)
+    {
+        _player = owner;
+    }
 }
 
 /*
@@ -13,6 +16,7 @@ public class PlayerNewState : PlayerState
     public PlayerNewState(Player owner) : base(owner) { }
     public override void PhysicsProcess(float delta) { }
     public override void Process(float delta) { }
+    public override void IntegrateForces(PhysicsDirectBodyState3D state) { }
     public override void Enter(State previous = null) { }
     public override void HandleInput(InputEvent @event) { }
     public override void HandleUnhandledInput(InputEvent @event) { }
