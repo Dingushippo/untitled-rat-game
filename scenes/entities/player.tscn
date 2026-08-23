@@ -22,6 +22,8 @@ JumpForce = 80.0
 JumpAcceleration = 100.0
 SpringStiffness = 100.0
 SpringDamping = 50.0
+RestLengthMultiplier = 1.0
+SwingForce = 50.0
 metadata/_custom_type_script = "uid://cuyb4v4vre4wf"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]

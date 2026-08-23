@@ -173,6 +173,7 @@ public partial class Player : RigidBody3D
         _movementFsm.Add(new PlayerWallRunState(this));
         _movementFsm.Add(new PlayerWallJumpState(this));
         _movementFsm.Add(new PlayerSwingState(this));
+        _movementFsm.Add(new PlayerArcMovementState(this));
         _movementFsm.InitState<PlayerIdleState>();
         _movementFsm.Debug = true;
 
@@ -180,6 +181,12 @@ public partial class Player : RigidBody3D
         _handFsm.Add(new HandEmptyState(this));
         _handFsm.InitState<HandEmptyState>();
         _handFsm.Debug = false;
+    }
+
+    public T GetState<T>()
+        where T : PlayerState
+    {
+        return _movementFsm.Get<T>();
     }
 
     public void ChangeMovementState<T>()

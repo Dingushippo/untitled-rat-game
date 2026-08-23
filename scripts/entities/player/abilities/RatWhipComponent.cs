@@ -14,10 +14,8 @@ public partial class RatWhipComponent : Node
 
     [Export]
     public MeshInstance3D RatTailMeshInstance;
-
-    public Generic6DofJoint3D Joint;
-    public float WhipLength => Player.HandL.GlobalPosition.DistanceTo(AnchorPoint);
     public Vector3 AnchorPoint = Vector3.Zero;
+    public float RestLength;
     public bool IsAnchored => AnchorPoint != Vector3.Zero;
     private ImmediateMesh _ratTailMesh = new();
 
@@ -36,7 +34,6 @@ public partial class RatWhipComponent : Node
     {
         AnchorPoint = Vector3.Zero;
         AnchorObject = null;
-        // Player.ChangeMovementState<PlayerFallingState>();
     }
 
     public void EngageWhip(float maxDistance)
@@ -45,6 +42,21 @@ public partial class RatWhipComponent : Node
             return;
 
         Player.ChangeMovementState<PlayerSwingState>();
+        RestLength =
+            Player.GlobalPosition.DistanceTo(AnchorPoint) * Player.Tuning.RestLengthMultiplier;
+    }
+
+    public void LaunchToAnchor()
+    {
+        Vector3 target = AnchorPoint;
+        float arcHeight = AnchorPoint.Y - Player.GlobalPosition.Y;
+        float speed = 10f;
+
+        PlayerArcMovementState state = Player.GetState<PlayerArcMovementState>();
+        state.Configure(target, arcHeight, speed);
+
+        Player.ChangeMovementState<PlayerArcMovementState>();
+        Release();
     }
 
     public StaticBody3D AnchorObject;

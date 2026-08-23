@@ -1,9 +1,10 @@
+using System.Runtime.Serialization;
 using Godot;
 
 public class PlayerSwingState : PlayerState
 {
     private Vector3 _anchorPoint => _player.Whip.AnchorPoint;
-    private float _restLength;
+    private float _restLength => _player.Whip.RestLength;
 
     public PlayerSwingState(Player owner)
         : base(owner) { }
@@ -46,9 +47,11 @@ public class PlayerSwingState : PlayerState
         state.ApplyCentralForce(tangentialDirection * _player.Tuning.SwingForce);
     }
 
-    public override void Enter(State previous = null)
+    public override void HandleInput(InputEvent @event)
     {
-        _restLength =
-            _player.GlobalPosition.DistanceTo(_anchorPoint) * _player.Tuning.RestLengthMultiplier;
+        if (@event.IsActionPressed("jump"))
+        {
+            _player.Whip.LaunchToAnchor();
+        }
     }
 }

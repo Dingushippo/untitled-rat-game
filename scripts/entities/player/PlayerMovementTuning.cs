@@ -73,4 +73,10 @@ public partial class PlayerMovementTuning : Resource
 
     [Export]
     public float SwingForce = 10f;
+
+    [Export]
+    public float RetractLaunchAngleOffset = 10f;
+
+    [Export]
+    public float RetractLaunchForce = 10f;
 }
