@@ -16,6 +16,8 @@ public class PlayerVaultState : PlayerState
         _startPoint = _player.GlobalPosition;
         _midPoint = _startPoint.Lerp(_vaultPoint, 0.5f) + new Vector3(0, 0.5f, 0);
 
+        _player.Freeze = true;
+
         Tween vaultTween = _player.CreateTween();
         vaultTween.SetEase(Tween.EaseType.InOut);
         vaultTween.SetTrans(Tween.TransitionType.Sine);
@@ -32,8 +34,9 @@ public class PlayerVaultState : PlayerState
 
     public override void Exit()
     {
-        Vector3 velocity = _player.Velocity;
+        _player.Freeze = false;
+        Vector3 velocity = _player.LinearVelocity;
         velocity.Y = 0;
-        _player.Velocity = velocity;
+        _player.LinearVelocity = velocity;
     }
 }

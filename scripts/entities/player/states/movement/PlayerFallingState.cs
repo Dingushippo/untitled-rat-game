@@ -22,7 +22,6 @@ public class PlayerFallingState : PlayerState
             _jumpBufferTimer += delta;
 
         _player.Direction = _player.GetCorrectedInput(sideToSideScaling: .3f);
-
         if (_player.IsOnFloor)
         {
             if (_wantsJump && _jumpBufferTimer <= JUMP_BUFFER_LENGTH)
@@ -72,13 +71,14 @@ public class PlayerFallingState : PlayerState
     private bool CanVault()
     {
         Vector3 collisionPoint = _player.VaultRaycast.GetCollisionPoint();
+        GD.Print($"Collision point: {collisionPoint}");
         if (
             RaycastUtils.Ray(
                 _player,
                 collisionPoint,
                 collisionPoint + Vector3.Up * 2f,
                 out _,
-                _player.CollisionMask
+                PhysicsLayers.WORLD
             )
         )
         {

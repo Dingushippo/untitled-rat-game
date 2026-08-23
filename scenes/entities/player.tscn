@@ -5,10 +5,12 @@
 [ext_resource type="Resource" uid="uid://g8o35bffx81c" path="res://resources/tuning/player_camera_tuning.tres" id="3_saib0"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="Script" uid="uid://32o2pnmqajak" path="res://scripts/entities/player/abilities/RatWhipComponent.cs" id="6_d4qa6"]
+[ext_resource type="Script" uid="uid://d3l36ce3owmy7" path="res://scripts/entities/player/VaultRaycast.cs" id="8_dnykm"]
 [ext_resource type="Script" uid="uid://c87dhm675xypo" path="res://scripts/qte/QteManager.cs" id="12_5ki56"]
 [ext_resource type="PackedScene" uid="uid://bda3cwi7p7irq" path="res://scenes/qte/spam_qte.tscn" id="13_saib0"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ss7kx"]
+friction = 0.0
 
 [sub_resource type="Resource" id="Resource_d4qa6"]
 script = ExtResource("2_ss7kx")
@@ -16,7 +18,7 @@ Speed = 5.0
 SprintSpeed = 10.0
 CrouchSpeed = 3.0
 FloorStickForce = 0.15
-JumpForce = 70.0
+JumpForce = 80.0
 JumpAcceleration = 100.0
 metadata/_custom_type_script = "uid://cuyb4v4vre4wf"
 
@@ -101,12 +103,13 @@ bind/15/pose = Transform3D(8.321876, -0.33419704, 0.10384854, 0.34903196, 8.1058
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[node name="Player" type="RigidBody3D" unique_id=1814741928 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Collider", "VaultRaycast", "Whip", "DebugMoveDirection") groups=["player"]]
+[node name="Player" type="RigidBody3D" unique_id=1814741928 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Collider", "VaultRaycast", "Whip") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
 mass = 10.0
 physics_material_override = SubResource("PhysicsMaterial_ss7kx")
 lock_rotation = true
+continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 4
 script = ExtResource("1_dqkch")
@@ -115,10 +118,9 @@ HandL = NodePath("Head/HandL")
 HandR = NodePath("Head/HandR")
 Head = NodePath("Head")
 Collider = NodePath("CollisionShape3D")
-VaultRaycast = NodePath("VaultRaycast")
+VaultRaycast = NodePath("VaultRaycastRotation/VaultRaycast")
 Tuning = SubResource("Resource_d4qa6")
 Whip = NodePath("RatWhipComponent")
-DebugMoveDirection = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -158,10 +160,6 @@ skin = SubResource("Skin_64kpw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_pso3n")
 
-[node name="VaultRaycast" type="RayCast3D" parent="." unique_id=2043323760]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -1.207)
-target_position = Vector3(0, -1.755, 0)
-
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
 
 [node name="QteManager" type="Control" parent="CanvasLayer" unique_id=752057569]
@@ -185,3 +183,12 @@ RatTailMeshInstance = NodePath("RatTailMesh")
 metadata/_custom_type_script = "uid://32o2pnmqajak"
 
 [node name="RatTailMesh" type="MeshInstance3D" parent="RatWhipComponent" unique_id=215968571]
+
+[node name="VaultRaycastRotation" type="Node3D" parent="." unique_id=1008976753]
+
+[node name="VaultRaycast" type="RayCast3D" parent="VaultRaycastRotation" unique_id=2043323760 node_paths=PackedStringArray("Head", "RotationNode")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -1.207)
+target_position = Vector3(0, -1.755, 0)
+script = ExtResource("8_dnykm")
+Head = NodePath("../../Head")
+RotationNode = NodePath("..")

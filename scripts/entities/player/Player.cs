@@ -107,6 +107,7 @@ public partial class Player : RigidBody3D
     public override void _IntegrateForces(PhysicsDirectBodyState3D state)
     {
         CheckOnFloor(state);
+        CheckOnWall(state);
         HandleDirectionalMovement(state);
         HandleImpulse(state);
     }
@@ -217,6 +218,24 @@ public partial class Player : RigidBody3D
         return new(desired.X, 0, desired.Z);
     }
 
+    public void CheckOnWall(PhysicsDirectBodyState3D state)
+    {
+        for (int i = 0; i < state.GetContactCount(); i++)
+        {
+            Vector3 contactNormal = state.GetContactLocalNormal(i);
+            if (contactNormal != Vector3.Up && contactNormal != Vector3.Down)
+            {
+                float slopeAngleDegrees = Mathf.RadToDeg(Vector3.Up.AngleTo(FloorNormal));
+                if (slopeAngleDegrees > Tuning.MaxWalkableSlopeDegrees || slopeAngleDegrees == 0)
+                {
+                    IsOnWall = true;
+                    return;
+                }
+            }
+        }
+        IsOnWall = false;
+    }
+
     public void CheckOnFloor(PhysicsDirectBodyState3D state)
     {
         if (!StickToFloor && (_wantsImpulse || state.LinearVelocity.Y > 0.1f))
@@ -252,14 +271,12 @@ public partial class Player : RigidBody3D
         {
             IsOnFloor = false;
             IsOnSlope = false;
-            IsOnWall = true;
             WallNormal = FloorNormal;
             FloorNormal = Vector3.Zero;
             return;
         }
 
         IsOnSlope = FloorNormal != Vector3.Up;
-        IsOnWall = false;
         IsOnFloor = true;
     }
 
