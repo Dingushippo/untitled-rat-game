@@ -189,6 +189,7 @@ metadata/_custom_type_script = "uid://32o2pnmqajak"
 [node name="VaultRaycast" type="RayCast3D" parent="VaultRaycastRotation" unique_id=2043323760 node_paths=PackedStringArray("Head", "RotationNode")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -1.207)
 target_position = Vector3(0, -1.755, 0)
+hit_back_faces = false
 script = ExtResource("8_dnykm")
 Head = NodePath("../../Head")
 RotationNode = NodePath("..")

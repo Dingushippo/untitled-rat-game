@@ -177,7 +177,7 @@ public partial class Player : RigidBody3D
         _movementFsm.Add(new PlayerWallJumpState(this));
         _movementFsm.Add(new PlayerSwingState(this));
         _movementFsm.InitState<PlayerIdleState>();
-        _movementFsm.Debug = false;
+        _movementFsm.Debug = true;
 
         _handFsm = new(this);
         _handFsm.Add(new HandEmptyState(this));

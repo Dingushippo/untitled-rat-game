@@ -71,7 +71,6 @@ public class PlayerFallingState : PlayerState
     private bool CanVault()
     {
         Vector3 collisionPoint = _player.VaultRaycast.GetCollisionPoint();
-        GD.Print($"Collision point: {collisionPoint}");
         if (
             RaycastUtils.Ray(
                 _player,
@@ -91,20 +90,17 @@ public class PlayerFallingState : PlayerState
 
     private bool CanWallrun()
     {
-        if (_player.Velocity.Y <= 0)
+        if (_player.LinearVelocity.Y <= 0)
         {
             return false;
         }
         if (_wallrunTimer != -1 && _wallrunTimer < 0.4)
             return false;
 
-        Vector3 position = _player.Camera.GlobalPosition;
-        Vector3 rightOfPlayer =
-            (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, -Mathf.Pi / 2))
-            * _player.Tuning.WallrunCheckDistance;
-        Vector3 leftOfPlayer =
-            (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, Mathf.Pi / 2))
-            * _player.Tuning.WallrunCheckDistance;
+        Vector3 rightDir = _player.Camera.GlobalBasis.X * _player.Tuning.WallrunCheckDistance;
+        Vector3 position = _player.Camera.GlobalPosition + Vector3.Down; // About body center
+        Vector3 rightOfPlayer = position + rightDir;
+        Vector3 leftOfPlayer = position - rightDir;
 
         // Check left side
         if (RaycastUtils.Ray(_player, position, rightOfPlayer, out _, PhysicsLayers.WORLD))

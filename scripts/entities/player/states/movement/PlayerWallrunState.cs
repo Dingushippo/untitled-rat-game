@@ -28,15 +28,6 @@ public class PlayerWallRunState : PlayerState
             fsm.ChangeState<PlayerWallJumpState>(this);
             return;
         }
-        Vector3 velocity = _player.Velocity;
-        velocity.X = WallForward.X * _player.Tuning.WallrunSpeed;
-        velocity.Z = WallForward.Z * _player.Tuning.WallrunSpeed;
-        velocity.Y += _player.GetGravity().Y * _gravityScale * delta;
-
-        // Stick to wall to make it more stable
-        velocity += -WallNormal * 3; // Maybe make this a tuning variable?
-
-        _player.Velocity = velocity;
     }
 
     public override void Enter(State previous = null)
@@ -45,6 +36,10 @@ public class PlayerWallRunState : PlayerState
         {
             _side = fall.Side;
         }
+
+        IsStillOnWall();
+        _player.Direction = WallForward;
+        _player.HorizontalSpeed = _player.Tuning.WallrunSpeed;
         _player.Camera.SetLean(_side);
     }
 
@@ -55,13 +50,10 @@ public class PlayerWallRunState : PlayerState
 
     private bool IsStillOnWall()
     {
-        Vector3 position = _player.Camera.GlobalPosition;
-        Vector3 leftOfPlayer =
-            (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, Mathf.Pi / 2))
-            * _player.Tuning.WallrunCheckDistance;
-        Vector3 rightOfPlayer =
-            (position - _player.GlobalBasis.Z.Rotated(Vector3.Up, -Mathf.Pi / 2))
-            * _player.Tuning.WallrunCheckDistance;
+        Vector3 rightDir = _player.Head.GlobalBasis.X * _player.Tuning.WallrunCheckDistance;
+        Vector3 position = _player.Head.GlobalPosition + Vector3.Down; // About body center
+        Vector3 rightOfPlayer = position + rightDir;
+        Vector3 leftOfPlayer = position - rightDir;
 
         Vector3 posToCheck = _side == Side.Left ? leftOfPlayer : rightOfPlayer;
         int sign = _side == Side.Left ? -1 : 1;

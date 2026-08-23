@@ -15,6 +15,7 @@ public partial class RatWhipComponent : Node
     [Export]
     public MeshInstance3D RatTailMeshInstance;
 
+    public Generic6DofJoint3D Joint;
     public float WhipLength => Player.HandL.GlobalPosition.DistanceTo(AnchorPoint);
     public Vector3 AnchorPoint = Vector3.Zero;
     public bool IsAnchored => AnchorPoint != Vector3.Zero;
@@ -39,14 +40,36 @@ public partial class RatWhipComponent : Node
     public void Release()
     {
         AnchorPoint = Vector3.Zero;
+        AnchorObject = null;
+        // if (Joint != null)
+        // {
+        //     Joint.QueueFree();
+        //     Joint = null;
+        // }
         Player.ChangeMovementState<PlayerFallingState>();
+    }
+
+    public void CreateCurrentJoint()
+    {
+        Joint = new();
+
+        GetTree().CurrentScene.AddChild(Joint);
+
+        Joint.GlobalPosition = AnchorPoint;
+        Joint.NodeB = Player.GetPath();
     }
 
     public void EngageWhip(float maxDistance)
     {
-        if (TryGetTargetAnchorPoint(maxDistance))
-            Player.ChangeMovementState<PlayerSwingState>();
+        if (!TryGetTargetAnchorPoint(maxDistance))
+            return;
+
+        // CreateCurrentJoint();
+
+        Player.ChangeMovementState<PlayerSwingState>();
     }
+
+    public StaticBody3D AnchorObject;
 
     private bool TryGetTargetAnchorPoint(float maxDistance)
     {
@@ -63,6 +86,7 @@ public partial class RatWhipComponent : Node
         )
         {
             AnchorPoint = result["position"].AsVector3();
+            AnchorObject = result["collider"].As<StaticBody3D>();
             return true;
         }
         return false;
