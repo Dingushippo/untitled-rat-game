@@ -101,8 +101,6 @@ bind/15/pose = Transform3D(8.321876, -0.33419704, 0.10384854, 0.34903196, 8.1058
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[sub_resource type="PrismMesh" id="PrismMesh_pso3n"]
-
 [node name="Player" type="RigidBody3D" unique_id=1814741928 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Collider", "VaultRaycast", "Whip", "DebugMoveDirection") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
@@ -120,7 +118,7 @@ Collider = NodePath("CollisionShape3D")
 VaultRaycast = NodePath("VaultRaycast")
 Tuning = SubResource("Resource_d4qa6")
 Whip = NodePath("RatWhipComponent")
-DebugMoveDirection = NodePath("DebugMoveDirection")
+DebugMoveDirection = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -187,9 +185,3 @@ RatTailMeshInstance = NodePath("RatTailMesh")
 metadata/_custom_type_script = "uid://32o2pnmqajak"
 
 [node name="RatTailMesh" type="MeshInstance3D" parent="RatWhipComponent" unique_id=215968571]
-
-[node name="DebugMoveDirection" type="Node3D" parent="." unique_id=714223920]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DebugMoveDirection" unique_id=1088925690]
-transform = Transform3D(0.5, 0, 0, 0, -4.371139e-08, 0.3, 0, -1, -1.3113417e-08, 0, 1, -2)
-mesh = SubResource("PrismMesh_pso3n")

@@ -203,10 +203,11 @@ public partial class Player : RigidBody3D
 
     public Vector3 GetCorrectedInput(
         float forwardBackwardScaling = 1f,
-        float sideToSideScaling = 1f
+        float sideToSideScaling = 1f,
+        Vector2 input = new()
     )
     {
-        Vector2 input = GetInputVector();
+        input = input == Vector2.Zero ? GetInputVector() : input;
         float yaw = Head.Rotation.Y;
         Vector3 forward = new(Mathf.Sin(yaw), 0, Mathf.Cos(yaw));
         Vector3 right = new(forward.Z, 0, -forward.X);
