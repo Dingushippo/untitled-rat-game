@@ -49,7 +49,7 @@ public class PlayerFallingState : PlayerState
 
     public override void Enter(State previous = null)
     {
-        if (previous is not PlayerJumpState)
+        if (previous is not PlayerJumpState && previous is not PlayerSwingState)
             _coyoteTimer = 0;
         _player.CrouchComponent.Enabled = false;
         _wallrunTimer = previous is PlayerWallJumpState ? 0 : -1f;

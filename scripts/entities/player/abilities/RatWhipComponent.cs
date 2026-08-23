@@ -30,41 +30,19 @@ public partial class RatWhipComponent : Node
     public override void _Process(double delta)
     {
         TryGenerateMesh();
-
-        if (!IsAnchored)
-            return;
-
-        // if (HandNode.GlobalPosition.DistanceTo(_))
     }
 
     public void Release()
     {
         AnchorPoint = Vector3.Zero;
         AnchorObject = null;
-        // if (Joint != null)
-        // {
-        //     Joint.QueueFree();
-        //     Joint = null;
-        // }
-        Player.ChangeMovementState<PlayerFallingState>();
-    }
-
-    public void CreateCurrentJoint()
-    {
-        Joint = new();
-
-        GetTree().CurrentScene.AddChild(Joint);
-
-        Joint.GlobalPosition = AnchorPoint;
-        Joint.NodeB = Player.GetPath();
+        // Player.ChangeMovementState<PlayerFallingState>();
     }
 
     public void EngageWhip(float maxDistance)
     {
         if (!TryGetTargetAnchorPoint(maxDistance))
             return;
-
-        // CreateCurrentJoint();
 
         Player.ChangeMovementState<PlayerSwingState>();
     }

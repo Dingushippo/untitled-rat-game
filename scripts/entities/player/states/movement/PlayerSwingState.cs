@@ -2,12 +2,7 @@ using Godot;
 
 public class PlayerSwingState : PlayerState
 {
-    float _springStiffness = 50f;
-    float _springDamping = 5.0f;
-    float _restLengthMultiplier = 0.8f;
-    float _swingForce = 10f;
-
-    private Vector3 _anchorPoint;
+    private Vector3 _anchorPoint => _player.Whip.AnchorPoint;
     private float _restLength;
 
     public PlayerSwingState(Player owner)
@@ -15,6 +10,13 @@ public class PlayerSwingState : PlayerState
 
     public override void IntegrateForces(PhysicsDirectBodyState3D state)
     {
+        _player.CheckOnFloor(state);
+
+        if (_anchorPoint == Vector3.Zero)
+        {
+            fsm.ChangeState<PlayerFallingState>(this);
+        }
+
         Vector3 direction = _anchorPoint - _player.GlobalPosition;
         float currentLength = direction.Length();
         if (currentLength <= 0)
@@ -28,7 +30,8 @@ public class PlayerSwingState : PlayerState
 
             // apply hookes law
             float springForceMultiplier =
-                (_springStiffness * stretch) - (_springDamping * relativeVelocity);
+                (_player.Tuning.SpringStiffness * stretch)
+                - (_player.Tuning.SpringDamping * relativeVelocity);
             Vector3 springForce = ropeDirection * springForceMultiplier;
             state.ApplyCentralForce(springForce);
         }
@@ -40,12 +43,12 @@ public class PlayerSwingState : PlayerState
 
         Plane swingPlane = new Plane(ropeDirection);
         Vector3 tangentialDirection = swingPlane.Project(inputDir).Normalized();
-        state.ApplyCentralForce(tangentialDirection * _swingForce);
+        state.ApplyCentralForce(tangentialDirection * _player.Tuning.SwingForce);
     }
 
     public override void Enter(State previous = null)
     {
-        _anchorPoint = _player.Whip.AnchorPoint;
-        _restLength = _player.GlobalPosition.DistanceTo(_anchorPoint) * _restLengthMultiplier;
+        _restLength =
+            _player.GlobalPosition.DistanceTo(_anchorPoint) * _player.Tuning.RestLengthMultiplier;
     }
 }

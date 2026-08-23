@@ -60,4 +60,17 @@ public partial class PlayerMovementTuning : Resource
 
     [Export]
     public float SlideJumpBoost = 1.4f;
+
+    [ExportGroup("Whip")]
+    [Export]
+    public float SpringStiffness = 50f;
+
+    [Export]
+    public float SpringDamping = 5.0f;
+
+    [Export]
+    public float RestLengthMultiplier = 0.8f;
+
+    [Export]
+    public float SwingForce = 10f;
 }
