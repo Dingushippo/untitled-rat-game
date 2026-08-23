@@ -226,24 +226,6 @@ public partial class Player : RigidBody3D
 
     public void CheckOnFloor(PhysicsDirectBodyState3D state)
     {
-        // if (state.GetContactCount() == 0)
-        // {
-        //     IsOnFloor = false;
-        //     IsOnSlope = false;
-        //     FloorNormal = Vector3.Zero;
-        //     return;
-        // }
-        // for (int i = 0; i < state.GetContactCount(); i++)
-        // {
-        //     Vector3 localNormal = state.GetContactLocalNormal(i);
-        //     if (localNormal.Dot(Vector3.Up) < 0.3f)
-        //         continue;
-        //     IsOnSlope = localNormal != Vector3.Up;
-        //     IsOnFloor = true;
-        //     FloorNormal = localNormal;
-        //     return;
-        // }
-
         if (!StickToFloor && (_wantsImpulse || state.LinearVelocity.Y > 0.1f))
         {
             IsOnFloor = IsOnSlope = false;
@@ -252,8 +234,8 @@ public partial class Player : RigidBody3D
         }
         Vector3 startPos = GlobalPosition + Vector3.Up; // player height is 2 m, this starts on center
 
-        float snapDistance = (IsOnFloor && StickToFloor) ? 1.4f : 1.1f;
-        Vector3 endPos = startPos + Vector3.Down * snapDistance; // Gives 10cm overhead;
+        float snapDistance = (IsOnFloor && StickToFloor) ? 1.4f : 1.1f; // variable overhead
+        Vector3 endPos = startPos + Vector3.Down * snapDistance;
         if (!RaycastUtils.Ray(this, startPos, endPos, out Dictionary result, PhysicsLayers.WORLD))
         {
             IsOnFloor = IsOnSlope = false;
