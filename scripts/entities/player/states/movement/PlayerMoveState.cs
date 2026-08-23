@@ -33,16 +33,11 @@ public class PlayerMoveState : PlayerState
             _player.HorizontalSpeed = _player.Tuning.Speed;
     }
 
-    public override void Exit()
-    {
-        _player.VerticalAccel = 0f;
-        _player.VerticalSpeed = 0f;
-    }
+    public override void Exit() { }
 
     public override void Enter(State previous = null)
     {
-        _player.VerticalAccel = 100;
-        _player.VerticalSpeed = -20f;
+        _player.StickToFloor = true;
     }
 
     public override void HandleInput(InputEvent @event)

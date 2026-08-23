@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 public partial class Player : RigidBody3D
 {
@@ -26,17 +27,24 @@ public partial class Player : RigidBody3D
     [Export]
     public RatWhipComponent Whip;
 
+    [Export]
+    public Node3D DebugMoveDirection;
+
     public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
 
     public float HorizontalSpeed;
     public float VerticalSpeed;
     public float HorizontalAccel;
-    public float VerticalAccel;
+    public float VerticalAccel = 100;
     public Vector3 Velocity = Vector3.Zero;
     public Vector3 Direction;
     public bool IsOnFloor;
+    public bool IsOnSlope;
+    public Vector3 FloorNormal;
     public bool IsOnWall;
+    public Vector3 WallNormal;
+    public bool StickToFloor;
 
     private FiniteStateMachine<PlayerState> _movementFsm;
     private FiniteStateMachine<HandState> _handFsm;
@@ -102,9 +110,28 @@ public partial class Player : RigidBody3D
     public override void _IntegrateForces(PhysicsDirectBodyState3D state)
     {
         CheckOnFloor(state);
+        HandleDirectionalMovement(state);
+        HandleImpulse(state);
+    }
 
-        Vector3 targetVelocity = Direction * HorizontalSpeed;
+    private void HandleImpulse(PhysicsDirectBodyState3D state)
+    {
+        if (!_wantsImpulse)
+            return;
+        state.ApplyCentralImpulse(_impulse);
+        _wantsImpulse = false;
+    }
+
+    private void HandleDirectionalMovement(PhysicsDirectBodyState3D state)
+    {
+        Vector3 direction = Direction;
+
+        if (direction != Vector3.Zero)
+            DebugMoveDirection.LookAt(GlobalPosition + direction);
+
+        Vector3 targetVelocity = direction * HorizontalSpeed;
         Vector3 currentVelocity = state.LinearVelocity;
+
         currentVelocity.X = Mathf.MoveToward(
             currentVelocity.X,
             targetVelocity.X,
@@ -115,18 +142,21 @@ public partial class Player : RigidBody3D
             targetVelocity.Z,
             HorizontalAccel * state.Step
         );
-        currentVelocity.Y = Mathf.MoveToward(
-            currentVelocity.Y,
-            VerticalSpeed,
-            VerticalAccel * state.Step
-        );
-        state.LinearVelocity = currentVelocity;
 
-        if (_wantsImpulse)
+        if (IsOnFloor && StickToFloor)
         {
-            state.ApplyCentralImpulse(_impulse);
-            _wantsImpulse = false;
+            if (IsOnSlope && FloorNormal.Y > 0.001f)
+            {
+                // Mathematical plane equation: forces the Y velocity to exactly match
+                // whatever the current X and Z velocities are doing on the slope.
+                currentVelocity.Y =
+                    -(currentVelocity.X * FloorNormal.X + currentVelocity.Z * FloorNormal.Z)
+                    / FloorNormal.Y;
+            }
+            else
+                currentVelocity.Y = 0; // flat ground
         }
+        state.LinearVelocity = currentVelocity;
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -154,7 +184,7 @@ public partial class Player : RigidBody3D
         _movementFsm.Add(new PlayerWallJumpState(this));
         _movementFsm.Add(new PlayerSwingState(this));
         _movementFsm.InitState<PlayerIdleState>();
-        _movementFsm.Debug = true;
+        _movementFsm.Debug = false;
 
         _handFsm = new(this);
         _handFsm.Add(new HandEmptyState(this));
@@ -196,19 +226,66 @@ public partial class Player : RigidBody3D
 
     public void CheckOnFloor(PhysicsDirectBodyState3D state)
     {
-        if (state.GetContactCount() == 0)
+        // if (state.GetContactCount() == 0)
+        // {
+        //     IsOnFloor = false;
+        //     IsOnSlope = false;
+        //     FloorNormal = Vector3.Zero;
+        //     return;
+        // }
+        // for (int i = 0; i < state.GetContactCount(); i++)
+        // {
+        //     Vector3 localNormal = state.GetContactLocalNormal(i);
+        //     if (localNormal.Dot(Vector3.Up) < 0.3f)
+        //         continue;
+        //     IsOnSlope = localNormal != Vector3.Up;
+        //     IsOnFloor = true;
+        //     FloorNormal = localNormal;
+        //     return;
+        // }
+
+        if (!StickToFloor && (_wantsImpulse || state.LinearVelocity.Y > 0.1f))
         {
-            IsOnFloor = false;
+            IsOnFloor = IsOnSlope = false;
+            FloorNormal = Vector3.Zero;
             return;
         }
+        Vector3 startPos = GlobalPosition + Vector3.Up; // player height is 2 m, this starts on center
+
+        float snapDistance = (IsOnFloor && StickToFloor) ? 1.4f : 1.1f;
+        Vector3 endPos = startPos + Vector3.Down * snapDistance; // Gives 10cm overhead;
+        if (!RaycastUtils.Ray(this, startPos, endPos, out Dictionary result, PhysicsLayers.WORLD))
+        {
+            IsOnFloor = IsOnSlope = false;
+            FloorNormal = Vector3.Zero;
+            return;
+        }
+        IsOnFloor = true;
+        FloorNormal = result["normal"].AsVector3();
+
+        // fix toe stubbing
         for (int i = 0; i < state.GetContactCount(); i++)
         {
-            Vector3 localNormal = state.GetContactLocalNormal(i);
-            if (localNormal.Dot(Vector3.Up) < 0.3f)
-                continue;
-            IsOnFloor = true;
+            Vector3 contactNormal = state.GetContactLocalNormal(i);
+            if (contactNormal.Y > 0.3f && contactNormal.Y < FloorNormal.Y)
+                FloorNormal = contactNormal;
+        }
+
+        // check against max slope degrees
+        float slopeAngleDegrees = Mathf.RadToDeg(Vector3.Up.AngleTo(FloorNormal));
+        if (slopeAngleDegrees > Tuning.MaxWalkableSlopeDegrees)
+        {
+            IsOnFloor = false;
+            IsOnSlope = false;
+            IsOnWall = true;
+            WallNormal = FloorNormal;
+            FloorNormal = Vector3.Zero;
             return;
         }
+
+        IsOnSlope = FloorNormal != Vector3.Up;
+        IsOnWall = false;
+        IsOnFloor = true;
     }
 
     public float GetFloorAngle()

@@ -13,7 +13,10 @@ public class PlayerIdleState : PlayerState
         fsm.ChangeState<PlayerMoveState>();
     }
 
-    public override void Enter(State previous = null) { }
+    public override void Enter(State previous = null)
+    {
+        _player.StickToFloor = true;
+    }
 
     public override void HandleInput(InputEvent @event)
     {

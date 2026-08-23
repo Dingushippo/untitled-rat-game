@@ -10,9 +10,6 @@ public partial class PlayerMovementTuning : Resource
     [Export]
     public float Deceleration = 90f;
 
-    [Export]
-    public PidTuning Pid;
-
     [ExportGroup("Ground movement")]
     [Export]
     public float Speed = 10f;
@@ -22,6 +19,15 @@ public partial class PlayerMovementTuning : Resource
 
     [Export]
     public float CrouchSpeed = 5f;
+
+    [Export]
+    public float FloorStickForce = 10f;
+
+    [Export]
+    public float FloorStickAccel = 10f;
+
+    [Export]
+    public float MaxWalkableSlopeDegrees = 45f;
 
     [ExportGroup("Wallrun")]
     [Export]

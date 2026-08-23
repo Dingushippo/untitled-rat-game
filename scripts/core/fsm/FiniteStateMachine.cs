@@ -18,6 +18,12 @@ public class FiniteStateMachine<T>
         _owner = owner.Name;
     }
 
+    public bool IsState<ST>()
+        where ST : T
+    {
+        return _states[typeof(ST)] == CurrentState;
+    }
+
     public void SetEnabled(bool enabled)
     {
         _isEnabled = enabled;

@@ -7,6 +7,7 @@ public class PlayerJumpState : PlayerState
 
     public override void Enter(State previous = null)
     {
+        _player.StickToFloor = false;
         Vector3 jumpImpulse = Vector3.Up * _player.Tuning.JumpForce;
         _player.SetImpulse(jumpImpulse);
         fsm.ChangeState<PlayerFallingState>(this);
