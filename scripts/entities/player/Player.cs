@@ -106,13 +106,10 @@ public partial class Player : RigidBody3D
 
     public override void _IntegrateForces(PhysicsDirectBodyState3D state)
     {
-        CheckOnFloor(state);
-        CheckOnWall(state);
-        HandleDirectionalMovement(state);
-        HandleImpulse(state);
+        _movementFsm.StateIntegrateForces(state);
     }
 
-    private void HandleImpulse(PhysicsDirectBodyState3D state)
+    public void HandleImpulse(PhysicsDirectBodyState3D state)
     {
         if (!_wantsImpulse)
             return;
@@ -120,7 +117,7 @@ public partial class Player : RigidBody3D
         _wantsImpulse = false;
     }
 
-    private void HandleDirectionalMovement(PhysicsDirectBodyState3D state)
+    public void HandleDirectionalMovement(PhysicsDirectBodyState3D state)
     {
         Vector3 targetVelocity = Direction * HorizontalSpeed;
         Vector3 currentVelocity = state.LinearVelocity;

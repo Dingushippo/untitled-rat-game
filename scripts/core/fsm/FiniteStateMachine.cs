@@ -76,6 +76,13 @@ public class FiniteStateMachine<T>
         CurrentState.Process(delta);
     }
 
+    public void StateIntegrateForces(PhysicsDirectBodyState3D state)
+    {
+        if (!_isEnabled)
+            return;
+        CurrentState.IntegrateForces(state);
+    }
+
     public void StateInput(InputEvent @event)
     {
         if (!_isEnabled)

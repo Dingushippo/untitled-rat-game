@@ -6,6 +6,8 @@ public abstract class State
 
     public virtual void Process(float delta) { }
 
+    public virtual void IntegrateForces(PhysicsDirectBodyState3D state) { }
+
     public virtual void HandleInput(InputEvent @event) { }
 
     public virtual void HandleUnhandledInput(InputEvent @event) { }
