@@ -1,4 +1,6 @@
 using System;
+using System.Drawing;
+using System.Linq;
 using Godot;
 using Godot.Collections;
 
@@ -119,6 +121,53 @@ public static class RaycastUtils
         result = state.IntersectShape(query);
         PhysicsServer3D.FreeRid(shapeRid);
         return result.Count != 0;
+    }
+
+    public static Vector3[] FindCardinalEdges(
+        Node3D node,
+        Vector3 point,
+        Vector3 normal,
+        float radius,
+        float minAcceptableDistance = 0.1f
+    )
+    {
+        Array<Vector3> edgePoints = [];
+        Vector3[] cardinals = VectorUtils.FindCardinalPoints(point, normal, radius);
+        foreach (Vector3 cardinal in cardinals)
+        {
+            Vector3? possibleEdge = FindEdgeRecursive(
+                node,
+                point,
+                cardinal,
+                normal,
+                minAcceptableDistance
+            );
+            if (possibleEdge != null)
+                edgePoints.Add((Vector3)possibleEdge);
+        }
+        return edgePoints.ToArray();
+    }
+
+    private static Vector3? FindEdgeRecursive(
+        Node3D node,
+        Vector3 a,
+        Vector3 b,
+        Vector3 normal,
+        float minAcceptableDistance = 0.1f,
+        int depth = 0
+    )
+    {
+        if (a.DistanceTo(b) < minAcceptableDistance || depth >= 10)
+            return (Vector3?)a;
+        if (Ray(node, b, b - normal * 0.1f, out _))
+        {
+            if (depth == 0)
+                return null;
+            a = a.Lerp(b, 0.5f);
+        }
+        else
+            b = b.Lerp(a, 0.5f);
+        return FindEdgeRecursive(node, a, b, normal, minAcceptableDistance, depth + 1);
     }
 
     public static bool Circle(
