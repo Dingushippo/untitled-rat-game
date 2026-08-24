@@ -31,7 +31,7 @@ public class PlayerSlideState : PlayerState
 
         if (_currentSlideSpeed < SLIDE_EXIT_VELOCITY)
         {
-            fsm.ChangeState<PlayerIdleState>();
+            fsm.ChangeState<PlayerMoveState>();
         }
     }
 
