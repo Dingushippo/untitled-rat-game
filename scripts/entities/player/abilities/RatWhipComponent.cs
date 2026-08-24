@@ -15,6 +15,7 @@ public partial class RatWhipComponent : Node
     [Export]
     public MeshInstance3D RatTailMeshInstance;
     public Vector3 AnchorPoint = Vector3.Zero;
+    public Vector3 AnchorNormal = Vector3.Zero;
     public float RestLength;
     public bool IsAnchored => AnchorPoint != Vector3.Zero;
     private ImmediateMesh _ratTailMesh = new();
@@ -28,6 +29,18 @@ public partial class RatWhipComponent : Node
     public override void _Process(double delta)
     {
         TryGenerateMesh();
+        if (AnchorPoint != Vector3.Zero)
+        {
+            Vector3[] testPoints = RaycastUtils.FindCardinalEdges(
+                Player,
+                AnchorPoint,
+                AnchorNormal,
+                2f,
+                0.01f
+            );
+            foreach (Vector3 point in testPoints)
+                DebugDraw.Sphere(Player, point, .1f);
+        }
     }
 
     public void Release()
@@ -41,9 +54,9 @@ public partial class RatWhipComponent : Node
         if (!TryGetTargetAnchorPoint(maxDistance))
             return;
 
-        Player.ChangeMovementState<PlayerSwingState>();
-        RestLength =
-            Player.GlobalPosition.DistanceTo(AnchorPoint) * Player.Tuning.RestLengthMultiplier;
+        // Player.ChangeMovementState<PlayerSwingState>();
+        // RestLength =
+        //     Player.GlobalPosition.DistanceTo(AnchorPoint) * Player.Tuning.RestLengthMultiplier;
     }
 
     public void LaunchToAnchor()
@@ -76,6 +89,7 @@ public partial class RatWhipComponent : Node
         )
         {
             AnchorPoint = result["position"].AsVector3();
+            AnchorNormal = result["normal"].AsVector3();
             AnchorObject = result["collider"].As<StaticBody3D>();
             return true;
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.Linq;
 using Godot;
 using Godot.Collections;
@@ -157,7 +156,7 @@ public static class RaycastUtils
         int depth = 0
     )
     {
-        if (a.DistanceTo(b) < minAcceptableDistance || depth >= 10)
+        if (a.DistanceTo(b) < minAcceptableDistance || depth >= 50)
             return (Vector3?)a;
         if (Ray(node, b, b - normal * 0.1f, out _))
         {

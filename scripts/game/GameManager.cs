@@ -15,7 +15,11 @@ public partial class GameManager : Node
 
     public bool HasFatalDataError { get; private set; } = false;
 
-    public override void _Process(double delta) => _fsm.StateProcess((float)delta);
+    public override void _Process(double delta)
+    {
+        DebugDraw.Clear(); // Feels like a good place to have it
+        _fsm.StateProcess((float)delta);
+    }
 
     public override void _PhysicsProcess(double delta) => _fsm.StatePhysicsProcess((float)delta);
 
