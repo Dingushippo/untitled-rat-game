@@ -63,6 +63,9 @@ public partial class PlayerMovementTuning : Resource
 
     [ExportGroup("Whip")]
     [Export]
+    public float MaxDistance = 20f;
+
+    [Export]
     public float SpringStiffness = 50f;
 
     [Export]

@@ -127,22 +127,33 @@ public static class RaycastUtils
         Vector3 point,
         Vector3 normal,
         float radius,
-        float minAcceptableDistance = 0.1f
+        uint collisionMask = uint.MaxValue,
+        bool collideWithAreas = true,
+        bool collideWithBodies = true,
+        Func<GodotObject, bool> accept = null,
+        int maxDepth = 5
     )
     {
         Array<Vector3> edgePoints = [];
         Vector3[] cardinals = VectorUtils.FindCardinalPoints(point, normal, radius);
         foreach (Vector3 cardinal in cardinals)
         {
-            Vector3? possibleEdge = FindEdgeRecursive(
-                node,
-                point,
-                cardinal,
-                normal,
-                minAcceptableDistance
-            );
-            if (possibleEdge != null)
-                edgePoints.Add((Vector3)possibleEdge);
+            if (
+                Ray(
+                    node,
+                    cardinal - normal * 0.001f,
+                    point - normal * 0.001f,
+                    out Dictionary result,
+                    collisionMask,
+                    collideWithAreas,
+                    collideWithBodies,
+                    accept,
+                    maxDepth
+                )
+            )
+            {
+                edgePoints.Add(result["position"].AsVector3());
+            }
         }
         return edgePoints.ToArray();
     }
@@ -157,8 +168,11 @@ public static class RaycastUtils
     )
     {
         if (a.DistanceTo(b) < minAcceptableDistance || depth >= 50)
-            return (Vector3?)a;
-        if (Ray(node, b, b - normal * 0.1f, out _))
+        {
+            GD.Print($"Exited at depth: {depth}, distance: {a.DistanceTo(b)}");
+            return (Vector3?)b;
+        }
+        if (Ray(node, b + normal * 0.05f, b - normal * 0.1f, out _))
         {
             if (depth == 0)
                 return null;

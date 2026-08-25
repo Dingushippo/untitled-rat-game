@@ -1,10 +1,10 @@
-using System.Runtime.Serialization;
 using Godot;
 
 public class PlayerSwingState : PlayerState
 {
     private Vector3 _anchorPoint => _player.Whip.AnchorPoint;
     private float _restLength => _player.Whip.RestLength;
+    private bool _isAnchored => _player.Whip.IsAnchored;
 
     public PlayerSwingState(Player owner)
         : base(owner) { }
@@ -13,7 +13,7 @@ public class PlayerSwingState : PlayerState
     {
         _player.CheckOnFloor(state);
 
-        if (_anchorPoint == Vector3.Zero)
+        if (!_isAnchored)
         {
             fsm.ChangeState<PlayerFallingState>(this);
         }
