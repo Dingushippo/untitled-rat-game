@@ -8,47 +8,40 @@ public class PlayerArcMovementState : PlayerState
     private Vector3 _targetPosition;
     private float _arcHeight;
     private float _moveDuration;
-
-    private float _timer = 0f;
     private Vector3 _startPosition;
 
-    public void Configure(Vector3 target, float arcHeight, float speed)
+    public void Configure(Vector3 target, float arcHeight)
     {
         _targetPosition = target;
-        _arcHeight = arcHeight;
+        _arcHeight = Mathf.Max(arcHeight, _player.Tuning.ArcMinHeight);
 
-        // Calculate how far we are traveling flat along the ground
-        float horizontalDistance = _player.GlobalPosition.DistanceTo(target);
-        // Time = Distance / Speed
-        _moveDuration = horizontalDistance / speed;
-
-        GD.Print(
-            $"Configured target: {_targetPosition}, arc height: {_arcHeight}, duration: {_moveDuration}"
-        );
+        float distance = _player.GlobalPosition.DistanceTo(target);
+        _moveDuration = distance / _player.Tuning.ArcMoveSpeed;
     }
 
     public override void Enter(State previous = null)
     {
         _startPosition = _player.GlobalPosition;
-        _timer = 0;
+        _weight = 0f;
 
-        GD.Print($"startPosition: {_startPosition}");
+        Tween tween = _player.CreateTween();
+        tween.SetEase(_player.Tuning.ArcEase);
+        tween.SetTrans(_player.Tuning.ArcTrans);
+        tween.TweenMethod(Callable.From<float>(SetWeight), 0f, 1f, _moveDuration);
     }
+
+    private void SetWeight(float w) => _weight = w;
+
+    private float _weight;
 
     public override void IntegrateForces(PhysicsDirectBodyState3D state)
     {
-        _timer += state.Step;
-
-        float linearWeight = Mathf.Clamp(_timer / _moveDuration, 0.0f, 1.0f);
-        float inverse = 1.0f - linearWeight;
-        float weight = 1.0f - (inverse * inverse * inverse);
-
         // lerp between start and target
-        Vector3 currentLinear = _startPosition.Lerp(_targetPosition, weight);
+        Vector3 currentLinear = _startPosition.Lerp(_targetPosition, _weight);
 
         // add arc offset
-        float arc = 4.0f * _arcHeight * weight * (1.0f - weight);
-        Vector3 arcOffset = Vector3.Up * arc;
+        float arc = _player.Tuning.ArcHeightMultiplier * _arcHeight * _weight * (1.0f - _weight);
+        Vector3 arcOffset = (Vector3.Up * arc).Abs();
         Vector3 targetPoint = currentLinear + arcOffset;
 
         Vector3 distanceToTarget = targetPoint - state.Transform.Origin;
@@ -56,13 +49,11 @@ public class PlayerArcMovementState : PlayerState
         Vector3 desiredVelocity = distanceToTarget / (float)state.Step;
         state.LinearVelocity = desiredVelocity;
 
-        if (weight >= 1.0)
+        if (_weight >= 1.0)
         {
             Transform3D t = state.Transform;
             t.Origin = _targetPosition;
             state.Transform = t;
-
-            GD.Print($"Endpos: {state.Transform.Origin}");
             fsm.ChangeState<PlayerFallingState>(this);
         }
     }

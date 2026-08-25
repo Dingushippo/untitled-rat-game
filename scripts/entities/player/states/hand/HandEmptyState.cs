@@ -29,7 +29,7 @@ public class HandEmptyState : HandState
 
         if (@event.IsActionPressed("left_hand") && !_player.Whip.IsAnchored)
         {
-            _player.Whip.EngageWhip(20f);
+            _player.Whip.EngageWhip();
         }
         if (@event.IsActionReleased("left_hand") && _player.Whip.IsAnchored)
         {

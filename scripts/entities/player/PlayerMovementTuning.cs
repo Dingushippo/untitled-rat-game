@@ -63,23 +63,33 @@ public partial class PlayerMovementTuning : Resource
 
     [ExportGroup("Whip")]
     [Export]
-    public float MaxDistance = 20f;
+    public float WhipMaxDistance = 20f;
 
     [Export]
-    public float SpringStiffness = 50f;
+    public float WhipSpringStiffness = 50f;
 
     [Export]
-    public float SpringDamping = 5.0f;
+    public float WhipSpringDamping = 5.0f;
 
     [Export]
-    public float RestLengthMultiplier = 0.8f;
+    public float WhipRestLengthMultiplier = 0.8f;
 
     [Export]
-    public float SwingForce = 10f;
+    public float WhipSwingForce = 10f;
+
+    [ExportGroup("Whip Arc move")]
+    [Export]
+    public float ArcMinHeight = 1.5f;
 
     [Export]
-    public float RetractLaunchAngleOffset = 10f;
+    public float ArcHeightMultiplier = 1.5f;
 
     [Export]
-    public float RetractLaunchForce = 10f;
+    public float ArcMoveSpeed = 10f;
+
+    [Export]
+    public Tween.EaseType ArcEase = Tween.EaseType.Out;
+
+    [Export]
+    public Tween.TransitionType ArcTrans = Tween.TransitionType.Back;
 }

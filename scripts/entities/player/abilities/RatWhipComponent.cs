@@ -42,22 +42,21 @@ public partial class RatWhipComponent : Node
         AnchorPoint = Vector3.Zero;
     }
 
-    public void EngageWhip(float maxDistance)
+    public void EngageWhip()
     {
         IsAnchored = true;
         Player.ChangeMovementState<PlayerSwingState>();
         RestLength =
-            Player.GlobalPosition.DistanceTo(AnchorPoint) * Player.Tuning.RestLengthMultiplier;
+            Player.GlobalPosition.DistanceTo(AnchorPoint) * Player.Tuning.WhipRestLengthMultiplier;
     }
 
     public void LaunchToAnchor()
     {
         Vector3 target = AnchorPoint;
         float arcHeight = AnchorPoint.Y - Player.GlobalPosition.Y;
-        float speed = 10f;
 
         PlayerArcMovementState state = Player.GetState<PlayerArcMovementState>();
-        state.Configure(target, arcHeight, speed);
+        state.Configure(target, arcHeight);
 
         Player.ChangeMovementState<PlayerArcMovementState>();
         Release();
@@ -71,7 +70,7 @@ public partial class RatWhipComponent : Node
             return true;
 
         Vector3 startPoint = Player.Camera.GlobalPosition;
-        Vector3 endPoint = startPoint - Player.Camera.GlobalBasis.Z * Player.Tuning.MaxDistance;
+        Vector3 endPoint = startPoint - Player.Camera.GlobalBasis.Z * Player.Tuning.WhipMaxDistance;
 
         if (
             !RaycastUtils.Ray(
@@ -95,8 +94,8 @@ public partial class RatWhipComponent : Node
             AnchorPoint = hitPosition;
         else
         {
-            float minDistance = float.MaxValue;
-            Vector3 closest = Vector3.Zero;
+            float minDistance = AnchorPoint.DistanceTo(hitPosition);
+            Vector3 closest = AnchorPoint;
             foreach (Vector3 point in testPoints)
             {
                 float distance = point.DistanceTo(hitPosition);

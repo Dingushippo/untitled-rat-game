@@ -31,8 +31,8 @@ public class PlayerSwingState : PlayerState
 
             // apply hookes law
             float springForceMultiplier =
-                (_player.Tuning.SpringStiffness * stretch)
-                - (_player.Tuning.SpringDamping * relativeVelocity);
+                (_player.Tuning.WhipSpringStiffness * stretch)
+                - (_player.Tuning.WhipSpringDamping * relativeVelocity);
             Vector3 springForce = ropeDirection * springForceMultiplier;
             state.ApplyCentralForce(springForce);
         }
@@ -44,7 +44,7 @@ public class PlayerSwingState : PlayerState
 
         Plane swingPlane = new Plane(ropeDirection);
         Vector3 tangentialDirection = swingPlane.Project(inputDir).Normalized();
-        state.ApplyCentralForce(tangentialDirection * _player.Tuning.SwingForce);
+        state.ApplyCentralForce(tangentialDirection * _player.Tuning.WhipSwingForce);
     }
 
     public override void HandleInput(InputEvent @event)
