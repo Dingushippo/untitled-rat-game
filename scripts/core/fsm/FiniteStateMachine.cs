@@ -56,7 +56,7 @@ public class FiniteStateMachine<T>
         PreviousState = CurrentState;
         CurrentState.Exit();
         CurrentState = _states[typeof(ST)];
-        CurrentState.Enter(previous);
+        CurrentState.Enter(PreviousState);
     }
 
     public ST Get<ST>()
