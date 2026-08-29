@@ -35,6 +35,14 @@ public partial class Player : CharacterBody3D
         EventBus.Subscribe<QteCompleted>(OnQteCompleted);
     }
 
+    public bool IsMovementState<T>()
+        where T : PlayerState
+    {
+        return _movementFsm.IsState<T>();
+    }
+
+    public float Speed => Velocity.Length();
+
     public override void _ExitTree()
     {
         EventBus.Unsubscribe<QteStarted>(OnQteStarted);

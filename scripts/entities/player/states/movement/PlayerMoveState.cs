@@ -9,11 +9,11 @@ public abstract partial class PlayerMoveState : PlayerState
     private float _speed;
     public override void PhysicsProcess(float delta)
     {
-        if (_parent is not PlayerGroundedState grounded)
+        if (Parent is not PlayerGroundedState grounded)
         {
             GD.PushError($"{this} is not a child of PlayerGroundedState"); return;
         }
-        _parent.PhysicsProcess(delta);
+        Parent.PhysicsProcess(delta);
 
         float desiredSpeed = Speed;
         float accel = Acceleration;
@@ -33,10 +33,5 @@ public abstract partial class PlayerMoveState : PlayerState
         );
         SetVelocity(newVelocity);
         MoveAndSlide();
-
-        if (_velocity.IsEqualApprox(Vector3.Zero))
-        {
-            _hfsm.ChangeState<PlayerIdleState>();
-        }
     }
 }

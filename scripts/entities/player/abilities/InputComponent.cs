@@ -10,6 +10,7 @@ public partial class InputComponent : Node
     public bool RightArmAction;
     public bool WantsJump;
     public bool WantsSprint;
+    public bool WantsSlide;
     public bool WantsDash;
     public bool WantsCrouch;
     private Player _player;

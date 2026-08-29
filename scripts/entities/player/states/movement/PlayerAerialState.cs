@@ -9,7 +9,7 @@ public partial class PlayerAerialState : PlayerState
     internal Vector3 Direction;
     public override void PhysicsProcess(float delta)
     {
-        _parent?.PhysicsProcess(delta);
+        Parent?.PhysicsProcess(delta);
 
         Direction = _player.Input.Direction;
 

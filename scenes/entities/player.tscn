@@ -133,9 +133,10 @@ shape = SubResource("CapsuleShape3D_2hs0m")
 [node name="Head" type="Node3D" parent="." unique_id=980955593]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="Camera3D" type="Camera3D" parent="Head" unique_id=2056591493 node_paths=PackedStringArray("HeadNode", "HandNode")]
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=2056591493 node_paths=PackedStringArray("Player", "HeadNode", "HandNode")]
 current = true
 script = ExtResource("4_fjrip")
+Player = NodePath("../..")
 DebugAimMarker = true
 Tuning = ExtResource("3_saib0")
 HeadNode = NodePath("..")
@@ -208,18 +209,24 @@ script = ExtResource("9_jv5ih")
 
 [node name="Crouch" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=1131398171]
 script = ExtResource("10_n36er")
+Speed = 1.0
+Acceleration = 20.0
+Deceleration = 20.0
+
+[node name="Slide" type="Node" parent="HierarchicalStateMachine/Grounded/Crouch" unique_id=684412582]
+script = ExtResource("13_xe83n")
 
 [node name="Run" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=113314447]
 script = ExtResource("11_d745t")
-Speed = 15.0
+Speed = 5.0
 Acceleration = 50.0
 Deceleration = 65.0
 
 [node name="Sprint" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=1701869178]
 script = ExtResource("12_qc1tv")
-
-[node name="Slide" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=684412582]
-script = ExtResource("13_xe83n")
+Speed = 10.0
+Acceleration = 50.0
+Deceleration = 50.0
 
 [node name="Aerial" type="Node" parent="HierarchicalStateMachine" unique_id=810324095]
 script = ExtResource("14_cwche")

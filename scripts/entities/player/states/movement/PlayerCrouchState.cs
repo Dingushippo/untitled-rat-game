@@ -4,43 +4,74 @@ public partial class PlayerCrouchState : PlayerMoveState
 {
     [Export] private float _crouchOffset = -0.6f;
     [Export] private float _crouchAnimationDuration = 0.15f;
+
     private Tween _crouchTween;
-    private float _colliderHeight;
-    private float _colliderYPos;
+    private CapsuleShape3D _capsuleShape;
+    private float _standingHeight;
+    private float _standingYPos;
 
     public override void Init(Node owner, HierarchicalStateMachine stateMachine, State parent)
     {
         base.Init(owner, stateMachine, parent);
-        _colliderHeight = (_player.Collider.Shape as CapsuleShape3D).Height;
-        _colliderYPos = _player.Collider.Position.Y;
+
+        // Make shape unique to prevent mutating shared resource
+        if (_player.Collider.Shape is CapsuleShape3D shape)
+        {
+            _capsuleShape = (CapsuleShape3D)shape.Duplicate();
+            _player.Collider.Shape = _capsuleShape;
+            _standingHeight = _capsuleShape.Height;
+        }
+
+        _standingYPos = _player.Collider.Position.Y;
     }
 
     public override void PhysicsProcess(float delta)
     {
+        if (Parent is not PlayerGroundedState grounded)
+            return;
+
         base.PhysicsProcess(delta);
-        if (!_player.Input.WantsCrouch)
-            _hfsm.ChangeState<PlayerIdleState>();
+
+        if (!_player.Input.WantsCrouch && CanStand())
+        {
+            if (grounded.Direction != Vector3.Zero)
+                _hfsm.ChangeState<PlayerRunState>();
+            else
+                _hfsm.ChangeState<PlayerIdleState>();
+        }
     }
+
     public override void Enter(State previous = null)
     {
-        TweenCrouchOffset(_crouchOffset);
+        base.Enter(previous);
+        TweenCrouchOffset(_standingYPos + (_crouchOffset / 2f), _crouchOffset);
     }
 
     public override void Exit()
     {
-        TweenCrouchOffset(0f);
+        base.Exit();
+        TweenCrouchOffset(_standingHeight, 0);
     }
 
-    private void TweenCrouchOffset(float height)
+    private bool CanStand()
     {
-        if (_crouchTween is not null)
-        {
-            _crouchTween.Kill();
-        }
-        _crouchTween = _player.CreateTween();
-        _crouchTween.SetParallel(true);
-        _crouchTween.TweenProperty(_player.Camera, "YOffset", height, _crouchAnimationDuration);
-        _crouchTween.TweenProperty(_player.Collider.Shape as CapsuleShape3D, "height", _colliderHeight + height, _crouchAnimationDuration);
-        _crouchTween.TweenProperty(_player.Collider, "position:y", _colliderYPos + height / 2, _crouchAnimationDuration);
+        // Cast from top of current crouched collision to top of standing height
+        float currentCrouchHeight = _capsuleShape.Height;
+        float heightDifference = _standingHeight - currentCrouchHeight;
+
+        Vector3 startPos = _player.GlobalPosition + (Vector3.Up * currentCrouchHeight);
+        Vector3 endPos = startPos + (Vector3.Up * (heightDifference + 0.05f));
+
+        return !RaycastUtils.Ray(_player, startPos, endPos, out _, PhysicsLayers.WORLD);
+    }
+
+    private void TweenCrouchOffset(float targetHeight, float yOffset)
+    {
+        _crouchTween?.Kill();
+        _crouchTween = _player.CreateTween().SetParallel(true);
+
+        _crouchTween.TweenProperty(_player.Camera, "YOffset", yOffset, _crouchAnimationDuration);
+        _crouchTween.TweenProperty(_capsuleShape, "height", targetHeight, _crouchAnimationDuration);
+        _crouchTween.TweenProperty(_player.Collider, "position:y", targetHeight / 2, _crouchAnimationDuration);
     }
 }

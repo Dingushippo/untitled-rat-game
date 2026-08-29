@@ -2,8 +2,9 @@ using Godot;
 
 public abstract partial class State : Node
 {
+    public State Parent;
     protected Node _owner;
-    protected State _parent;
+
     protected HierarchicalStateMachine _hfsm;
 
     public virtual void Enter(State previous = null) { }
@@ -18,6 +19,6 @@ public abstract partial class State : Node
     {
         _owner = owner;
         _hfsm = stateMachine;
-        _parent = parent;
+        Parent = parent;
     }
 }
