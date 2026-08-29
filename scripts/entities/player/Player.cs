@@ -4,7 +4,6 @@ using Godot;
 public partial class Player : CharacterBody3D
 {
     [Export] public PlayerCamera Camera;
-
     [Export] public Node3D HandL;
 
     [Export] public Node3D HandR;
@@ -22,6 +21,8 @@ public partial class Player : CharacterBody3D
     public InteractComponent InteractComponent;
 
     [Export] private HierarchicalStateMachine _movementFsm;
+    [Export] private MovementAbility _equippedAbility;
+    [Export] private PlayerAbilityState _abilityState;
     // [Export] private HierarchicalStateMachine _handFsm;
 
     public override void _Ready()
@@ -29,6 +30,8 @@ public partial class Player : CharacterBody3D
         InteractComponent = new(this);
         Input.Init(this);
         _movementFsm.Init(this);
+        _equippedAbility.Init(this, _movementFsm);
+        _abilityState.ActiveAbility = _equippedAbility;
         // _handFsm.Init(this);
 
         EventBus.Subscribe<QteStarted>(OnQteStarted);
@@ -71,6 +74,10 @@ public partial class Player : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (Input.LeftArmAction)
+        {
+            _movementFsm.ChangeState<PlayerAbilityState>();
+        }
         InteractComponent.PhysicsUpdate((float)delta);
     }
 }

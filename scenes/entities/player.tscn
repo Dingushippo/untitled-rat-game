@@ -2,10 +2,11 @@
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/entities/player/Player.cs" id="1_dqkch"]
 [ext_resource type="Script" uid="uid://cuyb4v4vre4wf" path="res://scripts/entities/player/PlayerMovementTuning.cs" id="2_ss7kx"]
-[ext_resource type="Script" uid="uid://cbirv4cstp2wl" path="res://scripts/entities/player/abilities/InputComponent.cs" id="3_n36er"]
+[ext_resource type="Script" uid="uid://cbirv4cstp2wl" path="res://scripts/entities/player/components/InputComponent.cs" id="3_n36er"]
+[ext_resource type="Script" uid="uid://vgnhr4ksw2lt" path="res://scripts/entities/player/abilities/movement/GrapplePullAbility.cs" id="3_qc1tv"]
 [ext_resource type="Resource" uid="uid://g8o35bffx81c" path="res://resources/tuning/player_camera_tuning.tres" id="3_saib0"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
-[ext_resource type="Script" uid="uid://32o2pnmqajak" path="res://scripts/entities/player/abilities/RatWhipComponent.cs" id="6_d4qa6"]
+[ext_resource type="Script" uid="uid://32o2pnmqajak" path="res://scripts/entities/player/components/RatWhipComponent.cs" id="6_d4qa6"]
 [ext_resource type="Script" uid="uid://bf3o5ggxnugyl" path="res://scripts/core/fsm/HierarchicalStateMachine.cs" id="7_yr3on"]
 [ext_resource type="Script" uid="uid://bma8pjlvo3gxj" path="res://scripts/entities/player/states/movement/PlayerGroundedState.cs" id="8_2ngu4"]
 [ext_resource type="Script" uid="uid://d3l36ce3owmy7" path="res://scripts/entities/player/VaultRaycast.cs" id="8_dnykm"]
@@ -22,10 +23,15 @@
 [ext_resource type="Script" uid="uid://cp01ualg3x1q8" path="res://scripts/entities/player/states/movement/PlayerWallrunState.cs" id="17_yw3xw"]
 [ext_resource type="Script" uid="uid://r8y2ax3svqof" path="res://scripts/entities/player/states/movement/PlayerWallJumpState.cs" id="18_6gvyl"]
 [ext_resource type="Script" uid="uid://mdbu2my0kwp8" path="res://scripts/entities/player/states/movement/PlayerVaultState.cs" id="19_u2s01"]
+[ext_resource type="Script" uid="uid://dtkvcsirjml1w" path="res://scripts/entities/player/states/movement/PlayerAbilityState.cs" id="23_d745t"]
 
 [sub_resource type="Resource" id="Resource_pso3n"]
 script = ExtResource("2_ss7kx")
 metadata/_custom_type_script = "uid://cuyb4v4vre4wf"
+
+[sub_resource type="Resource" id="Resource_qc1tv"]
+script = ExtResource("3_qc1tv")
+metadata/_custom_type_script = "uid://vgnhr4ksw2lt"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
 
@@ -108,7 +114,7 @@ bind/15/pose = Transform3D(8.321876, -0.33419704, 0.10384854, 0.34903196, 8.1058
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[node name="Player" type="CharacterBody3D" unique_id=1054079331 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Input", "Collider", "VaultRaycast", "_movementFsm") groups=["player"]]
+[node name="Player" type="CharacterBody3D" unique_id=1054079331 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Input", "Collider", "VaultRaycast", "_movementFsm", "_abilityState") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_dqkch")
@@ -121,10 +127,11 @@ Collider = NodePath("CollisionShape3D")
 VaultRaycast = NodePath("VaultRaycastRotation/VaultRaycast")
 Tuning = SubResource("Resource_pso3n")
 _movementFsm = NodePath("HierarchicalStateMachine")
+_equippedAbility = SubResource("Resource_qc1tv")
+_abilityState = NodePath("HierarchicalStateMachine/Ability")
 
 [node name="InputComponent" type="Node" parent="." unique_id=860001231]
 script = ExtResource("3_n36er")
-metadata/_custom_type_script = "uid://cbirv4cstp2wl"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -181,7 +188,6 @@ metadata/_custom_type_script = "uid://c87dhm675xypo"
 
 [node name="RatWhipComponent" type="Node" parent="." unique_id=2011845445]
 script = ExtResource("6_d4qa6")
-metadata/_custom_type_script = "uid://32o2pnmqajak"
 
 [node name="RatTailMesh" type="MeshInstance3D" parent="RatWhipComponent" unique_id=215968571]
 
@@ -255,3 +261,6 @@ script = ExtResource("18_6gvyl")
 
 [node name="Vault" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=1063670621]
 script = ExtResource("19_u2s01")
+
+[node name="Ability" type="Node" parent="HierarchicalStateMachine" unique_id=1331177189]
+script = ExtResource("23_d745t")
