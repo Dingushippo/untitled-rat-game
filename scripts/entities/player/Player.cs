@@ -41,6 +41,12 @@ public partial class Player : CharacterBody3D
         return _movementFsm.IsState<T>();
     }
 
+    public bool IsMovementStateBranch<T>()
+        where T : PlayerState
+    {
+        return _movementFsm.IsStateBranch<T>();
+    }
+
     public float Speed => Velocity.Length();
 
     public override void _ExitTree()
