@@ -19,7 +19,8 @@ public partial class HierarchicalStateMachine : Node
 
     public void Init(Node owner)
     {
-        GD.Print($"Testing: {GetChildren()}");
+        _owner = owner;
+
         RegisterStatesRecursive(this, owner, null);
 
         _currentState = GetNode<State>(InitialStatePath);
@@ -54,16 +55,16 @@ public partial class HierarchicalStateMachine : Node
         }
         State newState = _states[stateKey];
 
-        CheckRecursiveExit(_currentState);
+        RecursiveExit(_currentState);
         _prevState = _currentState;
         RecursiveEnter(newState);
         _currentState = newState;
 
         if (Debug)
-            GD.Print($"{_owner?.Name} changed state from {_prevState?.Name} to {_currentState?.Name}");
+            GD.Print($"{_owner.Name} changed state from {_prevState?.Name} to {_currentState?.Name}");
     }
 
-    public void CheckRecursiveExit(State state, int depth = 0)
+    private void RecursiveExit(State state, int depth = 0)
     {
         if (depth >= 10 || state.Parent == null)
             return;
@@ -72,40 +73,34 @@ public partial class HierarchicalStateMachine : Node
             return;
 
         state.Exit();
-        CheckRecursiveExit(state.Parent, depth++);
+        RecursiveExit(state.Parent, depth + 1);
     }
 
-    public void RecursiveEnter(State state, int depth = 0)
+    private void RecursiveEnter(State state, int depth = 0)
     {
         if (depth >= 10 || state == _currentState)
             return;
 
         state.Enter();
         if (state.Parent != null)
-            RecursiveEnter(state.Parent, depth++);
+            RecursiveEnter(state.Parent, depth + 1);
     }
 
-    public bool IsStateBranch(State state, int depth = 0)
-    {
-        if (IsState(state))
-            return true;
-
-        if (state.Parent == null)
-            return IsStateBranch(state, depth++);
-
-        return false;
-    }
-
-    public bool IsStateBranch<T>(int depth = 0)
+    public bool IsStateBranch<T>()
         where T : State
     {
-        State state = _states[typeof(T)];
-        return IsStateBranch(state);
-    }
+        if (IsState<T>())
+            return true;
 
-    public bool IsState(State state)
-    {
-        return _currentState == state;
+        State checkState = _currentState;
+        State state = _states[typeof(T)];
+
+        for (State check = _currentState; check.Parent != null; check = check.Parent)
+        {
+            if (checkState.Parent == state)
+                return true;
+        }
+        return false;
     }
     public bool IsState<T>()
         where T : State
