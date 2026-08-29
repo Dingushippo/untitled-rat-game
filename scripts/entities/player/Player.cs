@@ -18,8 +18,6 @@ public partial class Player : CharacterBody3D
     [Export] public PlayerMovementTuning Tuning;
 
     [Export] public RatWhipComponent Whip;
-
-    public CrouchComponent CrouchComponent;
     public InteractComponent InteractComponent;
 
     private HierarchicalStateMachine<PlayerState> _movementFsm;
@@ -27,7 +25,6 @@ public partial class Player : CharacterBody3D
 
     public override void _Ready()
     {
-        CrouchComponent = new(this);
         InteractComponent = new(this);
 
         EventBus.Subscribe<QteStarted>(OnQteStarted);
@@ -54,14 +51,8 @@ public partial class Player : CharacterBody3D
         Camera.SetCameraInputEnabled(true);
     }
 
-    public override void _Process(double delta)
-    {
-        CrouchComponent.Update();
-    }
-
     public override void _PhysicsProcess(double delta)
     {
-        CrouchComponent.Update();
         InteractComponent.PhysicsUpdate((float)delta);
     }
 }

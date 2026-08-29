@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerMoveState : PlayerState
+public abstract partial class PlayerMoveState : PlayerState
 {
     [Export] public float Speed;
     [Export] public float Acceleration;
@@ -13,8 +13,7 @@ public partial class PlayerMoveState : PlayerState
         {
             GD.PushError($"{this} is not a child of PlayerGroundedState"); return;
         }
-
-        grounded.PhysicsProcess(delta);
+        _parent.PhysicsProcess(delta);
 
         float desiredSpeed = Speed;
         float accel = Acceleration;
@@ -33,11 +32,5 @@ public partial class PlayerMoveState : PlayerState
         {
             _hfsm.ChangeState<PlayerIdleState>();
         }
-    }
-
-    public override void Exit() { }
-
-    public override void Enter(State previous = null)
-    {
     }
 }

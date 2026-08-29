@@ -56,6 +56,12 @@ public partial class HierarchicalStateMachine<T> : Node
             GD.Print($"{_owner} changed state from {_prevState} to {_currentState}");
     }
 
+    public bool IsState<ST>()
+        where ST : T
+    {
+        return _currentState.GetType() == typeof(ST);
+    }
+
     public override void _PhysicsProcess(double delta) =>
         _currentState.PhysicsProcess((float)delta);
 
