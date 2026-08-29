@@ -2,28 +2,29 @@
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/entities/player/Player.cs" id="1_dqkch"]
 [ext_resource type="Script" uid="uid://cuyb4v4vre4wf" path="res://scripts/entities/player/PlayerMovementTuning.cs" id="2_ss7kx"]
+[ext_resource type="Script" uid="uid://cbirv4cstp2wl" path="res://scripts/entities/player/abilities/InputComponent.cs" id="3_n36er"]
 [ext_resource type="Resource" uid="uid://g8o35bffx81c" path="res://resources/tuning/player_camera_tuning.tres" id="3_saib0"]
 [ext_resource type="Script" uid="uid://dwgnhts6o7r47" path="res://scripts/entities/player/PlayerCamera.cs" id="4_fjrip"]
 [ext_resource type="Script" uid="uid://32o2pnmqajak" path="res://scripts/entities/player/abilities/RatWhipComponent.cs" id="6_d4qa6"]
+[ext_resource type="Script" uid="uid://bf3o5ggxnugyl" path="res://scripts/core/fsm/HierarchicalStateMachine.cs" id="7_yr3on"]
+[ext_resource type="Script" uid="uid://bma8pjlvo3gxj" path="res://scripts/entities/player/states/movement/PlayerGroundedState.cs" id="8_2ngu4"]
 [ext_resource type="Script" uid="uid://d3l36ce3owmy7" path="res://scripts/entities/player/VaultRaycast.cs" id="8_dnykm"]
+[ext_resource type="Script" uid="uid://diduhjxjhjf3m" path="res://scripts/entities/player/states/movement/PlayerIdleState.cs" id="9_jv5ih"]
+[ext_resource type="Script" uid="uid://7bj6v4w0rxec" path="res://scripts/entities/player/states/movement/PlayerCrouchState.cs" id="10_n36er"]
+[ext_resource type="Script" uid="uid://cearbk4mljj2q" path="res://scripts/entities/player/states/movement/PlayerRunState.cs" id="11_d745t"]
 [ext_resource type="Script" uid="uid://c87dhm675xypo" path="res://scripts/qte/QteManager.cs" id="12_5ki56"]
+[ext_resource type="Script" uid="uid://dyha3m5gtxk8o" path="res://scripts/entities/player/states/movement/PlayerSprintState.cs" id="12_qc1tv"]
 [ext_resource type="PackedScene" uid="uid://bda3cwi7p7irq" path="res://scenes/qte/spam_qte.tscn" id="13_saib0"]
+[ext_resource type="Script" uid="uid://44jvgjdvyrnp" path="res://scripts/entities/player/states/movement/PlayerSlideState.cs" id="13_xe83n"]
+[ext_resource type="Script" uid="uid://cyd17t6of5om8" path="res://scripts/entities/player/states/movement/PlayerAerialState.cs" id="14_cwche"]
+[ext_resource type="Script" uid="uid://c5nih2eisapk6" path="res://scripts/entities/player/states/movement/PlayerJumpState.cs" id="15_yv3je"]
+[ext_resource type="Script" uid="uid://b6f70knl12jca" path="res://scripts/entities/player/states/movement/PlayerFallingState.cs" id="16_3hm5d"]
+[ext_resource type="Script" uid="uid://cp01ualg3x1q8" path="res://scripts/entities/player/states/movement/PlayerWallrunState.cs" id="17_yw3xw"]
+[ext_resource type="Script" uid="uid://r8y2ax3svqof" path="res://scripts/entities/player/states/movement/PlayerWallJumpState.cs" id="18_6gvyl"]
+[ext_resource type="Script" uid="uid://mdbu2my0kwp8" path="res://scripts/entities/player/states/movement/PlayerVaultState.cs" id="19_u2s01"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ss7kx"]
-friction = 0.0
-
-[sub_resource type="Resource" id="Resource_d4qa6"]
+[sub_resource type="Resource" id="Resource_pso3n"]
 script = ExtResource("2_ss7kx")
-Speed = 5.0
-SprintSpeed = 10.0
-CrouchSpeed = 3.0
-FloorStickForce = 0.15
-JumpForce = 80.0
-JumpAcceleration = 100.0
-SpringStiffness = 100.0
-SpringDamping = 50.0
-RestLengthMultiplier = 1.0
-SwingForce = 50.0
 metadata/_custom_type_script = "uid://cuyb4v4vre4wf"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
@@ -107,25 +108,23 @@ bind/15/pose = Transform3D(8.321876, -0.33419704, 0.10384854, 0.34903196, 8.1058
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[node name="Player" type="RigidBody3D" unique_id=1814741928 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Collider", "VaultRaycast", "Whip") groups=["player"]]
+[node name="Player" type="CharacterBody3D" unique_id=1054079331 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Input", "Collider", "VaultRaycast", "_movementFsm") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
-mass = 10.0
-physics_material_override = SubResource("PhysicsMaterial_ss7kx")
-gravity_scale = 1.5
-lock_rotation = true
-continuous_cd = true
-contact_monitor = true
-max_contacts_reported = 4
 script = ExtResource("1_dqkch")
 Camera = NodePath("Head/Camera3D")
 HandL = NodePath("Head/HandL")
 HandR = NodePath("Head/HandR")
 Head = NodePath("Head")
+Input = NodePath("InputComponent")
 Collider = NodePath("CollisionShape3D")
 VaultRaycast = NodePath("VaultRaycastRotation/VaultRaycast")
-Tuning = SubResource("Resource_d4qa6")
-Whip = NodePath("RatWhipComponent")
+Tuning = SubResource("Resource_pso3n")
+_movementFsm = NodePath("HierarchicalStateMachine")
+
+[node name="InputComponent" type="Node" parent="." unique_id=860001231]
+script = ExtResource("3_n36er")
+metadata/_custom_type_script = "uid://cbirv4cstp2wl"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -134,10 +133,9 @@ shape = SubResource("CapsuleShape3D_2hs0m")
 [node name="Head" type="Node3D" parent="." unique_id=980955593]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="Camera3D" type="Camera3D" parent="Head" unique_id=2056591493 node_paths=PackedStringArray("Player", "HeadNode", "HandNode")]
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=2056591493 node_paths=PackedStringArray("HeadNode", "HandNode")]
 current = true
 script = ExtResource("4_fjrip")
-Player = NodePath("../..")
 DebugAimMarker = true
 Tuning = ExtResource("3_saib0")
 HeadNode = NodePath("..")
@@ -180,11 +178,8 @@ script = ExtResource("12_5ki56")
 QteScenes = Array[PackedScene]([ExtResource("13_saib0")])
 metadata/_custom_type_script = "uid://c87dhm675xypo"
 
-[node name="RatWhipComponent" type="Node" parent="." unique_id=2011845445 node_paths=PackedStringArray("Player", "HandNode", "RatTailMeshInstance")]
+[node name="RatWhipComponent" type="Node" parent="." unique_id=2011845445]
 script = ExtResource("6_d4qa6")
-Player = NodePath("..")
-HandNode = NodePath("../Head/HandL")
-RatTailMeshInstance = NodePath("RatTailMesh")
 metadata/_custom_type_script = "uid://32o2pnmqajak"
 
 [node name="RatTailMesh" type="MeshInstance3D" parent="RatWhipComponent" unique_id=215968571]
@@ -198,3 +193,52 @@ hit_back_faces = false
 script = ExtResource("8_dnykm")
 Head = NodePath("../../Head")
 RotationNode = NodePath("..")
+
+[node name="HierarchicalStateMachine" type="Node" parent="." unique_id=641144029]
+script = ExtResource("7_yr3on")
+InitialStatePath = NodePath("Grounded/Idle")
+Debug = true
+metadata/_custom_type_script = "uid://bf3o5ggxnugyl"
+
+[node name="Grounded" type="Node" parent="HierarchicalStateMachine" unique_id=235149432]
+script = ExtResource("8_2ngu4")
+
+[node name="Idle" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=326881025]
+script = ExtResource("9_jv5ih")
+
+[node name="Crouch" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=1131398171]
+script = ExtResource("10_n36er")
+
+[node name="Run" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=113314447]
+script = ExtResource("11_d745t")
+Speed = 15.0
+Acceleration = 50.0
+Deceleration = 65.0
+
+[node name="Sprint" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=1701869178]
+script = ExtResource("12_qc1tv")
+
+[node name="Slide" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=684412582]
+script = ExtResource("13_xe83n")
+
+[node name="Aerial" type="Node" parent="HierarchicalStateMachine" unique_id=810324095]
+script = ExtResource("14_cwche")
+AirSpeed = 10.0
+AirAcceleration = 100.0
+
+[node name="Jump" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=1540125802]
+script = ExtResource("15_yv3je")
+JumpForce = 5.0
+_skipFrames = 10
+
+[node name="Fall" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=543016075]
+script = ExtResource("16_3hm5d")
+
+[node name="WallRun" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=1128217554]
+script = ExtResource("17_yw3xw")
+
+[node name="WallJump" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=1138430074]
+script = ExtResource("18_6gvyl")
+
+[node name="Vault" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=1063670621]
+script = ExtResource("19_u2s01")

@@ -1,5 +1,6 @@
 using Godot;
 
+[GlobalClass]
 public partial class Player : CharacterBody3D
 {
     [Export] public PlayerCamera Camera;
@@ -17,15 +18,18 @@ public partial class Player : CharacterBody3D
 
     [Export] public PlayerMovementTuning Tuning;
 
-    [Export] public RatWhipComponent Whip;
+    // [Export] public RatWhipComponent Whip;
     public InteractComponent InteractComponent;
 
-    private HierarchicalStateMachine<PlayerState> _movementFsm;
-    private HierarchicalStateMachine<HandState> _handFsm;
+    [Export] private HierarchicalStateMachine _movementFsm;
+    // [Export] private HierarchicalStateMachine _handFsm;
 
     public override void _Ready()
     {
         InteractComponent = new(this);
+        Input.Init(this);
+        _movementFsm.Init(this);
+        // _handFsm.Init(this);
 
         EventBus.Subscribe<QteStarted>(OnQteStarted);
         EventBus.Subscribe<QteCompleted>(OnQteCompleted);

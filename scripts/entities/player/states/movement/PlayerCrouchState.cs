@@ -8,7 +8,7 @@ public partial class PlayerCrouchState : PlayerMoveState
     private float _colliderHeight;
     private float _colliderYPos;
 
-    public override void Init(Node owner, HierarchicalStateMachine<PlayerState> stateMachine, State parent)
+    public override void Init(Node owner, HierarchicalStateMachine stateMachine, State parent)
     {
         base.Init(owner, stateMachine, parent);
         _colliderHeight = (_player.Collider.Shape as CapsuleShape3D).Height;

@@ -1,4 +1,4 @@
-public class HandState : TypedState<HandState>
+public partial class HandState : State
 {
     private protected Player _player;
 

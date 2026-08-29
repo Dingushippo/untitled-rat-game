@@ -4,6 +4,9 @@
 [ext_resource type="Script" uid="uid://c58yhqvn28p07" path="res://scripts/game/RunTuning.cs" id="2_2rbs1"]
 [ext_resource type="Script" uid="uid://d1jjhj8ouekbn" path="res://scripts/game/TimelineEvent.cs" id="3_2rbs1"]
 [ext_resource type="Script" uid="uid://cphiqs3b056kw" path="res://scripts/game/TimelineResource.cs" id="3_iet3w"]
+[ext_resource type="Script" uid="uid://bf3o5ggxnugyl" path="res://scripts/core/fsm/HierarchicalStateMachine.cs" id="5_qmbri"]
+[ext_resource type="Script" uid="uid://y2jni0aihtpo" path="res://scripts/game/states/GameMenuState.cs" id="6_wmddc"]
+[ext_resource type="Script" uid="uid://2t0oaqm83mdn" path="res://scripts/game/states/GameRunState.cs" id="7_exltg"]
 
 [sub_resource type="Resource" id="Resource_tytqk"]
 script = ExtResource("2_2rbs1")
@@ -33,7 +36,20 @@ script = ExtResource("3_iet3w")
 Day = 3
 metadata/_custom_type_script = "uid://cphiqs3b056kw"
 
-[node name="GameManager" type="Node" unique_id=1600033193]
+[node name="GameManager" type="Node" unique_id=1600033193 node_paths=PackedStringArray("_hfsm")]
 script = ExtResource("1_tmdk2")
 Tuning = SubResource("Resource_tytqk")
 Timeline = Array[Object]([SubResource("Resource_a5rnb"), SubResource("Resource_fqldq"), SubResource("Resource_3ay3b")])
+_hfsm = NodePath("HierarchicalStateMachine")
+
+[node name="HierarchicalStateMachine" type="Node" parent="." unique_id=1801433891]
+script = ExtResource("5_qmbri")
+InitialStatePath = NodePath("GameMenuState")
+Debug = true
+metadata/_custom_type_script = "uid://bf3o5ggxnugyl"
+
+[node name="GameMenuState" type="Node" parent="HierarchicalStateMachine" unique_id=1327132639]
+script = ExtResource("6_wmddc")
+
+[node name="GameRunState" type="Node" parent="HierarchicalStateMachine" unique_id=1086564461]
+script = ExtResource("7_exltg")

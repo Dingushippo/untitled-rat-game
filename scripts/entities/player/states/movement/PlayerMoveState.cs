@@ -25,7 +25,13 @@ public abstract partial class PlayerMoveState : PlayerState
         }
 
         _speed = Mathf.MoveToward(_speed, desiredSpeed, accel * delta);
-        SetVelocity(grounded.Direction * _speed);
+        Vector3 horzontalVelocity = grounded.Direction * _speed;
+        Vector3 newVelocity = new(
+            horzontalVelocity.X,
+            _velocity.Y,
+            horzontalVelocity.Z
+        );
+        SetVelocity(newVelocity);
         MoveAndSlide();
 
         if (_velocity.IsEqualApprox(Vector3.Zero))

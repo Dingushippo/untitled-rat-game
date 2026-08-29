@@ -1,10 +1,18 @@
-public class GameState : TypedState<GameState>
+using Godot;
+
+public partial class GameState : State
 {
     private protected GameManager _manager;
 
-    public GameState(GameManager owner)
+    public override void Init(Node owner, HierarchicalStateMachine stateMachine, State parent = null)
     {
-        _manager = owner;
+        base.Init(owner, stateMachine, parent);
+        if (owner is not GameManager manager)
+        {
+            GD.PushError($"{this} owner is not the game manager");
+            return;
+        }
+        _manager = manager;
     }
 }
 

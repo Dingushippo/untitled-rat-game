@@ -16,7 +16,7 @@ public partial class PlayerGroundedState : PlayerState
             _hfsm.ChangeState<PlayerJumpState>();
         else if (_player.Input.WantsCrouch && !_hfsm.IsState<PlayerCrouchState>())
             _hfsm.ChangeState<PlayerCrouchState>();
-        else if (Direction != Vector3.Zero)
+        else if (Direction != Vector3.Zero && !_hfsm.IsState<PlayerRunState>())
             _hfsm.ChangeState<PlayerRunState>();
 
     }

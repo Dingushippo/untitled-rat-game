@@ -4,7 +4,7 @@ using Godot;
 public partial class PlayerCamera : Camera3D
 {
     [Export]
-    public Player Player;
+    public CharacterBody3D Player;
 
     [Export]
     public bool DebugAimMarker = false;
@@ -75,8 +75,8 @@ public partial class PlayerCamera : Camera3D
 
     public override void _Process(double delta)
     {
-        HandleHeadbob((float)delta);
-        HandleFovMovementChange((float)delta);
+        // HandleHeadbob((float)delta);
+        // HandleFovMovementChange((float)delta);
         ApplyPose((float)delta);
     }
 
@@ -98,68 +98,68 @@ public partial class PlayerCamera : Camera3D
     private float _bobStrength;
     private float _blendSpeed = 10f;
 
-    private void HandleHeadbob(float delta)
-    {
-        float blendDelta = delta * _blendSpeed;
-        if (
-            Player.LinearVelocity.ToXYVector2().IsZeroApprox()
-            || Player.CrouchComponent.IsCrouching
-            || !Player.IsOnFloor
-        )
-        {
-            _bobTime = 0;
-            _bobOffset = _bobOffset.Lerp(Vector3.Zero, blendDelta);
-            return;
-        }
-        _bobSpeed = Mathf.Remap(
-            Player.HorizontalSpeed,
-            Player.Tuning.Speed,
-            Player.Tuning.SprintSpeed,
-            Tuning.BobSpeed,
-            Tuning.BobSpeedSprint
-        );
-        _bobStrength = Mathf.Remap(
-            Player.HorizontalSpeed,
-            Player.Tuning.Speed,
-            Player.Tuning.SprintSpeed,
-            Tuning.BobStrength,
-            Tuning.BobStrengthSprint
-        );
+    // private void HandleHeadbob(float delta)
+    // {
+    //     float blendDelta = delta * _blendSpeed;
+    //     if (
+    //         Mathf.IsZeroApprox(Player.Velocity.Length())
+    //         || Player.Input.WantsCrouch
+    //         || !Player.IsOnFloor()
+    //     )
+    //     {
+    //         _bobTime = 0;
+    //         _bobOffset = _bobOffset.Lerp(Vector3.Zero, blendDelta);
+    //         return;
+    //     }
+    //     _bobSpeed = Mathf.Remap(
+    //         Player.Velocity.Length(),
+    //         Player.Tuning.Speed,
+    //         Player.Tuning.SprintSpeed,
+    //         Tuning.BobSpeed,
+    //         Tuning.BobSpeedSprint
+    //     );
+    //     _bobStrength = Mathf.Remap(
+    //         Player.Velocity.Length(),
+    //         Player.Tuning.Speed,
+    //         Player.Tuning.SprintSpeed,
+    //         Tuning.BobStrength,
+    //         Tuning.BobStrengthSprint
+    //     );
 
-        _bobTime += delta;
-        _bobOffset = _bobOffset.Lerp(
-            new(
-                Mathf.Sin(_bobSpeed * _bobTime / 2) * _bobStrength,
-                Mathf.Cos(_bobSpeed * _bobTime) * _bobStrength / 2,
-                0f
-            ),
-            blendDelta
-        );
-    }
+    //     _bobTime += delta;
+    //     _bobOffset = _bobOffset.Lerp(
+    //         new(
+    //             Mathf.Sin(_bobSpeed * _bobTime / 2) * _bobStrength,
+    //             Mathf.Cos(_bobSpeed * _bobTime) * _bobStrength / 2,
+    //             0f
+    //         ),
+    //         blendDelta
+    //     );
+    // }
 
-    private void HandleFovMovementChange(float delta)
-    {
-        float blendDelta = delta * _blendSpeed;
-        if (Player.Velocity.IsZeroApprox())
-        {
-            _fovOffset = Mathf.Lerp(_fovOffset, 0, blendDelta);
-            return;
-        }
+    // private void HandleFovMovementChange(float delta)
+    // {
+    //     float blendDelta = delta * _blendSpeed;
+    //     if (Player.Velocity.IsZeroApprox())
+    //     {
+    //         _fovOffset = Mathf.Lerp(_fovOffset, 0, blendDelta);
+    //         return;
+    //     }
 
-        float newOffset;
+    //     float newOffset;
 
-        if (Player.CrouchComponent.IsCrouching)
-            newOffset = Tuning.SlideFovOffset;
-        else
-            newOffset = Mathf.Remap(
-                Player.HorizontalSpeed,
-                Player.Tuning.Speed,
-                Player.Tuning.SprintSpeed,
-                Tuning.WalkFovOffset,
-                Tuning.RunFovOffset
-            );
-        _fovOffset = Mathf.Lerp(_fovOffset, newOffset, blendDelta);
-    }
+    //     if (Player.Input.WantsCrouch)
+    //         newOffset = Tuning.SlideFovOffset;
+    //     else
+    //         newOffset = Mathf.Remap(
+    //             Player.Velocity.Length(),
+    //             Player.Tuning.Speed,
+    //             Player.Tuning.SprintSpeed,
+    //             Tuning.WalkFovOffset,
+    //             Tuning.RunFovOffset
+    //         );
+    //     _fovOffset = Mathf.Lerp(_fovOffset, newOffset, blendDelta);
+    // }
 
     private float _yawRad;
 

@@ -1,5 +1,7 @@
 using Godot;
+using System.Runtime.CompilerServices;
 
+[GlobalClass]
 public partial class InputComponent : Node
 {
     public Vector2 DirectionRaw;
@@ -13,6 +15,7 @@ public partial class InputComponent : Node
 
     private Player _player;
 
+    public bool NoMovement => DirectionRaw == Vector2.Zero;
     public void Init(Player player)
     {
         _player = player;
@@ -20,11 +23,11 @@ public partial class InputComponent : Node
 
     public override void _Process(double delta)
     {
-        DirectionRaw = Input.GetVector("left", "right", "forward", "backward");
-        Direction = _player.Camera.GlobalBasis * new Vector3(DirectionRaw.X, 0, DirectionRaw.Y);
+        DirectionRaw = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
+        Direction = new Vector3(DirectionRaw.X, 0, DirectionRaw.Y).Rotated(Vector3.Up, _player.Camera.GlobalRotation.Y);
 
-        LeftArmAction = Input.IsActionPressed("left_arm");
-        RightArmAction = Input.IsActionPressed("right_arm");
+        LeftArmAction = Input.IsActionPressed("left_hand");
+        RightArmAction = Input.IsActionPressed("right_hand");
 
         WantsJump = Input.IsActionPressed("jump");
         WantsSprint = Input.IsActionPressed("sprint");

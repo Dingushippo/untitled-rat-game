@@ -2,7 +2,7 @@
 
 using Godot;
 
-public partial class PlayerState : TypedState<PlayerState>
+public partial class PlayerState : State
 {
     private protected Player _player;
 
@@ -12,12 +12,21 @@ public partial class PlayerState : TypedState<PlayerState>
         _player.Velocity = velocity;
     }
 
+    protected void AddVelocity(Vector3 velocity)
+    {
+        _player.Velocity += velocity;
+    }
+
     protected void MoveAndSlide() => _player.MoveAndSlide();
 
-    public override void Init(Node owner, HierarchicalStateMachine<PlayerState> stateMachine, State parent)
+    public override void Init(Node owner, HierarchicalStateMachine stateMachine, State parent)
     {
-        base.Init(owner, stateMachine);
-        _player = (Player)owner;
+        base.Init(owner, stateMachine, parent);
+        if (owner is not Player player)
+        {
+            GD.PushError($"owner is not player"); return;
+        }
+        _player = player;
     }
 }
 

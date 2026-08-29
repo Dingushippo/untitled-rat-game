@@ -1,57 +1,57 @@
-using Godot;
+// using Godot;
 
-public class PlayerSwingState : PlayerState
-{
-    private Vector3 _anchorPoint => _player.Whip.AnchorPoint;
-    private float _restLength => _player.Whip.RestLength;
-    private bool _isAnchored => _player.Whip.IsAnchored;
+// public class PlayerSwingState : PlayerState
+// {
+//     private Vector3 _anchorPoint => _player.Whip.AnchorPoint;
+//     private float _restLength => _player.Whip.RestLength;
+//     private bool _isAnchored => _player.Whip.IsAnchored;
 
-    public PlayerSwingState(Player owner)
-        : base(owner) { }
+//     public PlayerSwingState(Player owner)
+//         : base(owner) { }
 
-    public override void IntegrateForces(PhysicsDirectBodyState3D state)
-    {
-        _player.CheckOnFloor(state);
+//     public override void IntegrateForces(PhysicsDirectBodyState3D state)
+//     {
+//         _player.CheckOnFloor(state);
 
-        if (!_isAnchored)
-        {
-            _hfsm.ChangeState<PlayerFallingState>(this);
-        }
+//         if (!_isAnchored)
+//         {
+//             _hfsm.ChangeState<PlayerFallingState>(this);
+//         }
 
-        Vector3 direction = _anchorPoint - _player.GlobalPosition;
-        float currentLength = direction.Length();
-        if (currentLength <= 0)
-            return;
-        Vector3 ropeDirection = direction.Normalized();
-        float stretch = currentLength - _restLength;
+//         Vector3 direction = _anchorPoint - _player.GlobalPosition;
+//         float currentLength = direction.Length();
+//         if (currentLength <= 0)
+//             return;
+//         Vector3 ropeDirection = direction.Normalized();
+//         float stretch = currentLength - _restLength;
 
-        if (stretch > 0)
-        {
-            float relativeVelocity = state.LinearVelocity.Dot(ropeDirection);
+//         if (stretch > 0)
+//         {
+//             float relativeVelocity = state.LinearVelocity.Dot(ropeDirection);
 
-            // apply hookes law
-            float springForceMultiplier =
-                (_player.Tuning.WhipSpringStiffness * stretch)
-                - (_player.Tuning.WhipSpringDamping * relativeVelocity);
-            Vector3 springForce = ropeDirection * springForceMultiplier;
-            state.ApplyCentralForce(springForce);
-        }
+//             // apply hookes law
+//             float springForceMultiplier =
+//                 (_player.Tuning.WhipSpringStiffness * stretch)
+//                 - (_player.Tuning.WhipSpringDamping * relativeVelocity);
+//             Vector3 springForce = ropeDirection * springForceMultiplier;
+//             state.ApplyCentralForce(springForce);
+//         }
 
-        // Handle swing
-        Vector3 inputDir = _player.GetCorrectedInput();
-        if (inputDir.Length() <= 0)
-            return;
+//         // Handle swing
+//         Vector3 inputDir = _player.GetCorrectedInput();
+//         if (inputDir.Length() <= 0)
+//             return;
 
-        Plane swingPlane = new Plane(ropeDirection);
-        Vector3 tangentialDirection = swingPlane.Project(inputDir).Normalized();
-        state.ApplyCentralForce(tangentialDirection * _player.Tuning.WhipSwingForce);
-    }
+//         Plane swingPlane = new Plane(ropeDirection);
+//         Vector3 tangentialDirection = swingPlane.Project(inputDir).Normalized();
+//         state.ApplyCentralForce(tangentialDirection * _player.Tuning.WhipSwingForce);
+//     }
 
-    public override void HandleInput(InputEvent @event)
-    {
-        if (@event.IsActionPressed("jump"))
-        {
-            _player.Whip.LaunchToAnchor();
-        }
-    }
-}
+//     public override void HandleInput(InputEvent @event)
+//     {
+//         if (@event.IsActionPressed("jump"))
+//         {
+//             _player.Whip.LaunchToAnchor();
+//         }
+//     }
+// }

@@ -1,12 +1,9 @@
 using Godot;
 
-public class PlayerFallingState : PlayerState
+public partial class PlayerFallingState : PlayerState
 {
     const float COYOTY_TIMER_LENGTH = 0.2f;
     const float JUMP_BUFFER_LENGTH = 0.2f;
-
-    public PlayerFallingState(Player owner)
-        : base(owner) { }
 
     private float _coyoteTimer = 99f;
     private float _jumpBufferTimer;
@@ -15,57 +12,13 @@ public class PlayerFallingState : PlayerState
 
     public override void PhysicsProcess(float delta)
     {
-        _coyoteTimer += delta;
-        if (_wallrunTimer >= 0)
-            _wallrunTimer += delta;
-        if (_wantsJump)
-            _jumpBufferTimer += delta;
-
-        _player.Direction = _player.GetCorrectedInput(sideToSideScaling: .3f);
-        if (_player.IsOnFloor)
-        {
-            if (_wantsJump && _jumpBufferTimer <= JUMP_BUFFER_LENGTH)
-            {
-                _hfsm.ChangeState<PlayerJumpState>(this);
-            }
-            else if (Input.IsActionPressed("crouch"))
-                _hfsm.ChangeState<PlayerSlideState>(this);
-            else
-                _hfsm.ChangeState<PlayerMoveState>(this);
-        }
-        else if (CanWallrun())
-        {
-            _hfsm.ChangeState<PlayerWallRunState>(this);
-        }
-        else if (_player.VaultRaycast.IsColliding() && Input.IsActionPressed("jump") && CanVault())
-        {
-            _hfsm.ChangeState<PlayerVaultState>(this);
-        }
-        else if (Input.IsActionJustPressed("jump") && (_coyoteTimer <= COYOTY_TIMER_LENGTH))
-        {
-            _hfsm.ChangeState<PlayerJumpState>(this);
-        }
+        _parent?.PhysicsProcess(delta);
+        if (_player.IsOnFloor())
+            _hfsm.ChangeState<PlayerGroundedState>();
+        MoveAndSlide();
     }
-
     public override void Enter(State previous = null)
     {
-        if (previous is not PlayerJumpState && previous is not PlayerSwingState)
-            _coyoteTimer = 0;
-        _player.CrouchComponent.Enabled = false;
-        _wallrunTimer = previous is PlayerWallJumpState ? 0 : -1f;
-    }
-
-    public override void HandleInput(InputEvent @event)
-    {
-        if (@event.IsActionPressed("jump"))
-            _wantsJump = true;
-    }
-
-    public override void Exit()
-    {
-        _player.CrouchComponent.Enabled = true;
-        _wantsJump = false;
-        _jumpBufferTimer = 0;
     }
 
     private bool CanVault()
@@ -90,7 +43,7 @@ public class PlayerFallingState : PlayerState
 
     private bool CanWallrun()
     {
-        if (_player.LinearVelocity.Y <= 0)
+        if (_player.Velocity.Y <= 0)
         {
             return false;
         }

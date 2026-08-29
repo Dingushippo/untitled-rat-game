@@ -1,13 +1,8 @@
-using System;
 using Godot;
 
-public class GameRunState : GameState
+public partial class GameRunState : GameState
 {
     private const string GAME_SCENE_PATH = "res://scenes/levels/test_level.tscn";
-
-    public GameRunState(GameManager owner)
-        : base(owner) { }
-
     private Node3D _level;
 
     public override void Enter(State previous = null)
