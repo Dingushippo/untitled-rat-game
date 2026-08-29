@@ -1,4 +1,3 @@
-using System.Linq;
 using Godot;
 using Godot.Collections;
 
@@ -21,6 +20,7 @@ public partial class RatWhipComponent : Node
     public bool IsAnchored;
     private ImmediateMesh _ratTailMesh = new();
     private bool _canAnchor;
+    private bool _anchorIsOnTopLedge;
 
     public override void _Ready()
     {
@@ -32,8 +32,13 @@ public partial class RatWhipComponent : Node
     {
         _canAnchor = TryGetTargetAnchorPoint();
         TryGenerateMesh();
-        if (_canAnchor)
-            DebugDraw.Sphere(Player, AnchorPoint, .1f);
+
+        if (!_anchorIsOnTopLedge)
+        {
+            Vector3 testDir = AnchorPoint.DirectionTo(_hitPosition);
+            Vector3 newPoint = AnchorPoint - testDir * 1f;
+            DebugDraw.Sphere(Player, newPoint, .1f, Colors.SkyBlue);
+        }
     }
 
     public void Release()
@@ -55,14 +60,30 @@ public partial class RatWhipComponent : Node
         Vector3 target = AnchorPoint;
         float arcHeight = AnchorPoint.Y - Player.GlobalPosition.Y;
 
-        PlayerArcMovementState state = Player.GetState<PlayerArcMovementState>();
-        state.Configure(target, arcHeight);
+        if (_anchorIsOnTopLedge)
+        {
+            PlayerArcMovementState state = Player.GetState<PlayerArcMovementState>();
+            state.Configure(target, arcHeight);
 
-        Player.ChangeMovementState<PlayerArcMovementState>();
+            Player.ChangeMovementState<PlayerArcMovementState>();
+        }
+        else
+        {
+            Vector3 testDir = AnchorPoint.DirectionTo(_hitPosition);
+            Vector3 launchTowardsPoint = AnchorPoint - testDir * 1f;
+            Vector3 launchVector = Player.GlobalPosition.DirectionTo(launchTowardsPoint);
+
+            PlayerJumpState state = Player.GetState<PlayerJumpState>();
+            state.Configure(launchVector, 300f);
+
+            Player.ChangeMovementState<PlayerJumpState>();
+        }
         Release();
     }
 
     private float _anchorCheckHysteresis = 0.1f;
+    private Vector3 _hitPosition;
+    private Vector3 _hitNormal;
 
     private bool TryGetTargetAnchorPoint()
     {
@@ -85,20 +106,25 @@ public partial class RatWhipComponent : Node
             return false;
         }
 
-        Vector3 hitPosition = result["position"].AsVector3();
-        Vector3 normal = result["normal"].AsVector3();
+        _hitPosition = result["position"].AsVector3();
+        _hitNormal = result["normal"].AsVector3();
 
-        Vector3[] testPoints = RaycastUtils.FindCardinalEdges(Player, hitPosition, normal, 2f);
+        Vector3[] testPoints = RaycastUtils.FindCardinalEdges(Player, _hitPosition, _hitNormal, 2f);
 
-        if (testPoints.Length == 0)
-            AnchorPoint = hitPosition;
+        DebugDraw.Sphere(Player, _hitPosition, .1f, Colors.Orange);
+        bool isTopSurface = _hitNormal == Vector3.Up;
+        if (testPoints.Length == 0 || isTopSurface)
+        {
+            AnchorPoint = _hitPosition;
+            _anchorIsOnTopLedge = isTopSurface;
+        }
         else
         {
-            float minDistance = AnchorPoint.DistanceTo(hitPosition);
+            float minDistance = AnchorPoint.DistanceTo(_hitPosition);
             Vector3 closest = AnchorPoint;
             foreach (Vector3 point in testPoints)
             {
-                float distance = point.DistanceTo(hitPosition);
+                float distance = point.DistanceTo(_hitPosition);
                 if (distance < minDistance + _anchorCheckHysteresis)
                 {
                     minDistance = distance;
@@ -106,6 +132,10 @@ public partial class RatWhipComponent : Node
                 }
             }
             AnchorPoint = closest;
+            _anchorIsOnTopLedge = AnchorPoint.Y > _hitPosition.Y || _hitNormal == Vector3.Up;
+
+            Color color = _anchorIsOnTopLedge ? Colors.Green : Colors.Red;
+            DebugDraw.Sphere(Player, AnchorPoint, .1f, color);
         }
         return true;
     }
