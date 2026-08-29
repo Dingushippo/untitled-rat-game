@@ -1,30 +1,10 @@
-using Godot;
-
-public class PlayerIdleState : PlayerState
+public partial class PlayerIdleState : PlayerState
 {
-    public PlayerIdleState(Player owner)
-        : base(owner) { }
 
-    public override void Process(float delta)
+    public override void PhysicsProcess(float delta)
     {
-        Vector2 dir = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
-        if (dir == Vector2.Zero)
-            return;
-        _hfsm.ChangeState<PlayerMoveState>();
+
+        _parent.PhysicsProcess(delta);
     }
 
-    public override void Enter(State previous = null)
-    {
-        _player.StickToFloor = true;
-    }
-
-    public override void HandleInput(InputEvent @event)
-    {
-        if (@event.IsActionPressed("jump") && _player.IsOnFloor)
-        {
-            _hfsm.ChangeState<PlayerJumpState>(this);
-        }
-    }
-
-    public override void Exit() { }
 }
