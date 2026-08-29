@@ -236,8 +236,8 @@ BobStrength = 0.2
 
 [node name="Aerial" type="Node" parent="HierarchicalStateMachine" unique_id=810324095]
 script = ExtResource("14_cwche")
-AirSpeed = 10.0
-AirAcceleration = 100.0
+AirSpeed = 3.0
+AirAcceleration = 50.0
 
 [node name="Jump" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=1540125802]
 script = ExtResource("15_yv3je")

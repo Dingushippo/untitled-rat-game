@@ -13,6 +13,7 @@ public partial class InputComponent : Node
     public bool WantsSprint { get; private set; }
     public bool WantsSlide { get; private set; }
     public bool WantsDash { get; private set; }
+    public bool WantsVault { get; private set; }
     public bool WantsCrouch { get; private set; }
 
     public bool NoMovement => DirectionRaw == Vector2.Zero;
@@ -53,6 +54,7 @@ public partial class InputComponent : Node
         WantsSprint = Input.IsActionPressed("sprint");
         WantsDash = Input.IsActionJustPressed("dash");
         WantsCrouch = Input.IsActionPressed("crouch");
+        WantsVault = Input.IsActionPressed("jump");
 
         // 4. Jump Buffer Logic
         if (Input.IsActionJustPressed("jump"))

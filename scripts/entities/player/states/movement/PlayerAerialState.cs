@@ -10,17 +10,21 @@ public partial class PlayerAerialState : PlayerState
 
     public override void PhysicsProcess(float delta)
     {
-        Direction = _player.Input.Direction;
+        if (CanVault())
+        {
+            _hfsm.ChangeState<PlayerVaultState>();
+            return;
+        }
 
-        Vector3 currentHorz = new Vector3(_velocity.X, 0, _velocity.Z);
-        float currentSpeed = currentHorz.Length();
+        Direction = _player.Input.Direction;
+        Vector3 currentHorizontal = new Vector3(_velocity.X, 0, _velocity.Z);
 
         if (Direction != Vector3.Zero)
         {
             Vector3 wishDir = Direction.Normalized();
 
             // Project current velocity onto wish direction to measure aligned speed
-            float currentSpeedInWishDir = currentHorz.Dot(wishDir);
+            float currentSpeedInWishDir = currentHorizontal.Dot(wishDir);
 
             // Calculate remaining speed headroom up to AirSpeed
             float addSpeed = AirSpeed - currentSpeedInWishDir;
@@ -32,18 +36,18 @@ public partial class PlayerAerialState : PlayerState
                 accelSpeed = Mathf.Min(accelSpeed, addSpeed);
 
                 // Add force in the wish direction
-                currentHorz += wishDir * accelSpeed;
+                currentHorizontal += wishDir * accelSpeed;
             }
         }
 
         // Apply slight air drag to prevent permanent infinite coasting
         if (AirDrag > 0f)
         {
-            currentHorz = currentHorz.MoveToward(Vector3.Zero, AirDrag * delta);
+            currentHorizontal = currentHorizontal.MoveToward(Vector3.Zero, AirDrag * delta);
         }
 
         // Apply updated horizontal velocity and gravity
-        SetVelocity(new Vector3(currentHorz.X, _velocity.Y, currentHorz.Z));
+        SetVelocity(new Vector3(currentHorizontal.X, _velocity.Y, currentHorizontal.Z));
         AddVelocity(_player.GetGravity() * delta);
     }
 
@@ -51,5 +55,12 @@ public partial class PlayerAerialState : PlayerState
     {
         base.Enter(previous);
         _player.Camera.SetBobVariables(0f, 0f);
+    }
+
+    private bool CanVault()
+    {
+        if (_player.Input.WantsVault && _player.VaultRaycast.IsColliding())
+            return true;
+        return false;
     }
 }
