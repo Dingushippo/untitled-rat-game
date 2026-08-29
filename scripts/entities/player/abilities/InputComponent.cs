@@ -1,56 +1,74 @@
 using Godot;
-using System.Collections.Generic;
 
 [GlobalClass]
 public partial class InputComponent : Node
 {
-    public Vector2 DirectionRaw;
-    public Vector3 Direction;
-    public bool LeftArmAction;
-    public bool RightArmAction;
-    public bool WantsJump;
-    public bool WantsSprint;
-    public bool WantsSlide;
-    public bool WantsDash;
-    public bool WantsCrouch;
-    private Player _player;
+    public Vector2 DirectionRaw { get; private set; }
+    public Vector3 Direction { get; private set; }
+
+    public bool LeftArmAction { get; private set; }
+    public bool RightArmAction { get; private set; }
+
+    public bool WantsJump { get; private set; }
+    public bool WantsSprint { get; private set; }
+    public bool WantsSlide { get; private set; }
+    public bool WantsDash { get; private set; }
+    public bool WantsCrouch { get; private set; }
+
     public bool NoMovement => DirectionRaw == Vector2.Zero;
 
-    private Dictionary<string, float> _actionBuffers = new();
+    [Export] public float JumpBufferTime = 0.15f; // Standard 150ms buffer
+
+    private Player _player;
+    private float _jumpBufferTimer = float.MaxValue;
 
     public void Init(Player player)
     {
         _player = player;
     }
 
-    public override void _Process(double delta)
+    public override void _PhysicsProcess(double delta)
     {
-        DirectionRaw = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
-        Direction = new Vector3(DirectionRaw.X, 0, DirectionRaw.Y).Rotated(Vector3.Up, _player.Camera.GlobalRotation.Y);
+        float dt = (float)delta;
 
+        // 1. Raw Input Vector
+        DirectionRaw = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
+
+        // 2. Camera-Relative Movement Vector (Forward = -Basis.Z)
+        if (_player?.Camera != null)
+        {
+            Transform3D camTransform = _player.Camera.GlobalTransform;
+            Vector3 forward = -camTransform.Basis.Z;
+            Vector3 right = camTransform.Basis.X;
+
+            forward.Y = 0;
+            right.Y = 0;
+
+            Direction = (forward.Normalized() * -DirectionRaw.Y + right.Normalized() * DirectionRaw.X).Normalized();
+        }
+
+        // 3. Action States
         LeftArmAction = Input.IsActionPressed("left_hand");
         RightArmAction = Input.IsActionPressed("right_hand");
-
-        WantsJump = BufferedAction("jump", 0.5f, (float)delta);
         WantsSprint = Input.IsActionPressed("sprint");
-        WantsDash = Input.IsActionPressed("dash");
+        WantsDash = Input.IsActionJustPressed("dash");
         WantsCrouch = Input.IsActionPressed("crouch");
+
+        // 4. Jump Buffer Logic
+        if (Input.IsActionJustPressed("jump"))
+        {
+            _jumpBufferTimer = 0f;
+        }
+        else
+        {
+            _jumpBufferTimer += dt;
+        }
+
+        WantsJump = _jumpBufferTimer <= JumpBufferTime;
     }
-
-    private bool BufferedAction(string action, float bufferLength, float delta)
+    public void ConsumeJump()
     {
-        if (!_actionBuffers.ContainsKey(action))
-        {
-            _actionBuffers.Add(action, float.MaxValue);
-        }
-        if (Input.IsActionPressed(action))
-        {
-            _actionBuffers[action] = 0f;
-            return true;
-        }
-
-        _actionBuffers[action] += delta;
-
-        return _actionBuffers[action] < bufferLength;
+        _jumpBufferTimer = float.MaxValue;
+        WantsJump = false;
     }
 }
