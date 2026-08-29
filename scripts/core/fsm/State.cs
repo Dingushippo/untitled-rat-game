@@ -3,6 +3,7 @@ using Godot;
 public abstract partial class State : Node
 {
     protected Node _owner;
+    protected State _parent;
 
     public virtual void Enter(State previous = null) { }
 
@@ -11,8 +12,6 @@ public abstract partial class State : Node
     public virtual void PhysicsProcess(float delta) { }
 
     public virtual void Process(float delta) { }
-
-    public virtual void HandleInput(InputEvent @event) { }
 }
 
 public abstract partial class TypedState<T> : State
@@ -20,9 +19,10 @@ public abstract partial class TypedState<T> : State
 {
     protected HierarchicalStateMachine<T> _hfsm;
 
-    public virtual void Init(Node owner, HierarchicalStateMachine<T> stateMachine)
+    public virtual void Init(Node owner, HierarchicalStateMachine<T> stateMachine, State parent = null)
     {
         _owner = owner;
+        _parent = parent;
         _hfsm = stateMachine;
     }
 }

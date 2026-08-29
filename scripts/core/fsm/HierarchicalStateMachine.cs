@@ -18,30 +18,22 @@ public partial class HierarchicalStateMachine<T> : Node
 
     public void Init(Node owner)
     {
-        foreach (Node child in GetChildren())
-        {
-            if (child is not T state)
-                return;
-
-            _states.Add(state.GetType(), state);
-            state.Init(owner, this);
-            InitSubStates(child, owner);
-        }
+        RegisterStatesRecursive(this, owner, null);
 
         _currentState = GetNode<T>(InitialStatePath);
         _currentState.Enter();
     }
 
-    public void InitSubStates(Node parent, Node owner)
+    public void RegisterStatesRecursive(Node currentNode, Node owner, State parent)
     {
-        foreach (Node child in parent.GetChildren())
+        foreach (Node child in currentNode.GetChildren())
         {
             if (child is not T state)
                 return;
 
             _states.Add(state.GetType(), state);
-            state.Init(owner, this);
-            InitSubStates(child, owner);
+            state.Init(owner, this, parent);
+            RegisterStatesRecursive(child, owner, state);
         }
     }
 
@@ -63,8 +55,6 @@ public partial class HierarchicalStateMachine<T> : Node
         if (Debug)
             GD.Print($"{_owner} changed state from {_prevState} to {_currentState}");
     }
-
-    public override void _UnhandledInput(InputEvent @event) => _currentState.HandleInput(@event);
 
     public override void _PhysicsProcess(double delta) =>
         _currentState.PhysicsProcess((float)delta);
