@@ -6,8 +6,6 @@ public partial class PlayerGroundedState : PlayerState
 
     public override void PhysicsProcess(float delta)
     {
-        Parent?.PhysicsProcess(delta);
-
         Direction = _player.Input.Direction;
 
         // 1. High-Priority Air Transitions
@@ -48,7 +46,7 @@ public partial class PlayerGroundedState : PlayerState
     {
         bool hasInput = Direction != Vector3.Zero;
 
-        if (!hasInput)
+        if (_player.Velocity.IsZeroApprox() && !hasInput)
         {
             if (!_hfsm.IsState<PlayerIdleState>())
                 _hfsm.ChangeState<PlayerIdleState>();

@@ -13,7 +13,6 @@ public partial class HierarchicalStateMachine : Node
     public bool Debug;
     private Dictionary<Type, State> _states = [];
     private Node _owner;
-
     private State _currentState;
     private State _prevState;
 
@@ -47,53 +46,70 @@ public partial class HierarchicalStateMachine : Node
     {
         if (IsState<T>())
             return;
+
         Type stateKey = typeof(T);
         if (!_states.ContainsKey(stateKey))
         {
             GD.PushError($"{_owner} hfsm does not contain state: {stateKey}");
             return;
         }
-        State newState = _states[stateKey];
 
-        RecursiveExit(_currentState);
+        State newState = _states[stateKey];
+        State lca = FindLowestCommonAncestor(_currentState, newState);
+
+        ExitToAncestor(_currentState, lca);
         _prevState = _currentState;
-        RecursiveEnter(newState);
         _currentState = newState;
+        EnterFromAncestor(newState, lca);
 
         if (Debug)
-            GD.Print($"{_owner.Name} changed state from {_prevState?.Name} to {_currentState?.Name}");
+            GD.Print($"{_owner.Name} changed state from {_prevState.Name} to {_currentState.Name}");
     }
 
-    private void RecursiveExit(State state, int depth = 0)
+    private State FindLowestCommonAncestor(State a, State b)
     {
-        if (depth >= 10 || state.Parent == null)
-            return;
+        HashSet<State> path = new();
+        for (State current = a; current != null; current = current.Parent)
+            path.Add(current);
 
-        if (_currentState == state.Parent)
-            return;
-
-        state.Exit();
-        RecursiveExit(state.Parent, depth + 1);
+        for (State current = b; current != null; current = current.Parent)
+        {
+            if (path.Contains(current))
+                return current;
+        }
+        return null;
     }
 
-    private void RecursiveEnter(State state, int depth = 0)
+    private void ExitToAncestor(State current, State ancestor)
     {
-        if (depth >= 10 || state == _currentState)
-            return;
+        for (State state = current; state != null && state != ancestor; state = state.Parent)
+            state.Exit();
+    }
 
-        state.Enter();
-        if (state.Parent != null)
-            RecursiveEnter(state.Parent, depth + 1);
+    private void EnterFromAncestor(State target, State ancestor)
+    {
+        List<State> path = new();
+        for (State state = target; state != null && state != ancestor; state = state.Parent)
+            path.Add(state);
+
+        path.Reverse();
+        foreach (State state in path)
+            state.Enter();
     }
 
     public bool IsStateBranch<T>()
         where T : State
     {
-        if (IsState<T>())
+        State state = _states[typeof(T)];
+        return IsStateBranch(state);
+    }
+
+    public bool IsStateBranch(State state)
+    {
+        if (IsState(state))
             return true;
 
         State checkState = _currentState;
-        State state = _states[typeof(T)];
 
         for (State check = _currentState; check.Parent != null; check = check.Parent)
         {
@@ -102,14 +118,59 @@ public partial class HierarchicalStateMachine : Node
         }
         return false;
     }
+
     public bool IsState<T>()
         where T : State
     {
         return _currentState.GetType() == typeof(T);
     }
 
-    public override void _PhysicsProcess(double delta) =>
-        _currentState.PhysicsProcess((float)delta);
+    public bool IsState(State state)
+    {
+        return _currentState == state;
+    }
 
-    public override void _Process(double delta) => _currentState.Process((float)delta);
+    private bool IsInActiveBranch(State state)
+    {
+        for (State current = _currentState; current != null; current = current.Parent)
+            if (current == state) return true;
+        return false;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        float dt = (float)delta;
+        List<State> activeBranch = new();
+
+        for (State current = _currentState; current != null; current = current.Parent)
+            activeBranch.Add(current);
+
+        // Process top-down
+        activeBranch.Reverse();
+        foreach (State state in activeBranch)
+        {
+            if (!IsInActiveBranch(state))
+                break;
+            state.PhysicsProcess(dt);
+        }
+
+    }
+
+    public override void _Process(double delta)
+    {
+        float dt = (float)delta;
+        List<State> activeBranch = new();
+
+        for (State current = _currentState; current != null; current = current.Parent)
+            activeBranch.Add(current);
+
+        // Process top-down
+        activeBranch.Reverse();
+        foreach (State state in activeBranch)
+        {
+            if (!IsInActiveBranch(state))
+                break;
+            state.Process(dt);
+        }
+    }
 }

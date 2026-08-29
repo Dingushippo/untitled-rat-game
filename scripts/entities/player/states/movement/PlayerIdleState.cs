@@ -1,9 +1,7 @@
 public partial class PlayerIdleState : PlayerState
 {
-
-    public override void PhysicsProcess(float delta)
+    public override void Enter(State previous = null)
     {
-        Parent.PhysicsProcess(delta);
+        _player.Camera.SetBobVariables(0f, 0f);
     }
-
 }

@@ -22,24 +22,35 @@ public partial class PlayerCamera : Camera3D
     public Noise ShakeNoise;
 
     public float YOffset = 0f;
-
-    private float _yawDeg = 0f;
+    private float _yawRad;
     private float _pitchRad = 0f;
     private bool _cameraEnabled = true;
-    private float _originalFov;
 
+    private float _originalFov;
     private Vector3 _basePosition;
     private Vector3 _baseRotation;
     private Vector3 _handOffset;
 
     // Additive offsets driven by tweens, applied on top of the look rotation.
     private float _pitchOffset;
+    private float _pitchOffsetTarget;
     private float _rollOffset;
+    private float _rollOffsetTarget;
     private float _kickZ;
+    private float _kickZTarget;
     private float _fovOffset;
+    private float _fovOffsetTarget;
     private float _xOffset;
+    private float _xOffsetTarget;
 
-    private Tween _cameraTween;
+    // Headbob specific
+    private float _bobTime = 0f;
+    private Vector3 _bobOffset;
+    private float _bobSpeed;
+    private float _bobStrength;
+    private float _blendSpeed = 10f;
+
+    // private Tween _cameraTween;
 
     private readonly record struct CamPose(float Pitch, float Roll, float Z, float Fov, float Side);
 
@@ -52,79 +63,65 @@ public partial class PlayerCamera : Camera3D
     {
         // Initialize yaw from target if available
         _pitchRad = HeadNode.Rotation.X;
-        _yawRad = HeadNode.Rotation.Y;
+        _yawRad = Player.Rotation.Y;
         _originalFov = Fov;
         _basePosition = Position;
-        _baseRotation = Rotation;
+        _baseRotation = HeadNode.Rotation;
         _handOffset = HandNode.Position;
 
         // Capture the mouse for FPS look
         Input.MouseMode = Input.MouseModeEnum.Captured;
-
-        EventBus.Subscribe<CameraImpact>(OnCameraImpact);
-        EventBus.Subscribe<CameraCharge>(OnCameraCharge);
-        EventBus.Subscribe<CameraChargeReset>(OnCameraChargeReset);
     }
 
     public override void _ExitTree()
     {
-        EventBus.Unsubscribe<CameraImpact>(OnCameraImpact);
-        EventBus.Subscribe<CameraCharge>(OnCameraCharge);
-        EventBus.Subscribe<CameraChargeReset>(OnCameraChargeReset);
     }
 
     public override void _Process(double delta)
     {
+        BlendOffsets((float)delta);
         HandleHeadbob((float)delta);
         HandleFovMovementChange((float)delta);
         ApplyPose((float)delta);
     }
 
+    private float SmoothBlend(float from, float to, float blend)
+    {
+        return Mathf.Lerp(from, to, Mathf.SmoothStep(0, 1, blend));
+    }
+    private void BlendOffsets(float delta)
+    {
+        float blend = _blendSpeed * delta;
+        _pitchOffset = SmoothBlend(_pitchOffset, _pitchOffsetTarget, blend);
+        _rollOffset = SmoothBlend(_rollOffset, _rollOffsetTarget, blend);
+        _kickZ = SmoothBlend(_kickZ, _kickZTarget, blend);
+        _fovOffset = SmoothBlend(_fovOffset, _fovOffsetTarget, blend);
+        _xOffset = SmoothBlend(_xOffset, _xOffsetTarget, blend);
+    }
+
     private void ApplyPose(float delta)
     {
+        // Set player rotation
+        Vector3 playerRotation = _baseRotation;
+        playerRotation.Y = _yawRad;
+        Player.Rotation = playerRotation;
+
+        // Set head pitch
         Vector3 rotation = _baseRotation;
         rotation.X = _pitchRad + _pitchOffset;
-        rotation.Y = _yawRad;
-        // Rotation = yaw;
         HeadNode.Rotation = rotation;
+
+        // Set additional offsets
         Position = _basePosition + new Vector3(_xOffset, YOffset, _kickZ) + _bobOffset;
         HandNode.Position = _handOffset + new Vector3(0f, YOffset, _kickZ);
         Fov = _originalFov + _fovOffset;
     }
 
-    private float _bobTime = 0f;
-    private Vector3 _bobOffset;
-    private float _bobSpeed;
-    private float _bobStrength;
-    private float _blendSpeed = 10f;
+
 
     private void HandleHeadbob(float delta)
     {
         float blendDelta = delta * _blendSpeed;
-        if (
-            Mathf.IsZeroApprox(Player.Speed)
-            || Player.Input.WantsCrouch
-            || !Player.IsOnFloor()
-        )
-        {
-            _bobTime = 0;
-            _bobOffset = _bobOffset.Lerp(Vector3.Zero, blendDelta);
-            return;
-        }
-        _bobSpeed = Mathf.Remap(
-            Player.Speed,
-            Player.Tuning.Speed,
-            Player.Tuning.SprintSpeed,
-            Tuning.BobSpeed,
-            Tuning.BobSpeedSprint
-        );
-        _bobStrength = Mathf.Remap(
-            Player.Speed,
-            Player.Tuning.Speed,
-            Player.Tuning.SprintSpeed,
-            Tuning.BobStrength,
-            Tuning.BobStrengthSprint
-        );
 
         _bobTime += delta;
         _bobOffset = _bobOffset.Lerp(
@@ -137,31 +134,43 @@ public partial class PlayerCamera : Camera3D
         );
     }
 
+    public void SetBobVariables(float speed, float strength)
+    {
+        GD.Print($"Setting bob to: {speed}, {strength}");
+        _bobSpeed = speed;
+        _bobStrength = strength;
+    }
+
+    public void SetDesiredFovOffset(float offset)
+    {
+
+    }
+
     private void HandleFovMovementChange(float delta)
     {
         float blendDelta = delta * _blendSpeed;
-        if (Player.Velocity.IsZeroApprox())
-        {
-            _fovOffset = Mathf.Lerp(_fovOffset, 0, blendDelta);
-            return;
-        }
+        // if (Player.Velocity.IsZeroApprox())
+        // {
+        //     _fovOffset = Mathf.Lerp(_fovOffset, 0, blendDelta);
+        //     return;
+        // }
 
-        float newOffset;
+        // float newOffset;
 
-        if (Player.Input.WantsCrouch)
-            newOffset = Tuning.SlideFovOffset;
-        else
-            newOffset = Mathf.Remap(
-                Player.Velocity.Length(),
-                Player.Tuning.Speed,
-                Player.Tuning.SprintSpeed,
-                Tuning.WalkFovOffset,
-                Tuning.RunFovOffset
-            );
-        _fovOffset = Mathf.Lerp(_fovOffset, newOffset, blendDelta);
+        // if (Player.IsMovementState<PlayerSlideState>())
+        //     newOffset = Tuning.SlideFovOffset;
+        // else
+        //     newOffset = Mathf.Remap(
+        //         Player.Velocity.Length(),
+        //         Player.Tuning.Speed,
+        //         Player.Tuning.SprintSpeed,
+        //         Tuning.WalkFovOffset,
+        //         Tuning.RunFovOffset
+        //     );
+        // _fovOffset = Mathf.Lerp(_fovOffset, newOffset, blendDelta);
     }
 
-    private float _yawRad;
+
 
     public override void _Input(InputEvent @event)
     {
@@ -169,36 +178,12 @@ public partial class PlayerCamera : Camera3D
         {
             if (!_cameraEnabled)
                 return;
-
-            // HeadNode.RotateY(-mm.Relative.X * Tuning.Sensitivity * 0.01f);
-
             _yawRad += -mm.Relative.X * Tuning.Sensitivity * 0.01f;
-            // GD.Print($"_yawRad: {_yawRad}");
-
             _pitchRad = Mathf.Clamp(
                 _pitchRad - mm.Relative.Y * Tuning.Sensitivity * 0.01f,
                 Mathf.DegToRad(-80),
                 Mathf.DegToRad(80)
             );
-        }
-
-        if (@event is InputEventKey key && key.Pressed)
-        {
-            if (key.Keycode == Key.Key1)
-            {
-                _cameraTween?.Kill();
-                _cameraTween = CreateTween();
-                _cameraTween.SetParallel();
-                CamPose newPose = new(Tuning.Pitch, Tuning.Roll, Tuning.Z, Tuning.Fov, Tuning.Side);
-                TweenPose(CurrentPose, newPose, 0.2f);
-            }
-            if (key.Keycode == Key.Key2)
-            {
-                _cameraTween?.Kill();
-                _cameraTween = CreateTween();
-                _cameraTween.SetParallel();
-                TweenPose(CurrentPose, _restPose, 0.2f);
-            }
         }
 
         if (@event is InputEventKey keyEvent && keyEvent.IsPressed())
@@ -218,125 +203,5 @@ public partial class PlayerCamera : Camera3D
     public void SetCameraInputEnabled(bool enabled)
     {
         _cameraEnabled = enabled;
-    }
-
-    public void SetLean(
-        Side dir,
-        float angle = 0.2f,
-        float xOffset = 0.25f,
-        float leanDuration = 0.2f
-    )
-    {
-        int sign = dir == Side.Left ? -1 : 1;
-        CamPose leanPose = new(0f, sign * angle, 0f, 0f, -sign * xOffset);
-        _cameraTween?.Kill();
-        _cameraTween = CreateTween();
-        _cameraTween.SetParallel(true);
-        _cameraTween.SetEase(Tween.EaseType.Out);
-        _cameraTween.SetTrans(Tween.TransitionType.Sine);
-        TweenPose(CurrentPose, leanPose, leanDuration);
-    }
-
-    public void ResetPose(float duration = 0.2f)
-    {
-        _cameraTween?.Kill();
-        _cameraTween = CreateTween();
-        _cameraTween.SetParallel(true);
-        _cameraTween.SetEase(Tween.EaseType.Out);
-        _cameraTween.SetTrans(Tween.TransitionType.Sine);
-        TweenPose(CurrentPose, _restPose, duration);
-    }
-
-    private void OnCameraCharge(CameraCharge charge)
-    {
-        // Wind-up: pull back, tilt down and narrow the FOV to build tension.
-        CamPose target = new(
-            -Mathf.DegToRad(Tuning.ChargePitchDegrees),
-            0f,
-            Tuning.ChargePullDistance,
-            -Tuning.ChargeFovZoom,
-            0f
-        );
-
-        _cameraTween?.Kill();
-        _cameraTween = CreateTween();
-        _cameraTween.SetParallel(true);
-        _cameraTween.SetEase(Tween.EaseType.InOut);
-        _cameraTween.SetTrans(Tween.TransitionType.Sine);
-        TweenPose(CurrentPose, target, charge.Duration, charge.Delay);
-    }
-
-    private void OnCameraChargeReset(CameraChargeReset _)
-    {
-        _cameraTween?.Kill();
-        _cameraTween = CreateTween();
-        _cameraTween.SetParallel(true);
-        _cameraTween.SetEase(Tween.EaseType.Out);
-        _cameraTween.SetTrans(Tween.TransitionType.Sine);
-        TweenPose(CurrentPose, _restPose, Tuning.ChargeReturnDuration);
-    }
-
-    private void OnCameraImpact(CameraImpact impact)
-    {
-        PlayImpact(impact.Charge, impact.Duration);
-    }
-
-    private void PlayImpact(float charge, float duration)
-    {
-        float scale = Mathf.Lerp(Tuning.MinImpactScale, 1f, Mathf.Clamp(charge, 0f, 1f));
-
-        // Release: snap forward and up, roll slightly, widen the FOV.
-        CamPose peak = new(
-            Mathf.DegToRad(Tuning.ImpactPitchDegrees) * scale,
-            -Mathf.DegToRad(Tuning.ImpactRollDegrees) * scale,
-            -Tuning.ImpactPunchDistance * scale,
-            Tuning.ImpactFovPunch * scale,
-            0f
-        );
-
-        float attack = duration * Tuning.ImpactAttackRatio;
-        float recover = Mathf.Max(duration - attack, 0.01f);
-
-        _cameraTween?.Kill();
-        _cameraTween = CreateTween();
-        _cameraTween.SetParallel(true);
-
-        _cameraTween.SetEase(Tween.EaseType.Out);
-        _cameraTween.SetTrans(Tween.TransitionType.Expo);
-        TweenPose(CurrentPose, peak, attack);
-
-        _cameraTween.Chain();
-        _cameraTween.SetEase(Tween.EaseType.Out);
-        _cameraTween.SetTrans(Tween.TransitionType.Back);
-        TweenPose(peak, _restPose, recover);
-    }
-
-    private void TweenPose(CamPose from, CamPose to, float duration, float delay = 0f)
-    {
-        TweenChannel(v => _pitchOffset = v, from.Pitch, to.Pitch, duration, delay);
-        TweenChannel(v => _rollOffset = v, from.Roll, to.Roll, duration, delay);
-        TweenChannel(v => _kickZ = v, from.Z, to.Z, duration, delay);
-        TweenChannel(v => _fovOffset = v, from.Fov, to.Fov, duration, delay);
-        TweenChannel(v => _xOffset = v, from.Side, to.Side, duration, delay);
-    }
-
-    private void TweenChannel(
-        Action<float> setter,
-        float from,
-        float to,
-        float duration,
-        float delay
-    )
-    {
-        MethodTweener tweener = _cameraTween.TweenMethod(
-            Callable.From<float>(setter),
-            from,
-            to,
-            duration
-        );
-        if (delay > 0f)
-        {
-            tweener.SetDelay(delay);
-        }
     }
 }

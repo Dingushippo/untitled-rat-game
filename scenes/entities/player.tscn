@@ -212,6 +212,8 @@ script = ExtResource("10_n36er")
 Speed = 1.0
 Acceleration = 20.0
 Deceleration = 20.0
+BobSpeed = 5.0
+BobStrength = 0.5
 
 [node name="Slide" type="Node" parent="HierarchicalStateMachine/Grounded/Crouch" unique_id=684412582]
 script = ExtResource("13_xe83n")
@@ -219,14 +221,18 @@ script = ExtResource("13_xe83n")
 [node name="Run" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=113314447]
 script = ExtResource("11_d745t")
 Speed = 5.0
-Acceleration = 50.0
-Deceleration = 65.0
+Acceleration = 15.0
+Deceleration = 30.0
+BobSpeed = 10.0
+BobStrength = 0.2
 
 [node name="Sprint" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=1701869178]
 script = ExtResource("12_qc1tv")
 Speed = 10.0
 Acceleration = 50.0
 Deceleration = 50.0
+BobSpeed = 20.0
+BobStrength = 0.2
 
 [node name="Aerial" type="Node" parent="HierarchicalStateMachine" unique_id=810324095]
 script = ExtResource("14_cwche")

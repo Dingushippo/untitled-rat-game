@@ -9,7 +9,6 @@ public partial class PlayerJumpState : PlayerState
 
     public override void PhysicsProcess(float delta)
     {
-        Parent?.PhysicsProcess(delta);
         if (_player.Velocity.Y <= 0)
         {
             _hfsm.ChangeState<PlayerFallingState>();

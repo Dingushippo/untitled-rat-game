@@ -19,12 +19,11 @@ public partial class PlayerSlideState : PlayerState
             : -_player.Transform.Basis.Z;
 
         _currentSpeed = Mathf.Max(_player.Velocity.Length(), SlideImpulse);
+        _player.Camera.SetBobVariables(0f, 0f);
     }
 
     public override void PhysicsProcess(float delta)
     {
-        base.PhysicsProcess(delta);
-
         // Decelerate slide speed over time
         _currentSpeed = Mathf.MoveToward(_currentSpeed, 0f, Friction * delta);
 

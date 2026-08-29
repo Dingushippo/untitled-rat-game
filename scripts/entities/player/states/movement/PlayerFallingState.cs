@@ -12,7 +12,6 @@ public partial class PlayerFallingState : PlayerState
 
     public override void PhysicsProcess(float delta)
     {
-        Parent?.PhysicsProcess(delta);
         if (_player.IsOnFloor())
             _hfsm.ChangeState<PlayerGroundedState>();
         MoveAndSlide();
