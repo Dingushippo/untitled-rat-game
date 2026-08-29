@@ -20,7 +20,7 @@ public class GameMenuState : GameState
             if (GameManager.Instance.HasFatalDataError)
                 OS.Alert("Fatal data error, check output");
             else
-                fsm.ChangeState<GameRunState>(this);
+                _hfsm.ChangeState<GameRunState>(this);
         }
     }
 }

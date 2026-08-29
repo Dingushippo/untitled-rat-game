@@ -43,8 +43,8 @@ public partial class Player : RigidBody3D
     public Vector3 WallNormal;
     public bool StickToFloor;
 
-    private FiniteStateMachine<PlayerState> _movementFsm;
-    private FiniteStateMachine<HandState> _handFsm;
+    private HierarchicalStateMachine<PlayerState> _movementFsm;
+    private HierarchicalStateMachine<HandState> _handFsm;
 
     private bool _isFrozen = false;
     private Vector3 _impulse = Vector3.Zero;

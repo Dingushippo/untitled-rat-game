@@ -34,6 +34,6 @@ public class PlayerJumpState : PlayerState
         Vector3 jumpImpulse = _launchDirection * _launchForce;
         GD.Print($"Adding jump impulse: {jumpImpulse}");
         _player.SetImpulse(jumpImpulse);
-        fsm.ChangeState<PlayerFallingState>(this);
+        _hfsm.ChangeState<PlayerFallingState>(this);
     }
 }

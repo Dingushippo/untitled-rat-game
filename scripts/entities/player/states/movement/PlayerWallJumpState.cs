@@ -11,6 +11,6 @@ public class PlayerWallJumpState : PlayerState
             return;
 
         _player.Velocity = (wallRun.WallNormal + Vector3.Up) * _player.Tuning.WallJumpForce;
-        fsm.ChangeState<PlayerFallingState>(this);
+        _hfsm.ChangeState<PlayerFallingState>(this);
     }
 }

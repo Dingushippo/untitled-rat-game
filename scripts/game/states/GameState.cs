@@ -1,9 +1,11 @@
-
-public class GameState : State<GameState>
+public class GameState : TypedState<GameState>
 {
     private protected GameManager _manager;
 
-    public GameState(GameManager owner) { _manager = owner; }
+    public GameState(GameManager owner)
+    {
+        _manager = owner;
+    }
 }
 
 /* Template

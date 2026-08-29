@@ -15,17 +15,17 @@ public class PlayerWallRunState : PlayerState
     {
         if (_player.IsOnFloor)
         {
-            fsm.ChangeState<PlayerIdleState>();
+            _hfsm.ChangeState<PlayerIdleState>();
             return;
         }
         else if (!IsStillOnWall())
         {
-            fsm.ChangeState<PlayerFallingState>(this);
+            _hfsm.ChangeState<PlayerFallingState>(this);
             return;
         }
         if (Input.IsActionJustPressed("jump"))
         {
-            fsm.ChangeState<PlayerWallJumpState>(this);
+            _hfsm.ChangeState<PlayerWallJumpState>(this);
             return;
         }
     }

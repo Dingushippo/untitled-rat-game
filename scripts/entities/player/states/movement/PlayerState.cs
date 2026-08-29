@@ -1,6 +1,6 @@
 using Godot;
 
-public class PlayerState : State<PlayerState>
+public class PlayerState : TypedState<PlayerState>
 {
     private protected Player _player;
 

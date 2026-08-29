@@ -31,7 +31,7 @@ public class PlayerSlideState : PlayerState
 
         if (_currentSlideSpeed < SLIDE_EXIT_VELOCITY)
         {
-            fsm.ChangeState<PlayerMoveState>();
+            _hfsm.ChangeState<PlayerMoveState>();
         }
     }
 
@@ -39,7 +39,7 @@ public class PlayerSlideState : PlayerState
     {
         if (@event.IsActionPressed("jump"))
         {
-            fsm.ChangeState<PlayerJumpState>(this);
+            _hfsm.ChangeState<PlayerJumpState>(this);
             _player.CrouchComponent.TryStand();
         }
     }

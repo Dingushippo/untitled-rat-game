@@ -9,14 +9,14 @@ public class PlayerMoveState : PlayerState
     {
         if (!_player.IsOnFloor)
         {
-            fsm.ChangeState<PlayerFallingState>(this);
+            _hfsm.ChangeState<PlayerFallingState>(this);
             return;
         }
         _player.Direction = _player.GetCorrectedInput();
 
         if (_player.LinearVelocity == Vector3.Zero && _player.Direction == Vector3.Zero)
         {
-            fsm.ChangeState<PlayerIdleState>();
+            _hfsm.ChangeState<PlayerIdleState>();
             return;
         }
 
@@ -44,7 +44,7 @@ public class PlayerMoveState : PlayerState
     {
         if (@event.IsActionPressed("jump"))
         {
-            fsm.ChangeState<PlayerJumpState>(this);
+            _hfsm.ChangeState<PlayerJumpState>(this);
             return;
         }
         if (@event.IsActionPressed("sprint"))
@@ -57,12 +57,12 @@ public class PlayerMoveState : PlayerState
             && !_player.CrouchComponent.IsCrouching
         )
         {
-            fsm.ChangeState<PlayerSlideState>(this);
+            _hfsm.ChangeState<PlayerSlideState>(this);
         }
         if (@event.IsActionPressed("crouch") && _player.IsOnFloor && _player.GetFloorAngle() != 0)
         {
             if (_player.Velocity.Y < 0)
-                fsm.ChangeState<PlayerSlideState>(this);
+                _hfsm.ChangeState<PlayerSlideState>(this);
         }
     }
 }

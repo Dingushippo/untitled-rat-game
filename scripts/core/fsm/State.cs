@@ -1,24 +1,28 @@
 using Godot;
 
-public abstract class State
+public abstract partial class State : Node
 {
-    public virtual void PhysicsProcess(float delta) { }
-
-    public virtual void Process(float delta) { }
-
-    public virtual void IntegrateForces(PhysicsDirectBodyState3D state) { }
-
-    public virtual void HandleInput(InputEvent @event) { }
-
-    public virtual void HandleUnhandledInput(InputEvent @event) { }
+    protected Node _owner;
 
     public virtual void Enter(State previous = null) { }
 
     public virtual void Exit() { }
+
+    public virtual void PhysicsProcess(float delta) { }
+
+    public virtual void Process(float delta) { }
+
+    public virtual void HandleInput(InputEvent @event) { }
 }
 
-public abstract class State<T> : State
-    where T : State<T>
+public abstract partial class TypedState<T> : State
+    where T : TypedState<T>
 {
-    public FiniteStateMachine<T> fsm { get; internal set; }
+    protected HierarchicalStateMachine<T> _hfsm;
+
+    public virtual void Init(Node owner, HierarchicalStateMachine<T> stateMachine)
+    {
+        _owner = owner;
+        _hfsm = stateMachine;
+    }
 }

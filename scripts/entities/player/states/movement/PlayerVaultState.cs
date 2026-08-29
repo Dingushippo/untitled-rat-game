@@ -22,7 +22,7 @@ public class PlayerVaultState : PlayerState
         vaultTween.SetEase(Tween.EaseType.InOut);
         vaultTween.SetTrans(Tween.TransitionType.Sine);
         vaultTween.TweenMethod(Callable.From<float>(BezierMove), 0f, 1f, 0.4f);
-        vaultTween.TweenCallback(Callable.From(() => fsm.ChangeState<PlayerIdleState>(this)));
+        vaultTween.TweenCallback(Callable.From(() => _hfsm.ChangeState<PlayerIdleState>(this)));
     }
 
     private void BezierMove(float t)

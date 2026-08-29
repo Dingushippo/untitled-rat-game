@@ -11,7 +11,7 @@ public partial class GameManager : Node
     public Array<TimelineResource> Timeline;
     private static GameManager _instance;
     public static GameManager Instance => _instance;
-    private FiniteStateMachine<GameState> _fsm;
+    private HierarchicalStateMachine<GameState> _fsm;
 
     public bool HasFatalDataError { get; private set; } = false;
 

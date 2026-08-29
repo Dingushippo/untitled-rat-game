@@ -15,7 +15,7 @@ public class PlayerSwingState : PlayerState
 
         if (!_isAnchored)
         {
-            fsm.ChangeState<PlayerFallingState>(this);
+            _hfsm.ChangeState<PlayerFallingState>(this);
         }
 
         Vector3 direction = _anchorPoint - _player.GlobalPosition;

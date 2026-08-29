@@ -54,7 +54,7 @@ public class PlayerArcMovementState : PlayerState
             Transform3D t = state.Transform;
             t.Origin = _targetPosition;
             state.Transform = t;
-            fsm.ChangeState<PlayerFallingState>(this);
+            _hfsm.ChangeState<PlayerFallingState>(this);
         }
     }
 }

@@ -24,7 +24,7 @@ public class HandEmptyState : HandState
             rat.Freeze = false;
             rat.Collider.Disabled = false;
             rat.ApplyCentralImpulse(direction * 30f);
-            fsm.ChangeState<HandEmptyState>();
+            _hfsm.ChangeState<HandEmptyState>();
         }
 
         if (@event.IsActionPressed("left_hand") && !_player.Whip.IsAnchored)
