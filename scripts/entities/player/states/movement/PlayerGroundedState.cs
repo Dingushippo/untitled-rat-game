@@ -3,6 +3,7 @@ using Godot;
 public partial class PlayerGroundedState : PlayerState
 {
     public Vector3 Direction;
+    [Export] public float CoyotyTime = 0.15f;
 
     public override void PhysicsProcess(float delta)
     {
@@ -17,6 +18,7 @@ public partial class PlayerGroundedState : PlayerState
 
         if (_player.Input.WantsJump)
         {
+            _player.Input.ConsumeJump();
             _hfsm.ChangeState<PlayerJumpState>();
             return;
         }
