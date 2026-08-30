@@ -21,7 +21,7 @@ public partial class GameManager : Node
 
     public override void _Process(double delta)
     {
-        DebugDraw.Clear(); // Feels like a good place to have it
+
     }
 
     public override void _Ready()

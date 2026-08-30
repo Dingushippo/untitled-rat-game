@@ -10,6 +10,7 @@ public partial class Player : CharacterBody3D
 
     [Export] public Node3D Head;
     [Export] public InputComponent Input;
+    [Export] public AbilityManager AbilityManager;
 
     [Export] public CollisionShape3D Collider;
 
@@ -21,8 +22,6 @@ public partial class Player : CharacterBody3D
     public InteractComponent InteractComponent;
 
     [Export] private HierarchicalStateMachine _movementFsm;
-    [Export] private MovementAbility _equippedAbility;
-    [Export] private PlayerAbilityState _abilityState;
     // [Export] private HierarchicalStateMachine _handFsm;
 
     public override void _Ready()
@@ -30,8 +29,6 @@ public partial class Player : CharacterBody3D
         InteractComponent = new(this);
         Input.Init(this);
         _movementFsm.Init(this);
-        _equippedAbility.Init(this, _movementFsm);
-        _abilityState.ActiveAbility = _equippedAbility;
         // _handFsm.Init(this);
 
         EventBus.Subscribe<QteStarted>(OnQteStarted);
@@ -74,9 +71,12 @@ public partial class Player : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        DebugDraw.Clear(); // Feels like a good place to have it
+        DebugDraw.Sphere(this, Vector3.One, 3, Colors.SkyBlue);
+
         if (Input.LeftArmAction)
         {
-            _movementFsm.ChangeState<PlayerAbilityState>();
+            AbilityManager.ActivateAbility();
         }
         InteractComponent.PhysicsUpdate((float)delta);
     }

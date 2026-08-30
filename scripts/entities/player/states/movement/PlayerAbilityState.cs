@@ -1,3 +1,4 @@
+
 public partial class PlayerAbilityState : PlayerMoveState
 {
     public MovementAbility ActiveAbility { get; set; }
