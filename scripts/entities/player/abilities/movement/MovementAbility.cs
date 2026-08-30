@@ -12,10 +12,10 @@ public abstract partial class MovementAbility : Resource
         _player = player;
         _hfsm = hfsm;
     }
-
-    public abstract void OnActivate();
-
     public abstract void PhysicsProcess(float delta);
-
-    public abstract void OnDeactivate();
+    public virtual void OnActivate() { }
+    public virtual void OnDeactivate() { }
+    public virtual void OnEquip() { }
+    public virtual void OnUnequip() { }
+    public virtual void WhileEquipped() { } // for preview visuals and such
 }
