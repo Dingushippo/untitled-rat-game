@@ -1,6 +1,9 @@
 using Godot;
+using Godot.Collections;
 
-public partial class SpellResource : Resource
+
+[GlobalClass]
+public partial class SpellData : Resource
 {
     [Export] public string Id;
     [Export] public string DisplayName;

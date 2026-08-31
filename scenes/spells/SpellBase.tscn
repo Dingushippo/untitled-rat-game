@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://6du58150asa1"]
+
+[ext_resource type="Script" uid="uid://d0qw38ehqjq7b" path="res://scripts/entities/player/spells/SpellBase.cs" id="1_usm0s"]
+[ext_resource type="PackedScene" uid="uid://dtfxx86u06x87" path="res://assets/rat.glb" id="2_6m00d"]
+[ext_resource type="Script" uid="uid://cg32hcwni4uiw" path="res://scripts/entities/player/spells/components/ProjectileComponent.cs" id="3_4eyvu"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pso3n"]
+radius = 0.3357584
+
+[node name="TestSpell" type="Node3D" unique_id=1729924080]
+script = ExtResource("1_usm0s")
+
+[node name="rat" parent="." unique_id=256426602 instance=ExtResource("2_6m00d")]
+
+[node name="ProjectileComponent" type="Area3D" parent="." unique_id=1837581459]
+script = ExtResource("3_4eyvu")
+Speed = 20.0
+GravityStrength = 9.8
+metadata/_custom_type_script = "uid://cg32hcwni4uiw"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ProjectileComponent" unique_id=1658743445]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12205447, 0.017286636)
+shape = SubResource("SphereShape3D_pso3n")

@@ -5,12 +5,13 @@ public partial class Player : CharacterBody3D
 {
     [Export] public PlayerCamera Camera;
     [Export] public Node3D HandL;
-
     [Export] public Node3D HandR;
+    [Export] public SpellData CurrentSpell;
 
     [Export] public Node3D Head;
-    [Export] public InputComponent Input;
+    [Export] public InputComponent InputComponent;
     [Export] public AbilityManager AbilityManager;
+    [Export] public CastManager CastManager;
 
     [Export] public CollisionShape3D Collider;
 
@@ -27,7 +28,7 @@ public partial class Player : CharacterBody3D
     public override void _Ready()
     {
         InteractComponent = new(this);
-        Input.Init(this);
+        InputComponent.Init(this);
         _movementFsm.Init(this);
         // _handFsm.Init(this);
 
@@ -72,11 +73,17 @@ public partial class Player : CharacterBody3D
     public override void _PhysicsProcess(double delta)
     {
         DebugDraw.Clear(); // Feels like a good place to have it
-        DebugDraw.Sphere(this, Vector3.One, 3, Colors.SkyBlue);
 
-        if (Input.LeftArmAction)
+        if (InputComponent.LeftArmAction)
         {
             AbilityManager.ActivateAbility();
+        }
+        if (Input.IsActionJustPressed("right_hand"))
+        {
+            Vector3 target = HandR.GlobalPosition - Camera.GlobalBasis.Z;
+            DebugDraw.Sphere(this, target, 0.3f, Colors.Orange);
+            GD.Print($"Target: {target}");
+            CastManager.Cast(CurrentSpell, target);
         }
         InteractComponent.PhysicsUpdate((float)delta);
     }

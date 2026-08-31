@@ -16,7 +16,7 @@ public partial class PlayerAerialState : PlayerState
             return;
         }
 
-        Direction = _player.Input.Direction;
+        Direction = _player.InputComponent.Direction;
         Vector3 currentHorizontal = new Vector3(_velocity.X, 0, _velocity.Z);
 
         if (Direction != Vector3.Zero)
@@ -59,7 +59,7 @@ public partial class PlayerAerialState : PlayerState
 
     private bool CanVault()
     {
-        if (_player.Input.WantsVault && _player.VaultRaycast.IsColliding())
+        if (_player.InputComponent.WantsVault && _player.VaultRaycast.IsColliding())
             return true;
         return false;
     }

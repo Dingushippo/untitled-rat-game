@@ -14,8 +14,8 @@ public partial class PlayerSlideState : PlayerState
         base.Enter(previous);
 
         // Lock initial direction and inherit momentum
-        _slideDirection = _player.Input.Direction != Vector3.Zero
-            ? _player.Input.Direction
+        _slideDirection = _player.InputComponent.Direction != Vector3.Zero
+            ? _player.InputComponent.Direction
             : -_player.Transform.Basis.Z;
 
         _currentSpeed = Mathf.Max(_player.Velocity.Length(), SlideImpulse);
@@ -35,9 +35,9 @@ public partial class PlayerSlideState : PlayerState
         // Hand control back to ground matrix when speed drops
         if (_currentSpeed <= MinSlideSpeed)
         {
-            if (_player.Input.WantsCrouch)
+            if (_player.InputComponent.WantsCrouch)
                 _hfsm.ChangeState<PlayerCrouchState>();
-            else if (_player.Input.Direction != Vector3.Zero)
+            else if (_player.InputComponent.Direction != Vector3.Zero)
                 _hfsm.ChangeState<PlayerRunState>();
             else
                 _hfsm.ChangeState<PlayerIdleState>();

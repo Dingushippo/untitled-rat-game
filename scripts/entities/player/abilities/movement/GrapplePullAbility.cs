@@ -34,7 +34,7 @@ public partial class GrapplePullAbility : MovementAbility
         _player.Velocity = direction * PullSpeed;
         _player.MoveAndSlide();
 
-        if (_player.GlobalPosition.DistanceTo(_targetPoint) < 2.0f || !_player.Input.LeftArmAction)
+        if (_player.GlobalPosition.DistanceTo(_targetPoint) < 2.0f || !_player.InputComponent.LeftArmAction)
         {
             _hfsm.ChangeState<PlayerJumpState>();
         }

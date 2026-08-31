@@ -32,7 +32,7 @@ public partial class PlayerCrouchState : PlayerMoveState
 
         base.PhysicsProcess(delta);
 
-        if (!_player.Input.WantsCrouch && CanStand())
+        if (!_player.InputComponent.WantsCrouch && CanStand())
         {
             if (grounded.Direction != Vector3.Zero)
                 _hfsm.ChangeState<PlayerRunState>();

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SpellData" format=3 uid="uid://du8mbn5nwa402"]
+
+[ext_resource type="PackedScene" uid="uid://6du58150asa1" path="res://scenes/spells/SpellBase.tscn" id="1_kwluo"]
+[ext_resource type="Script" uid="uid://c2kysrgkvph3q" path="res://scripts/entities/player/spells/SpellData.cs" id="2_0x7a4"]
+
+[resource]
+script = ExtResource("2_0x7a4")
+Id = "test"
+SpellScene = ExtResource("1_kwluo")
+metadata/_custom_type_script = "uid://c2kysrgkvph3q"

@@ -7,7 +7,7 @@ public partial class PlayerGroundedState : PlayerState
 
     public override void PhysicsProcess(float delta)
     {
-        Direction = _player.Input.Direction;
+        Direction = _player.InputComponent.Direction;
 
         // 1. High-Priority Air Transitions
         if (!_player.IsOnFloor())
@@ -16,22 +16,22 @@ public partial class PlayerGroundedState : PlayerState
             return;
         }
 
-        if (_player.Input.WantsJump)
+        if (_player.InputComponent.WantsJump)
         {
-            _player.Input.ConsumeJump();
+            _player.InputComponent.ConsumeJump();
             _hfsm.ChangeState<PlayerJumpState>();
             return;
         }
 
         // 2. Slide Transition (Triggered when sprinting + crouch/slide input)
-        if (_player.Input.WantsCrouch && CanSlide())
+        if (_player.InputComponent.WantsCrouch && CanSlide())
         {
             _hfsm.ChangeState<PlayerSlideState>();
             return;
         }
 
         // 3. Crouch Transition
-        if (_player.Input.WantsCrouch && !_hfsm.IsState<PlayerCrouchState>() && !_hfsm.IsState<PlayerSlideState>())
+        if (_player.InputComponent.WantsCrouch && !_hfsm.IsState<PlayerCrouchState>() && !_hfsm.IsState<PlayerSlideState>())
         {
             _hfsm.ChangeState<PlayerCrouchState>();
             return;
@@ -53,7 +53,7 @@ public partial class PlayerGroundedState : PlayerState
             if (!_hfsm.IsState<PlayerIdleState>())
                 _hfsm.ChangeState<PlayerIdleState>();
         }
-        else if (_player.Input.WantsSprint)
+        else if (_player.InputComponent.WantsSprint)
         {
             if (!_hfsm.IsState<PlayerSprintState>())
                 _hfsm.ChangeState<PlayerSprintState>();

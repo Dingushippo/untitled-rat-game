@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cj23ban2ylgqk" path="res://scripts/entities/player/Player.cs" id="1_dqkch"]
 [ext_resource type="Script" uid="uid://cuyb4v4vre4wf" path="res://scripts/entities/player/PlayerMovementTuning.cs" id="2_ss7kx"]
+[ext_resource type="Resource" uid="uid://du8mbn5nwa402" path="res://resources/spells/test.tres" id="2_yv3je"]
 [ext_resource type="Script" uid="uid://cbirv4cstp2wl" path="res://scripts/entities/player/components/InputComponent.cs" id="3_n36er"]
 [ext_resource type="Script" uid="uid://vgnhr4ksw2lt" path="res://scripts/entities/player/abilities/movement/GrapplePullAbility.cs" id="3_qc1tv"]
 [ext_resource type="Resource" uid="uid://g8o35bffx81c" path="res://resources/tuning/player_camera_tuning.tres" id="3_saib0"]
@@ -12,6 +13,7 @@
 [ext_resource type="Script" uid="uid://bma8pjlvo3gxj" path="res://scripts/entities/player/states/movement/PlayerGroundedState.cs" id="8_2ngu4"]
 [ext_resource type="Script" uid="uid://d3l36ce3owmy7" path="res://scripts/entities/player/VaultRaycast.cs" id="8_dnykm"]
 [ext_resource type="Script" uid="uid://diduhjxjhjf3m" path="res://scripts/entities/player/states/movement/PlayerIdleState.cs" id="9_jv5ih"]
+[ext_resource type="Script" uid="uid://brm17y0d2v4ct" path="res://scripts/entities/player/spells/CastManager.cs" id="9_yv3je"]
 [ext_resource type="Script" uid="uid://7bj6v4w0rxec" path="res://scripts/entities/player/states/movement/PlayerCrouchState.cs" id="10_n36er"]
 [ext_resource type="Script" uid="uid://cearbk4mljj2q" path="res://scripts/entities/player/states/movement/PlayerRunState.cs" id="11_d745t"]
 [ext_resource type="Script" uid="uid://c87dhm675xypo" path="res://scripts/qte/QteManager.cs" id="12_5ki56"]
@@ -31,15 +33,6 @@ script = ExtResource("2_ss7kx")
 metadata/_custom_type_script = "uid://cuyb4v4vre4wf"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2hs0m"]
-
-[sub_resource type="Resource" id="Resource_inj27"]
-script = ExtResource("3_qc1tv")
-metadata/_custom_type_script = "uid://vgnhr4ksw2lt"
-
-[sub_resource type="Resource" id="Resource_cwche"]
-script = ExtResource("6_d4qa6")
-WhipRestLengthMultiplier = 0.7
-metadata/_custom_type_script = "uid://32o2pnmqajak"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j5cof"]
 no_depth_test = true
@@ -120,36 +113,35 @@ bind/15/pose = Transform3D(8.321876, -0.33419704, 0.10384854, 0.34903196, 8.1058
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_pso3n"]
 
-[node name="Player" type="CharacterBody3D" unique_id=1054079331 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "Input", "AbilityManager", "Collider", "VaultRaycast", "_movementFsm") groups=["player"]]
+[sub_resource type="Resource" id="Resource_inj27"]
+script = ExtResource("3_qc1tv")
+metadata/_custom_type_script = "uid://vgnhr4ksw2lt"
+
+[sub_resource type="Resource" id="Resource_cwche"]
+script = ExtResource("6_d4qa6")
+WhipRestLengthMultiplier = 0.7
+metadata/_custom_type_script = "uid://32o2pnmqajak"
+
+[node name="Player" type="CharacterBody3D" unique_id=1054079331 node_paths=PackedStringArray("Camera", "HandL", "HandR", "Head", "InputComponent", "AbilityManager", "CastManager", "Collider", "VaultRaycast", "_movementFsm") groups=["player"]]
 collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_dqkch")
 Camera = NodePath("Head/Camera3D")
 HandL = NodePath("Head/HandL")
 HandR = NodePath("Head/HandR")
+CurrentSpell = ExtResource("2_yv3je")
 Head = NodePath("Head")
-Input = NodePath("InputComponent")
+InputComponent = NodePath("InputComponent")
 AbilityManager = NodePath("AbilityManager")
+CastManager = NodePath("CastManager")
 Collider = NodePath("CollisionShape3D")
 VaultRaycast = NodePath("VaultRaycastRotation/VaultRaycast")
 Tuning = SubResource("Resource_pso3n")
 _movementFsm = NodePath("HierarchicalStateMachine")
 
-[node name="InputComponent" type="Node" parent="." unique_id=860001231]
-script = ExtResource("3_n36er")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1307719133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_2hs0m")
-
-[node name="AbilityManager" type="Node" parent="." unique_id=1375204078 node_paths=PackedStringArray("AbilityState", "_player", "_hfsm")]
-script = ExtResource("4_xe83n")
-AbilityState = NodePath("../HierarchicalStateMachine/Ability")
-MovementAbilities = Array[Object]([SubResource("Resource_inj27")])
-CurrentMovement = SubResource("Resource_cwche")
-_player = NodePath("..")
-_hfsm = NodePath("../HierarchicalStateMachine")
-metadata/_custom_type_script = "uid://c7bvj72oc6fia"
 
 [node name="Head" type="Node3D" parent="." unique_id=980955593]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
@@ -185,20 +177,23 @@ skin = SubResource("Skin_64kpw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_pso3n")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
+[node name="InputComponent" type="Node" parent="." unique_id=860001231]
+script = ExtResource("3_n36er")
 
-[node name="QteManager" type="Control" parent="CanvasLayer" unique_id=752057569]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-script = ExtResource("12_5ki56")
-QteScenes = Array[PackedScene]([ExtResource("13_saib0")])
-metadata/_custom_type_script = "uid://c87dhm675xypo"
+[node name="AbilityManager" type="Node" parent="." unique_id=1375204078 node_paths=PackedStringArray("AbilityState", "_player", "_hfsm")]
+script = ExtResource("4_xe83n")
+AbilityState = NodePath("../HierarchicalStateMachine/Ability")
+MovementAbilities = Array[Object]([SubResource("Resource_inj27")])
+CurrentMovement = SubResource("Resource_cwche")
+_player = NodePath("..")
+_hfsm = NodePath("../HierarchicalStateMachine")
+metadata/_custom_type_script = "uid://c7bvj72oc6fia"
+
+[node name="CastManager" type="Node" parent="." unique_id=1712236115 node_paths=PackedStringArray("CastNode")]
+script = ExtResource("9_yv3je")
+CurrentSpellResource = ExtResource("2_yv3je")
+CastNode = NodePath("../Head/HandR")
+metadata/_custom_type_script = "uid://brm17y0d2v4ct"
 
 [node name="VaultRaycastRotation" type="Node3D" parent="." unique_id=1008976753]
 
@@ -273,3 +268,18 @@ script = ExtResource("19_u2s01")
 
 [node name="Ability" type="Node" parent="HierarchicalStateMachine" unique_id=1331177189]
 script = ExtResource("23_d745t")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
+
+[node name="QteManager" type="Control" parent="CanvasLayer" unique_id=752057569]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("12_5ki56")
+QteScenes = Array[PackedScene]([ExtResource("13_saib0")])
+metadata/_custom_type_script = "uid://c87dhm675xypo"

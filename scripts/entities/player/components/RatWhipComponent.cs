@@ -113,7 +113,7 @@ public partial class RatWhipComponent : MovementAbility
     public override void PhysicsProcess(float delta)
     {
         // 1. Check for state transition
-        if (!_player.Input.LeftArmAction)
+        if (!_player.InputComponent.LeftArmAction)
         {
             _hfsm.ChangeState<PlayerFallingState>();
             return;
@@ -132,7 +132,7 @@ public partial class RatWhipComponent : MovementAbility
         nextVelocity += _player.GetGravity() * delta;
 
         // Apply player's WASD swing acceleration along the swing plane
-        Vector3 inputDir = _player.Input.Direction;
+        Vector3 inputDir = _player.InputComponent.Direction;
         if (inputDir.Length() > 0)
         {
             Plane swingPlane = new Plane(ropeDirection, 0);
