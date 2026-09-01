@@ -2,31 +2,28 @@ using Godot;
 using System;
 
 [GlobalClass]
-public partial class ProjectileComponent : Area3D, ISpellComponent
+public partial class ProjectileComponent : Area3DSpellComponent
 {
     [Export] public float Speed = 10;
     [Export] public float GravityStrength = 1f;
 
-
-    public SpellPayload Payload { get; set; }
-    public Action<SpellPayload> OnComplete { get; set; }
-
     private Vector3 _direction;
     private Vector3 _velocity;
-    private Node3D _spell;
 
-    public void Initialize(Node3D spell, SpellPayload payload)
+    public override void Initialize(Node3D spell, SpellPayload payload)
     {
-        Payload = payload;
+        _payload = payload;
         _spell = spell;
-        _direction = GlobalPosition.DirectionTo(Payload.TargetPosition);
+
+        _direction = GlobalPosition.DirectionTo(_payload.TargetPosition);
         _velocity = _direction * Speed;
+
         LookAt(GlobalPosition + _direction);
 
         BodyEntered += Completed;
     }
 
-    public void Process(float delta)
+    public override void Process(float delta)
     {
         float _gravityForce = _velocity.Y - GravityStrength * delta;
         _velocity = _velocity with { Y = _gravityForce };
@@ -38,7 +35,8 @@ public partial class ProjectileComponent : Area3D, ISpellComponent
 
     public void Completed(Node3D body)
     {
+        _payload.TargetNodes.Add(body);
         BodyEntered -= Completed;
-        OnComplete?.Invoke(Payload);
+        RaiseComplete(_payload);
     }
 }
