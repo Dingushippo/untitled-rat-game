@@ -80,10 +80,7 @@ public partial class Player : CharacterBody3D
         }
         if (Input.IsActionJustPressed("right_hand"))
         {
-            Vector3 target = HandR.GlobalPosition - Camera.GlobalBasis.Z;
-            DebugDraw.Sphere(this, target, 0.3f, Colors.Orange);
-            GD.Print($"Target: {target}");
-            CastManager.Cast(CurrentSpell, target);
+            CastManager.Cast(CurrentSpell);
         }
         InteractComponent.PhysicsUpdate((float)delta);
     }

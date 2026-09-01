@@ -136,7 +136,6 @@ public partial class PlayerCamera : Camera3D
 
     public void SetBobVariables(float speed, float strength)
     {
-        GD.Print($"Setting bob to: {speed}, {strength}");
         _bobSpeed = speed;
         _bobStrength = strength;
     }
