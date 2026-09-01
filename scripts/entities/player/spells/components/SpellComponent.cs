@@ -5,7 +5,6 @@ using System;
 
 public abstract partial class SpellComponent : Node, ISpellComponent
 {
-    public string ComponentName => GetType().ToString();
     public event Action<SpellPayload> OnComplete;
     public event Action OnStarted;
     public event Action<float> OnProgressChanged;
@@ -16,6 +15,7 @@ public abstract partial class SpellComponent : Node, ISpellComponent
     protected virtual void RaiseStarted() => OnStarted?.Invoke();
     protected virtual void RaiseProgressChanged(float progress) => OnProgressChanged?.Invoke(progress);
     public virtual void Process(float delta) { }
+    public override string ToString() => GetType().ToString();
 }
 
 public class SpellPayload
@@ -31,7 +31,6 @@ public class SpellPayload
 
 public interface ISpellComponent
 {
-    string ComponentName { get; }
     event Action<SpellPayload> OnComplete;
     event Action OnStarted;
     event Action<float> OnProgressChanged;

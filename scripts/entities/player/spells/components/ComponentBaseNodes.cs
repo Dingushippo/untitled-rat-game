@@ -3,7 +3,6 @@ using System;
 
 public abstract partial class Area3DSpellComponent : Area3D, ISpellComponent
 {
-    public string ComponentName => Name;
     public event Action<SpellPayload> OnComplete;
     public event Action OnStarted;
     public event Action<float> OnProgressChanged;
@@ -14,11 +13,11 @@ public abstract partial class Area3DSpellComponent : Area3D, ISpellComponent
     protected virtual void RaiseStarted() => OnStarted?.Invoke();
     protected virtual void RaiseProgressChanged(float progress) => OnProgressChanged?.Invoke(progress);
     public virtual void Process(float delta) { }
+    public override string ToString() => GetType().ToString();
 }
 
 public abstract partial class TrailSpellComponent : Trail3D, ISpellComponent
 {
-    public string ComponentName => Name;
     public event Action<SpellPayload> OnComplete;
     public event Action OnStarted;
     public event Action<float> OnProgressChanged;
@@ -29,4 +28,5 @@ public abstract partial class TrailSpellComponent : Trail3D, ISpellComponent
     protected virtual void RaiseStarted() => OnStarted?.Invoke();
     protected virtual void RaiseProgressChanged(float progress) => OnProgressChanged?.Invoke(progress);
     public virtual void Process(float delta) { }
+    public override string ToString() => GetType().ToString();
 }

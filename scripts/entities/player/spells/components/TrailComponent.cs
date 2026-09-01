@@ -16,9 +16,7 @@ public partial class TrailComponent : TrailSpellComponent
         }
 
         Emitting = true;
-        component.OnComplete += StopParticles;
-
-        GD.Print($"Invoking oncomplete particles, payload {payload.TargetPosition}");
+        // component.OnComplete += StopParticles;
         RaiseComplete(payload);
     }
 
