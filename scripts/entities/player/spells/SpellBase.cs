@@ -41,14 +41,15 @@ public partial class SpellBase : Node3D
         if (_componentQueue.Count == 0)
         {
             GD.Print($"Spell completed: {Name}");
-            QueueFree();
+            _currentComponent = null;
             return;
         }
-
-        GD.Print($"Queing payload: {payload}, remaining in queue: {_componentQueue.Count}");
-
+        GD.Print($"Queing from component: {_currentComponent}, payload: {payload}");
         _currentComponent = _componentQueue.Dequeue();
-        _currentComponent.Initialize(this, payload);
         _currentComponent.OnComplete += QueueNextComponent;
+        _currentComponent.Initialize(this, payload);
+        GD.Print($"Queued into: {_currentComponent.ComponentName}, payload: {payload}, remaining in queue: {_componentQueue.Count}");
+
+
     }
 }

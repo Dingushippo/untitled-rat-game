@@ -1,14 +1,22 @@
 using Godot;
 using Godot.Collections;
+using System;
 
 
-[GlobalClass]
-public abstract partial class SpellComponent : Node
+public abstract partial class SpellComponent : Node, ISpellComponent
 {
-    public abstract void Execute(SpellPayload payload);
-
+    public string ComponentName => Name;
+    public event Action<SpellPayload> OnComplete;
+    public event Action OnStarted;
+    public event Action<float> OnProgressChanged;
+    protected Node3D _spell;
+    protected SpellPayload _payload;
+    public virtual void Initialize(Node3D spell, SpellPayload payload) { _spell = spell; _payload = payload; }
+    protected virtual void RaiseComplete(SpellPayload payload) => OnComplete?.Invoke(payload);
+    protected virtual void RaiseStarted() => OnStarted?.Invoke();
+    protected virtual void RaiseProgressChanged(float progress) => OnProgressChanged?.Invoke(progress);
+    public virtual void Process(float delta) { }
 }
-
 
 public class SpellPayload
 {
@@ -16,10 +24,18 @@ public class SpellPayload
     public Vector3 TargetPosition;
     public int SpellLevel = 1;
     public Array<Node3D> TargetNodes = [];
-
-    public SpellPayload(Node3D caster, Vector3 targetPosition)
+    public SpellPayload(Node3D caster)
     {
         Caster = caster;
-        TargetPosition = targetPosition;
     }
+}
+
+public interface ISpellComponent
+{
+    string ComponentName { get; }
+    event Action<SpellPayload> OnComplete;
+    event Action OnStarted;
+    event Action<float> OnProgressChanged;
+    void Initialize(Node3D spell, SpellPayload payload);
+    void Process(float delta);
 }
