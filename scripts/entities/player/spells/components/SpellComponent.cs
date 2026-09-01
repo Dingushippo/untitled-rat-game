@@ -5,7 +5,7 @@ using System;
 
 public abstract partial class SpellComponent : Node, ISpellComponent
 {
-    public string ComponentName => Name;
+    public string ComponentName => GetType().ToString();
     public event Action<SpellPayload> OnComplete;
     public event Action OnStarted;
     public event Action<float> OnProgressChanged;
@@ -24,10 +24,9 @@ public class SpellPayload
     public Vector3 TargetPosition;
     public int SpellLevel = 1;
     public Array<Node3D> TargetNodes = [];
-    public SpellPayload(Node3D caster)
-    {
-        Caster = caster;
-    }
+    public SpellPayload(Node3D caster) => Caster = caster;
+    public override string ToString()
+        => $"Target: {TargetPosition}, level: {SpellLevel}, targets: {string.Join(',', TargetNodes)}";
 }
 
 public interface ISpellComponent

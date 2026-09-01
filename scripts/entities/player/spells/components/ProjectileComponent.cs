@@ -12,8 +12,7 @@ public partial class ProjectileComponent : Area3DSpellComponent
 
     public override void Initialize(Node3D spell, SpellPayload payload)
     {
-        _payload = payload;
-        _spell = spell;
+        base.Initialize(spell, payload);
 
         _direction = GlobalPosition.DirectionTo(_payload.TargetPosition);
         _velocity = _direction * Speed;

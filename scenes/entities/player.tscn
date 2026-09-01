@@ -164,6 +164,9 @@ material_override = SubResource("StandardMaterial3D_j5cof")
 mesh = SubResource("ArrayMesh_rpayc")
 skin = SubResource("Skin_64kpw")
 
+[node name="Marker3D" type="Marker3D" parent="Head/HandR" unique_id=1513778581]
+transform = Transform3D(-0.09550632, -0.9067514, -0.41070718, 0.12760994, 0.3980361, -0.90845066, 0.98721546, -0.1391731, 0.07769551, 0.11619359, 0.04762149, -0.038826615)
+
 [node name="HandL" type="Node3D" parent="Head" unique_id=977781739]
 transform = Transform3D(0.17433612, 0.009157376, 0.98464364, 0.8586688, -0.49085814, -0.14746659, 0.48196995, 0.8711915, -0.09343746, -0.7, -0.39999998, -0.8)
 
@@ -192,7 +195,7 @@ metadata/_custom_type_script = "uid://c7bvj72oc6fia"
 [node name="CastManager" type="Node" parent="." unique_id=1712236115 node_paths=PackedStringArray("CastNode")]
 script = ExtResource("9_yv3je")
 CurrentSpellResource = ExtResource("2_yv3je")
-CastNode = NodePath("../Head/HandR")
+CastNode = NodePath("../Head/HandR/Marker3D")
 metadata/_custom_type_script = "uid://brm17y0d2v4ct"
 
 [node name="VaultRaycastRotation" type="Node3D" parent="." unique_id=1008976753]
@@ -208,7 +211,6 @@ RotationNode = NodePath("..")
 [node name="HierarchicalStateMachine" type="Node" parent="." unique_id=641144029]
 script = ExtResource("7_yr3on")
 InitialStatePath = NodePath("Grounded/Idle")
-Debug = true
 metadata/_custom_type_script = "uid://bf3o5ggxnugyl"
 
 [node name="Grounded" type="Node" parent="HierarchicalStateMachine" unique_id=235149432]
