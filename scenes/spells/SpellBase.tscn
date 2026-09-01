@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://cov0v3ao33xvh" path="res://scripts/entities/player/spells/components/ChargeComponent.cs" id="3_6m00d"]
 [ext_resource type="Script" uid="uid://cd1b0p1hhyr28" path="res://scripts/entities/player/spells/components/ForwardTargetingComponent.cs" id="4_4eyvu"]
 [ext_resource type="Script" uid="uid://dnc8mr6xmuuhj" path="res://scripts/entities/player/spells/components/TrailComponent.cs" id="5_6d8ak"]
+[ext_resource type="Script" uid="uid://d4ku3p30dqka4" path="res://scripts/entities/player/spells/components/VisibilityComponent.cs" id="7_k13h8"]
 
 [sub_resource type="Curve" id="Curve_ggxbv"]
 _data = [Vector2(0, 0.79874206), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -48,3 +49,9 @@ metadata/_custom_type_script = "uid://cg32hcwni4uiw"
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ProjectileComponent" unique_id=1658743445]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12205447, 0.017286636)
 shape = SubResource("SphereShape3D_pso3n")
+
+[node name="VisibilityComponent" type="Node" parent="." unique_id=291730600 node_paths=PackedStringArray("Hide", "Show")]
+script = ExtResource("7_k13h8")
+Hide = [NodePath("../rat")]
+Show = []
+metadata/_custom_type_script = "uid://d4ku3p30dqka4"
