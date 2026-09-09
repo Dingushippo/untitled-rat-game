@@ -16,10 +16,11 @@ public partial class TargetDummy : CharacterBody3D
         HealthComponent.OnDeath += OnDeath;
     }
 
-    private void OnHit(float amount)
+    private void OnHit(float amount, bool isCrit = false)
     {
         if (Debug)
             GD.Print($"Hit for {amount}: {HealthComponent.Health}/{HealthComponent.MaxHealth}");
+        DamageNumbers.Instance.Spawn(GlobalPosition + Vector3.Up * 2.5f, amount, isCrit);
     }
 
     private void OnDeath()

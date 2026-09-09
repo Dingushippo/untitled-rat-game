@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -17,6 +18,31 @@ public partial class ObjectPoolComponent
         PreallocatePool();
     }
 
+    private ObjectPoolComponent(Node parentNode, int poolSize)
+    {
+        _parentNode = parentNode;
+        _poolSize = poolSize;
+    }
+
+    public static ObjectPoolComponent FromType<T>(Node parentNode, int poolSize = 100)
+        where T : Node, new()
+    {
+        // if (typeof(T) is not IPooledObject pooled)
+        // {
+        //     GD.PushError($"{typeof(T)} does not implement IPooledObject"); return default;
+        // }
+        ObjectPoolComponent pool = new(parentNode, poolSize);
+
+        for (int i = 0; i < poolSize; i++)
+        {
+            T instance = new();
+            pool.AllocateInstance(instance);
+        }
+        GD.Print($"Pool yo");
+
+        return pool;
+    }
+
     public int NumAvailable => _pool.Count;
 
     private void PreallocatePool()
@@ -24,13 +50,20 @@ public partial class ObjectPoolComponent
         for (int i = 0; i < _poolSize; i++)
         {
             Node instance = _scene.Instantiate();
-            if (instance is IPooledObject pooledObj)
-            {
-                _parentNode.AddChild(instance);
-                pooledObj.OnDespawn(); // Initialize to dormant state
-                _pool.Enqueue(instance);
-            }
+            AllocateInstance(instance);
         }
+    }
+
+    private void AllocateInstance(Node instance)
+    {
+        if (instance is IPooledObject pooledObj)
+        {
+            _parentNode.AddChild(instance);
+            pooledObj.OnDespawn(); // Initialize to dormant state
+            _pool.Enqueue(instance);
+        }
+        else
+            GD.Print($"{nameof(instance)} is not IPooledObject");
     }
 
     public void PrepareObject(Node obj, Vector3 position, Vector3 rotation)

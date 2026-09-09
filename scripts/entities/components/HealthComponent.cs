@@ -17,7 +17,7 @@ public partial class HealthComponent : Node
     }
     private float _health;
 
-    public event Action<float> OnDamage;
+    public event Action<float, bool> OnDamage;
     public event Action<float> OnHeal;
     public event Action OnDeath;
 
@@ -26,10 +26,10 @@ public partial class HealthComponent : Node
         Health = MaxHealth;
     }
 
-    public void Damage(float amount)
+    public void Damage(float amount, bool isWeakspot)
     {
         Health -= amount;
-        OnDamage?.Invoke(amount);
+        OnDamage?.Invoke(amount, isWeakspot);
 
         if (Health == 0)
             OnDeath?.Invoke();
