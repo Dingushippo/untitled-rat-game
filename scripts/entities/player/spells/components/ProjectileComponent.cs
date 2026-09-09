@@ -6,8 +6,12 @@ public partial class ProjectileComponent : Area3DSpellComponent
     [Export] public float Speed = 10;
     [Export] public float GravityStrength = 1f;
 
+    [Export] public float AdditionalTravelAfterCollision = 0f;
+
     private Vector3 _direction;
     private Vector3 _velocity;
+    private bool _travelComplete = false;
+    private float _finalTravel = 0f;
 
     public override void Initialize(Node3D spell, SpellPayload payload)
     {
@@ -36,19 +40,29 @@ public partial class ProjectileComponent : Area3DSpellComponent
 
         if (_velocity.LengthSquared() > 0.001)
             _spell.LookAt(_spell.GlobalPosition + _velocity, Vector3.Up);
+
+        if (!_travelComplete)
+            return;
+
+        _finalTravel += _velocity.Length();
+
+        if (_finalTravel >= AdditionalTravelAfterCollision)
+            RaiseComplete(_payload);
     }
 
     public void OnBodyEntered(Node3D body)
     {
         _payload.TargetNodes.Add(body);
         BodyEntered -= OnBodyEntered;
-        RaiseComplete(_payload);
+        AreaEntered -= OnAreaEntered;
+        _travelComplete = true;
     }
 
     public void OnAreaEntered(Area3D area)
     {
         _payload.TargetNodes.Add(area);
         AreaEntered -= OnAreaEntered;
-        RaiseComplete(_payload);
+        BodyEntered -= OnBodyEntered;
+        _travelComplete = true;
     }
 }

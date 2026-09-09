@@ -38,7 +38,7 @@ metadata/_custom_type_script = "uid://cd1b0p1hhyr28"
 [node name="TrailComponent" type="Trail3D" parent="." unique_id=684254140 node_paths=PackedStringArray("StopOnComponentCompleted")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17490965, 0.19626945)
 custom_aabb = AABB(-0.3, -0.3, -0.3, 0.6, 0.6, 0.6)
-lifetime = 0.3
+lifetime = 0.15
 width_curve = SubResource("Curve_ggxbv")
 color_gradient = SubResource("Gradient_hs2wg")
 script = ExtResource("5_6d8ak")
@@ -48,6 +48,7 @@ StopOnComponentCompleted = NodePath("../ProjectileComponent")
 script = ExtResource("3_4eyvu")
 Speed = 40.0
 GravityStrength = 9.8
+AdditionalTravelAfterCollision = 100.0
 metadata/_custom_type_script = "uid://cg32hcwni4uiw"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ProjectileComponent" unique_id=1658743445]
