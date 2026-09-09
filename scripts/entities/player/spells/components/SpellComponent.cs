@@ -16,6 +16,15 @@ public abstract partial class SpellComponent : Node, ISpellComponent
     protected virtual void RaiseProgressChanged(float progress) => OnProgressChanged?.Invoke(progress);
     public virtual void Process(float delta) { }
     public override string ToString() => GetType().ToString();
+
+    public override void _ExitTree()
+    {
+        // Clear out invocation lists to prevent memory pins during Hot Reload
+        OnComplete = null;
+        OnStarted = null;
+        OnProgressChanged = null;
+        base._ExitTree();
+    }
 }
 
 public class SpellPayload

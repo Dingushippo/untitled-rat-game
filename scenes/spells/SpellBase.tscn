@@ -22,7 +22,7 @@ radius = 0.3357584
 
 [node name="TestSpell" type="Node3D" unique_id=1729924080]
 script = ExtResource("1_usm0s")
-_debug = true
+_debug = null
 
 [node name="rat" parent="." unique_id=256426602 instance=ExtResource("2_6m00d")]
 

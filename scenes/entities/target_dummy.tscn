@@ -1,6 +1,8 @@
 [gd_scene format=4 uid="uid://dulb4n685qehd"]
 
+[ext_resource type="Script" uid="uid://b5swul0tubi47" path="res://scripts/entities/TargetDummy.cs" id="1_ne7kq"]
 [ext_resource type="Script" uid="uid://dc1ppu6hov41" path="res://scripts/entities/HurtboxComponent.cs" id="1_u0mi2"]
+[ext_resource type="Script" uid="uid://b28dfoaxpk5cl" path="res://scripts/entities/HealthComponent.cs" id="3_hekaj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nu56f"]
 resource_name = "Wood"
@@ -140,8 +142,12 @@ height = 0.9213702
 [sub_resource type="BoxShape3D" id="BoxShape3D_m5ysi"]
 size = Vector3(1, 2.067871, 0.953125)
 
-[node name="CharacterBody3D" type="CharacterBody3D" unique_id=944295755]
+[node name="CharacterBody3D" type="CharacterBody3D" unique_id=944295755 node_paths=PackedStringArray("HurtboxHead", "HurtboxBody", "HealthComponent")]
 collision_layer = 16
+script = ExtResource("1_ne7kq")
+HurtboxHead = NodePath("HeadHurtbox")
+HurtboxBody = NodePath("BodyHurtbox")
+HealthComponent = NodePath("HealthComponent")
 
 [node name="target_dummy" type="Node3D" parent="." unique_id=1618445532]
 
@@ -157,7 +163,9 @@ mesh = SubResource("ArrayMesh_80qnl")
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("1_u0mi2")
-IsEntity = true
+IsPlayer = null
+IsWeakspot = null
+WeakSpotMultiplier = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BodyHurtbox" unique_id=772894014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -165,7 +173,7 @@ shape = SubResource("ConcavePolygonShape3D_m5ysi")
 
 [node name="HeadHurtbox" type="Area3D" parent="." unique_id=1429039868]
 script = ExtResource("1_u0mi2")
-IsEntity = true
+IsPlayer = null
 IsWeakspot = true
 WeakSpotMultiplier = 2.0
 
@@ -176,3 +184,8 @@ shape = SubResource("CapsuleShape3D_m5ysi")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1640572657]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9829565, -0.039785028)
 shape = SubResource("BoxShape3D_m5ysi")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=476182297]
+script = ExtResource("3_hekaj")
+MaxHealth = 30.0
+metadata/_custom_type_script = "uid://b28dfoaxpk5cl"

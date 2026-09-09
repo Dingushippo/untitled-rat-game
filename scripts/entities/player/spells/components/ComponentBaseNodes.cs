@@ -14,6 +14,15 @@ public abstract partial class Area3DSpellComponent : Area3D, ISpellComponent
     protected virtual void RaiseProgressChanged(float progress) => OnProgressChanged?.Invoke(progress);
     public virtual void Process(float delta) { }
     public override string ToString() => GetType().ToString();
+
+    public override void _ExitTree()
+    {
+        // Clear out invocation lists to prevent memory pins during Hot Reload
+        OnComplete = null;
+        OnStarted = null;
+        OnProgressChanged = null;
+        base._ExitTree();
+    }
 }
 
 public abstract partial class TrailSpellComponent : Trail3D, ISpellComponent
@@ -29,6 +38,15 @@ public abstract partial class TrailSpellComponent : Trail3D, ISpellComponent
     protected virtual void RaiseProgressChanged(float progress) => OnProgressChanged?.Invoke(progress);
     public virtual void Process(float delta) { }
     public override string ToString() => GetType().ToString();
+
+    public override void _ExitTree()
+    {
+        // Clear out invocation lists to prevent memory pins during Hot Reload
+        OnComplete = null;
+        OnStarted = null;
+        OnProgressChanged = null;
+        base._ExitTree();
+    }
 }
 
 public abstract partial class TimerSpellComponent : Timer, ISpellComponent
@@ -44,4 +62,13 @@ public abstract partial class TimerSpellComponent : Timer, ISpellComponent
     protected virtual void RaiseProgressChanged(float progress) => OnProgressChanged?.Invoke(progress);
     public virtual void Process(float delta) { }
     public override string ToString() => GetType().ToString();
+
+    public override void _ExitTree()
+    {
+        // Clear out invocation lists to prevent memory pins during Hot Reload
+        OnComplete = null;
+        OnStarted = null;
+        OnProgressChanged = null;
+        base._ExitTree();
+    }
 }
