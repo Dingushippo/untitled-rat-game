@@ -69,7 +69,7 @@ public partial class RatWhipComponent : MovementAbility
 
         Vector3[] testPoints = RaycastUtils.FindCardinalEdges(_player, _hitPosition, _hitNormal, 2f);
 
-        DebugDraw.Sphere(_player, _hitPosition, .1f, Colors.Orange);
+        // DebugDraw.Sphere(_player, _hitPosition, .1f, Colors.Orange);
         bool isTopSurface = _hitNormal == Vector3.Up;
         if (testPoints.Length == 0 || isTopSurface)
         {
@@ -92,8 +92,8 @@ public partial class RatWhipComponent : MovementAbility
             AnchorPoint = closest;
             _anchorIsOnTopLedge = AnchorPoint.Y > _hitPosition.Y || _hitNormal == Vector3.Up;
 
-            Color color = _anchorIsOnTopLedge ? Colors.Green : Colors.Red;
-            DebugDraw.Sphere(_player, AnchorPoint, .1f, color);
+            // Color color = _anchorIsOnTopLedge ? Colors.Green : Colors.Red;
+            // DebugDraw.Sphere(_player, AnchorPoint, .1f, color);
         }
         return true;
     }
@@ -177,13 +177,13 @@ public partial class RatWhipComponent : MovementAbility
     {
         _canAnchor = TryGetTargetAnchorPoint();
         TryGenerateMesh();
-        DebugDraw.Sphere(_player, AnchorPoint, .1f, Colors.SkyBlue);
+        // DebugDraw.Sphere(_player, AnchorPoint, .1f, Colors.SkyBlue);
 
         if (!_anchorIsOnTopLedge)
         {
             Vector3 testDir = AnchorPoint.DirectionTo(_hitPosition);
             Vector3 newPoint = AnchorPoint - testDir * 1f;
-            DebugDraw.Sphere(_player, newPoint, .1f, Colors.SkyBlue);
+            // DebugDraw.Sphere(_player, newPoint, .1f, Colors.SkyBlue);
         }
     }
 }

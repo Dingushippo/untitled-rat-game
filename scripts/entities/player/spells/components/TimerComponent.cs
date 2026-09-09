@@ -12,9 +12,5 @@ public partial class TimerComponent : TimerSpellComponent
         Start();
     }
 
-    private void TimerExit()
-    {
-        GD.Print("Timer completed");
-        RaiseComplete(_payload);
-    }
+    private void TimerExit() => RaiseComplete(_payload);
 }
