@@ -13,6 +13,12 @@ public partial class ProjectileComponent : Area3DSpellComponent
     {
         base.Initialize(spell, payload);
 
+        CollisionLayer = 0;
+        CollisionMask = PhysicsLayers.GetOrMask(
+            PhysicsLayers.WORLD,
+            PhysicsLayers.ENTITY_HURTBOX
+        );
+
         _direction = GlobalPosition.DirectionTo(_payload.TargetPosition);
         _velocity = _direction * Speed;
 

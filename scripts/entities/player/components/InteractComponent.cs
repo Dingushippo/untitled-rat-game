@@ -31,7 +31,7 @@ public partial class InteractComponent
             _player,
             rayStart,
             rayEnd, out Dictionary result,
-            PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.INTERACT, PhysicsLayers.FACILITY),
+            PhysicsLayers.GetOrMask(PhysicsLayers.WORLD, PhysicsLayers.INTERACT),
             accept: o => o is IInteract i && i.IsAvailableTo(_player)
         ))
         {
