@@ -1,5 +1,7 @@
 [gd_scene format=4 uid="uid://dulb4n685qehd"]
 
+[ext_resource type="Script" uid="uid://dc1ppu6hov41" path="res://scripts/entities/HurtboxComponent.cs" id="1_u0mi2"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nu56f"]
 resource_name = "Wood"
 cull_mode = 2
@@ -139,6 +141,7 @@ height = 0.9213702
 size = Vector3(1, 2.067871, 0.953125)
 
 [node name="CharacterBody3D" type="CharacterBody3D" unique_id=944295755]
+collision_layer = 16
 
 [node name="target_dummy" type="Node3D" parent="." unique_id=1618445532]
 
@@ -151,14 +154,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.694675, 0)
 mesh = SubResource("ArrayMesh_80qnl")
 
 [node name="BodyHurtbox" type="Area3D" parent="." unique_id=826861762]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_u0mi2")
+IsEntity = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BodyHurtbox" unique_id=772894014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("ConcavePolygonShape3D_m5ysi")
 
-[node name="Area3D" type="Area3D" parent="." unique_id=1429039868]
+[node name="HeadHurtbox" type="Area3D" parent="." unique_id=1429039868]
+script = ExtResource("1_u0mi2")
+IsEntity = true
+IsWeakspot = true
+WeakSpotMultiplier = 2.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1935472761]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HeadHurtbox" unique_id=1935472761]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6846145, 0)
 shape = SubResource("CapsuleShape3D_m5ysi")
 

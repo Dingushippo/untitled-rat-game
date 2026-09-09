@@ -24,7 +24,8 @@ public partial class ProjectileComponent : Area3DSpellComponent
 
         LookAt(GlobalPosition + _direction);
 
-        BodyEntered += Completed;
+        BodyEntered += OnBodyEntered;
+        AreaEntered += OnAreaEntered;
     }
 
     public override void Process(float delta)
@@ -37,10 +38,17 @@ public partial class ProjectileComponent : Area3DSpellComponent
             _spell.LookAt(_spell.GlobalPosition + _velocity, Vector3.Up);
     }
 
-    public void Completed(Node3D body)
+    public void OnBodyEntered(Node3D body)
     {
         _payload.TargetNodes.Add(body);
-        BodyEntered -= Completed;
+        BodyEntered -= OnBodyEntered;
+        RaiseComplete(_payload);
+    }
+
+    public void OnAreaEntered(Area3D area)
+    {
+        _payload.TargetNodes.Add(area);
+        AreaEntered -= OnAreaEntered;
         RaiseComplete(_payload);
     }
 }
