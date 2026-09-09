@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 [GlobalClass]
 public partial class ProjectileComponent : Area3DSpellComponent
