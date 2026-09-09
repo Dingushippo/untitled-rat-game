@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://dnc8mr6xmuuhj" path="res://scripts/entities/player/spells/components/TrailComponent.cs" id="5_6d8ak"]
 [ext_resource type="Script" uid="uid://d4ku3p30dqka4" path="res://scripts/entities/player/spells/components/VisibilityComponent.cs" id="7_k13h8"]
 [ext_resource type="Script" uid="uid://dlxuiq11el6ap" path="res://scripts/entities/player/spells/components/DamageComponent.cs" id="8_rq04a"]
+[ext_resource type="Script" uid="uid://cqvn33fv3a5vw" path="res://scripts/entities/player/spells/components/TimerComponent.cs" id="9_kn2uh"]
+[ext_resource type="Script" uid="uid://bodveg6ormlms" path="res://scripts/entities/player/spells/components/QueueFreeComponent.cs" id="10_xsoeg"]
 
 [sub_resource type="Curve" id="Curve_ggxbv"]
 _data = [Vector2(0, 0.79874206), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -20,6 +22,7 @@ radius = 0.3357584
 
 [node name="TestSpell" type="Node3D" unique_id=1729924080]
 script = ExtResource("1_usm0s")
+_debug = true
 
 [node name="rat" parent="." unique_id=256426602 instance=ExtResource("2_6m00d")]
 
@@ -43,7 +46,7 @@ StopOnComponentCompleted = NodePath("../ProjectileComponent")
 
 [node name="ProjectileComponent" type="Area3D" parent="." unique_id=1837581459]
 script = ExtResource("3_4eyvu")
-Speed = 20.0
+Speed = 40.0
 GravityStrength = 9.8
 metadata/_custom_type_script = "uid://cg32hcwni4uiw"
 
@@ -51,13 +54,22 @@ metadata/_custom_type_script = "uid://cg32hcwni4uiw"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12205447, 0.017286636)
 shape = SubResource("SphereShape3D_pso3n")
 
+[node name="DamageComponent" type="Node" parent="." unique_id=1011177417]
+script = ExtResource("8_rq04a")
+Amount = 5.0
+metadata/_custom_type_script = "uid://dlxuiq11el6ap"
+
 [node name="VisibilityComponent" type="Node" parent="." unique_id=291730600 node_paths=PackedStringArray("Hide", "Show")]
 script = ExtResource("7_k13h8")
 Hide = [NodePath("../rat")]
 Show = []
 metadata/_custom_type_script = "uid://d4ku3p30dqka4"
 
-[node name="DamageComponent" type="Node" parent="." unique_id=1011177417]
-script = ExtResource("8_rq04a")
-Amount = 5.0
-metadata/_custom_type_script = "uid://dlxuiq11el6ap"
+[node name="TimerComponent" type="Timer" parent="." unique_id=843999524]
+wait_time = 0.3
+script = ExtResource("9_kn2uh")
+metadata/_custom_type_script = "uid://cqvn33fv3a5vw"
+
+[node name="QueueFreeComponent" type="Node" parent="." unique_id=358649150]
+script = ExtResource("10_xsoeg")
+metadata/_custom_type_script = "uid://bodveg6ormlms"
