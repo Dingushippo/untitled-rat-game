@@ -5,6 +5,7 @@ public partial class TargetDummy : CharacterBody3D
     [Export] public HurtboxComponent HurtboxHead;
     [Export] public HurtboxComponent HurtboxBody;
     [Export] public HealthComponent HealthComponent;
+    [Export] public bool Debug;
 
     public override void _Ready()
     {
@@ -17,12 +18,14 @@ public partial class TargetDummy : CharacterBody3D
 
     private void OnHit(float amount)
     {
-        GD.Print($"Hit: {HealthComponent.Health}/{HealthComponent.MaxHealth}");
+        if (Debug)
+            GD.Print($"Hit for {amount}: {HealthComponent.Health}/{HealthComponent.MaxHealth}");
     }
 
     private void OnDeath()
     {
-        GD.Print($"Dead");
+        if (Debug)
+            GD.Print($"Dead");
     }
 
     public override void _ExitTree()
