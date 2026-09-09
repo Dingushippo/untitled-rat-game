@@ -14,5 +14,7 @@ public partial class VisibilityComponent : SpellComponent
             node.Hide();
         foreach (Node3D node in Show)
             node.Show();
+
+        RaiseComplete(_payload);
     }
 }
