@@ -26,7 +26,7 @@ public partial class HurtboxComponent : Area3D, IDamageable
     public void TakeDamage(float amount)
     {
         float damage = IsWeakspot ? amount * WeakSpotMultiplier : amount;
-        OnHit?.Invoke(amount);
+        OnHit?.Invoke(damage);
     }
 
 }
