@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d1c70tsq6n0uu" path="res://assets/rough-checked-texture-collage.jpg" id="1_yautc"]
 [ext_resource type="PackedScene" uid="uid://dornwsf1wways" path="res://scenes/entities/rat.tscn" id="4_v45ci"]
 [ext_resource type="Script" uid="uid://cobo62y6qjcp0" path="res://scripts/entities/player/RatManager.cs" id="5_48ne7"]
+[ext_resource type="PackedScene" uid="uid://dulb4n685qehd" path="res://scenes/entities/target_dummy.tscn" id="6_6xh4u"]
 [ext_resource type="Script" uid="uid://diyb87lbrqd66" path="res://scripts/world/ReturnArea.cs" id="10_2mu0v"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jbqir"]
@@ -215,3 +216,6 @@ RatScene = ExtResource("4_v45ci")
 [node name="Rat" parent="." unique_id=1418151468 instance=ExtResource("4_v45ci")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9547977, 0, 2.0021415)
 physics_material_override = SubResource("PhysicsMaterial_cyt5c")
+
+[node name="TargetDummy" parent="." unique_id=365908192 instance=ExtResource("6_6xh4u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 2)
