@@ -13,7 +13,7 @@
 [ext_resource type="Script" uid="uid://bma8pjlvo3gxj" path="res://scripts/entities/player/states/movement/PlayerGroundedState.cs" id="8_2ngu4"]
 [ext_resource type="Script" uid="uid://d3l36ce3owmy7" path="res://scripts/entities/player/VaultRaycast.cs" id="8_dnykm"]
 [ext_resource type="Script" uid="uid://diduhjxjhjf3m" path="res://scripts/entities/player/states/movement/PlayerIdleState.cs" id="9_jv5ih"]
-[ext_resource type="Script" uid="uid://brm17y0d2v4ct" path="res://scripts/entities/player/spells/CastManager.cs" id="9_yv3je"]
+[ext_resource type="Script" uid="uid://brm17y0d2v4ct" path="res://scripts/spells/CastManager.cs" id="9_yv3je"]
 [ext_resource type="Script" uid="uid://7bj6v4w0rxec" path="res://scripts/entities/player/states/movement/PlayerCrouchState.cs" id="10_n36er"]
 [ext_resource type="Script" uid="uid://cearbk4mljj2q" path="res://scripts/entities/player/states/movement/PlayerRunState.cs" id="11_d745t"]
 [ext_resource type="Script" uid="uid://c87dhm675xypo" path="res://scripts/qte/QteManager.cs" id="12_5ki56"]
