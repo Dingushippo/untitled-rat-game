@@ -29,11 +29,16 @@ public abstract partial class SpellComponent : Node, ISpellComponent
 
 public class SpellPayload
 {
+    public Player Player;
     public Node3D Caster;
     public Vector3 TargetPosition;
     public int SpellLevel = 1;
     public Array<Node3D> TargetNodes = [];
-    public SpellPayload(Node3D caster) => Caster = caster;
+    public SpellPayload(Player player, Node3D caster)
+    {
+        Player = player;
+        Caster = caster;
+    }
     public override string ToString()
         => $"Target: {TargetPosition}, level: {SpellLevel}, targets: {string.Join(',', TargetNodes)}";
 }

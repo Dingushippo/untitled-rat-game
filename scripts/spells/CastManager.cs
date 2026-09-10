@@ -6,13 +6,14 @@ public partial class CastManager : Node
     [Export] public SpellData CurrentSpellResource;
     [Export] public SpellData[] SpellResources;
     [Export] public Node3D CastNode;
+    [Export] public Player Player;
 
     public void Cast(SpellData spell) // on release
     {
         if (spell.SpellScene == null)
             return;
 
-        SpellPayload payload = new(CastNode);
+        SpellPayload payload = new(Player, CastNode);
 
         if (spell.SpellScene.Instantiate() is SpellBase spellInstance)
         {

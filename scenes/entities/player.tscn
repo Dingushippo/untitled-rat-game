@@ -27,6 +27,7 @@
 [ext_resource type="Script" uid="uid://r8y2ax3svqof" path="res://scripts/entities/player/states/movement/PlayerWallJumpState.cs" id="18_6gvyl"]
 [ext_resource type="Script" uid="uid://mdbu2my0kwp8" path="res://scripts/entities/player/states/movement/PlayerVaultState.cs" id="19_u2s01"]
 [ext_resource type="Script" uid="uid://dtkvcsirjml1w" path="res://scripts/entities/player/states/movement/PlayerAbilityState.cs" id="23_d745t"]
+[ext_resource type="Script" uid="uid://d3elcefnir8uw" path="res://scripts/ui/Reticle.cs" id="28_3hm5d"]
 
 [sub_resource type="Resource" id="Resource_pso3n"]
 script = ExtResource("2_ss7kx")
@@ -182,6 +183,7 @@ mesh = SubResource("CapsuleMesh_pso3n")
 
 [node name="InputComponent" type="Node" parent="." unique_id=860001231]
 script = ExtResource("3_n36er")
+JumpBufferTime = null
 
 [node name="AbilityManager" type="Node" parent="." unique_id=1375204078 node_paths=PackedStringArray("AbilityState", "_player", "_hfsm")]
 script = ExtResource("4_xe83n")
@@ -192,10 +194,11 @@ _player = NodePath("..")
 _hfsm = NodePath("../HierarchicalStateMachine")
 metadata/_custom_type_script = "uid://c7bvj72oc6fia"
 
-[node name="CastManager" type="Node" parent="." unique_id=1712236115 node_paths=PackedStringArray("CastNode")]
+[node name="CastManager" type="Node" parent="." unique_id=1712236115 node_paths=PackedStringArray("CastNode", "Player")]
 script = ExtResource("9_yv3je")
 CurrentSpellResource = ExtResource("2_yv3je")
 CastNode = NodePath("../Head/HandR/Marker3D")
+Player = NodePath("..")
 metadata/_custom_type_script = "uid://brm17y0d2v4ct"
 
 [node name="VaultRaycastRotation" type="Node3D" parent="." unique_id=1008976753]
@@ -211,16 +214,20 @@ RotationNode = NodePath("..")
 [node name="HierarchicalStateMachine" type="Node" parent="." unique_id=641144029]
 script = ExtResource("7_yr3on")
 InitialStatePath = NodePath("Grounded/Idle")
+Debug = null
 metadata/_custom_type_script = "uid://bf3o5ggxnugyl"
 
 [node name="Grounded" type="Node" parent="HierarchicalStateMachine" unique_id=235149432]
 script = ExtResource("8_2ngu4")
+CoyotyTime = null
 
 [node name="Idle" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=326881025]
 script = ExtResource("9_jv5ih")
 
 [node name="Crouch" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=1131398171]
 script = ExtResource("10_n36er")
+_crouchOffset = null
+_crouchAnimationDuration = null
 Speed = 1.0
 Acceleration = 20.0
 Deceleration = 20.0
@@ -229,6 +236,9 @@ BobStrength = 0.5
 
 [node name="Slide" type="Node" parent="HierarchicalStateMachine/Grounded/Crouch" unique_id=684412582]
 script = ExtResource("13_xe83n")
+SlideImpulse = null
+Friction = null
+MinSlideSpeed = null
 
 [node name="Run" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=113314447]
 script = ExtResource("11_d745t")
@@ -250,6 +260,7 @@ BobStrength = 0.2
 script = ExtResource("14_cwche")
 AirSpeed = 3.0
 AirAcceleration = 50.0
+AirDrag = null
 
 [node name="Jump" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=1540125802]
 script = ExtResource("15_yv3je")
@@ -270,6 +281,11 @@ script = ExtResource("19_u2s01")
 
 [node name="Ability" type="Node" parent="HierarchicalStateMachine" unique_id=1331177189]
 script = ExtResource("23_d745t")
+Speed = null
+Acceleration = null
+Deceleration = null
+BobSpeed = null
+BobStrength = null
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
 
@@ -285,3 +301,23 @@ size_flags_vertical = 3
 script = ExtResource("12_5ki56")
 QteScenes = Array[PackedScene]([ExtResource("13_saib0")])
 metadata/_custom_type_script = "uid://c87dhm675xypo"
+
+[node name="Reticle" type="Control" parent="CanvasLayer" unique_id=177197018]
+custom_maximum_size = Vector2(0, 0)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("28_3hm5d")
+ReticleRadius = 8.82
+LineSpacing = 2.665

@@ -13,4 +13,6 @@ public partial class TimerComponent : TimerSpellComponent
     }
 
     private void TimerExit() => RaiseComplete(_payload);
+
+    public override void _ExitTree() => Timeout -= TimerExit;
 }

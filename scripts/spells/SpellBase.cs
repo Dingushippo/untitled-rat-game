@@ -54,4 +54,10 @@ public partial class SpellBase : Node3D
             GD.Print($"Queued into: {_currentComponent}, payload: {payload}, remaining in queue: {_componentQueue.Count}");
         _currentComponent.Initialize(this, payload);
     }
+
+    public override void _ExitTree()
+    {
+        _currentComponent.OnComplete -= QueueNextComponent;
+    }
+
 }

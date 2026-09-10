@@ -10,15 +10,12 @@ public partial class ReturnArea : Area3D
 
     private void ReturnToHome(Node3D obj)
     {
-        // if (obj is Rat rat)
-        // {
-        //     rat.ChangeState<RatFallingState>();
-        //     rat.GlobalPosition = rat.HomePosition + Vector3.Up * 0.5f;
-        // }
+        if (obj is SpellBase spell)
+            spell.QueueFree();
 
         if (obj is Player player)
-        {
             player.GlobalPosition = Vector3.One * 2;
-        }
     }
+
+    public override void _ExitTree() => BodyEntered -= ReturnToHome;
 }

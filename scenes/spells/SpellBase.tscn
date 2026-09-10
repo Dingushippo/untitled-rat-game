@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dtfxx86u06x87" path="res://assets/rat.glb" id="2_6m00d"]
 [ext_resource type="Script" uid="uid://cg32hcwni4uiw" path="res://scripts/spells/components/ProjectileComponent.cs" id="3_4eyvu"]
 [ext_resource type="Script" uid="uid://cov0v3ao33xvh" path="res://scripts/spells/components/ChargeComponent.cs" id="3_6m00d"]
-[ext_resource type="Script" uid="uid://cd1b0p1hhyr28" path="res://scripts/spells/components/ForwardTargetingComponent.cs" id="4_4eyvu"]
+[ext_resource type="Script" uid="uid://wrebgdoao1tt" path="res://scripts/spells/components/RayTargetingComponent.cs" id="4_xsoeg"]
 [ext_resource type="Script" uid="uid://dnc8mr6xmuuhj" path="res://scripts/spells/components/TrailComponent.cs" id="5_6d8ak"]
 [ext_resource type="Script" uid="uid://d4ku3p30dqka4" path="res://scripts/spells/components/VisibilityComponent.cs" id="7_k13h8"]
 [ext_resource type="Script" uid="uid://dlxuiq11el6ap" path="res://scripts/spells/components/DamageComponent.cs" id="8_rq04a"]
@@ -22,6 +22,7 @@ radius = 0.3357584
 
 [node name="TestSpell" type="Node3D" unique_id=1729924080]
 script = ExtResource("1_usm0s")
+_debug = null
 
 [node name="rat" parent="." unique_id=256426602 instance=ExtResource("2_6m00d")]
 
@@ -30,18 +31,18 @@ script = ExtResource("3_6m00d")
 ChargeLevels = PackedFloat32Array(0, 3, 5)
 metadata/_custom_type_script = "uid://cov0v3ao33xvh"
 
-[node name="ForwardTargetingComponent" type="Node" parent="." unique_id=827901976]
-script = ExtResource("4_4eyvu")
-metadata/_custom_type_script = "uid://cd1b0p1hhyr28"
+[node name="RayTargetingComponent" type="Node" parent="." unique_id=1293868090]
+script = ExtResource("4_xsoeg")
+Range = 100.0
+metadata/_custom_type_script = "uid://wrebgdoao1tt"
 
-[node name="TrailComponent" type="Trail3D" parent="." unique_id=684254140 node_paths=PackedStringArray("StopOnComponentCompleted")]
+[node name="TrailComponent" type="Trail3D" parent="." unique_id=684254140]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17490965, 0.19626945)
 custom_aabb = AABB(-0.3, -0.3, -0.3, 0.6, 0.6, 0.6)
 lifetime = 0.15
 width_curve = SubResource("Curve_ggxbv")
 color_gradient = SubResource("Gradient_hs2wg")
 script = ExtResource("5_6d8ak")
-StopOnComponentCompleted = NodePath("../ProjectileComponent")
 
 [node name="ProjectileComponent" type="Area3D" parent="." unique_id=1837581459]
 script = ExtResource("3_4eyvu")
