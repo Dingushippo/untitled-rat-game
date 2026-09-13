@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://c7bvj72oc6fia" path="res://scripts/entities/player/abilities/AbilityManager.cs" id="4_xe83n"]
 [ext_resource type="Script" uid="uid://32o2pnmqajak" path="res://scripts/entities/player/components/RatWhipComponent.cs" id="6_d4qa6"]
 [ext_resource type="Script" uid="uid://bf3o5ggxnugyl" path="res://scripts/core/fsm/HierarchicalStateMachine.cs" id="7_yr3on"]
+[ext_resource type="Script" uid="uid://dxr5iy1ucowir" path="res://scripts/entities/player/PlayerResourceComponent.cs" id="7_yw3xw"]
 [ext_resource type="Script" uid="uid://bma8pjlvo3gxj" path="res://scripts/entities/player/states/movement/PlayerGroundedState.cs" id="8_2ngu4"]
 [ext_resource type="Script" uid="uid://d3l36ce3owmy7" path="res://scripts/entities/player/VaultRaycast.cs" id="8_dnykm"]
 [ext_resource type="Script" uid="uid://diduhjxjhjf3m" path="res://scripts/entities/player/states/movement/PlayerIdleState.cs" id="9_jv5ih"]
@@ -183,7 +184,9 @@ mesh = SubResource("CapsuleMesh_pso3n")
 
 [node name="InputComponent" type="Node" parent="." unique_id=860001231]
 script = ExtResource("3_n36er")
-JumpBufferTime = null
+
+[node name="PlayerResourceComponent" type="Node" parent="." unique_id=2128192685]
+script = ExtResource("7_yw3xw")
 
 [node name="AbilityManager" type="Node" parent="." unique_id=1375204078 node_paths=PackedStringArray("AbilityState", "_player", "_hfsm")]
 script = ExtResource("4_xe83n")
@@ -214,20 +217,16 @@ RotationNode = NodePath("..")
 [node name="HierarchicalStateMachine" type="Node" parent="." unique_id=641144029]
 script = ExtResource("7_yr3on")
 InitialStatePath = NodePath("Grounded/Idle")
-Debug = null
 metadata/_custom_type_script = "uid://bf3o5ggxnugyl"
 
 [node name="Grounded" type="Node" parent="HierarchicalStateMachine" unique_id=235149432]
 script = ExtResource("8_2ngu4")
-CoyotyTime = null
 
 [node name="Idle" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=326881025]
 script = ExtResource("9_jv5ih")
 
 [node name="Crouch" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=1131398171]
 script = ExtResource("10_n36er")
-_crouchOffset = null
-_crouchAnimationDuration = null
 Speed = 1.0
 Acceleration = 20.0
 Deceleration = 20.0
@@ -236,9 +235,6 @@ BobStrength = 0.5
 
 [node name="Slide" type="Node" parent="HierarchicalStateMachine/Grounded/Crouch" unique_id=684412582]
 script = ExtResource("13_xe83n")
-SlideImpulse = null
-Friction = null
-MinSlideSpeed = null
 
 [node name="Run" type="Node" parent="HierarchicalStateMachine/Grounded" unique_id=113314447]
 script = ExtResource("11_d745t")
@@ -260,7 +256,6 @@ BobStrength = 0.2
 script = ExtResource("14_cwche")
 AirSpeed = 3.0
 AirAcceleration = 50.0
-AirDrag = null
 
 [node name="Jump" type="Node" parent="HierarchicalStateMachine/Aerial" unique_id=1540125802]
 script = ExtResource("15_yv3je")
@@ -281,11 +276,6 @@ script = ExtResource("19_u2s01")
 
 [node name="Ability" type="Node" parent="HierarchicalStateMachine" unique_id=1331177189]
 script = ExtResource("23_d745t")
-Speed = null
-Acceleration = null
-Deceleration = null
-BobSpeed = null
-BobStrength = null
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=351212725]
 
